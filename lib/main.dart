@@ -16,7 +16,15 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class SignupPage extends StatelessWidget {
+class SignupPage extends StatefulWidget {
+  @override
+  _SignupPageState createState() => _SignupPageState();
+}
+
+class _SignupPageState extends State<SignupPage> {
+  bool _obscurePassword = true;
+  bool _obscureConfirmPassword = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,7 +36,7 @@ class SignupPage extends StatelessWidget {
               Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [Colors.white, Colors.lightBlueAccent], // Gradient from white to blue
+                    colors: [Colors.white, Colors.lightBlueAccent, Colors.blue], // Gradient from white to blue
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                   ),
@@ -63,7 +71,7 @@ class SignupPage extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // "Create your Account" text
+                      // "Create your account" text
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -72,13 +80,13 @@ class SignupPage extends StatelessWidget {
                             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.deepPurpleAccent),
                           ),
                           Text(
-                            "your Account",
+                            "your account",
                             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),
                       SizedBox(height: 70),
-                      // Form fields for user input
+
                       TextField(
                         decoration: InputDecoration(
                           labelText: "Username",
@@ -95,30 +103,55 @@ class SignupPage extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: 20),
+
+
                       TextField(
-                        obscureText: true,
+                        obscureText: _obscurePassword,
                         decoration: InputDecoration(
                           labelText: "Password",
                           hintText: "Enter your Password",
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _obscurePassword = !_obscurePassword;
+                              });
+                            },
+                          ),
                         ),
                       ),
                       SizedBox(height: 20),
+
+
                       TextField(
-                        obscureText: true,
+                        obscureText: _obscureConfirmPassword,
                         decoration: InputDecoration(
                           labelText: "Confirm Password",
                           hintText: "Confirm your Password",
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _obscureConfirmPassword ? Icons.visibility_off : Icons.visibility,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _obscureConfirmPassword = !_obscureConfirmPassword;
+                              });
+                            },
+                          ),
                         ),
                       ),
                       SizedBox(height: 40),
+
                       Center(
                         child: SizedBox(
                           child: ElevatedButton(
                             onPressed: () {},
                             style: ElevatedButton.styleFrom(
-                              primary: Colors.deepPurple, // Sets the background color to purple
+                              primary: Colors.deepPurple,
                             ),
                             child: Center(
                               child: Text(
@@ -135,7 +168,7 @@ class SignupPage extends StatelessWidget {
               ),
             ],
           ),
-          // Back button at the top-left corner
+
           Positioned(
             top: 20,
             left: 17,
