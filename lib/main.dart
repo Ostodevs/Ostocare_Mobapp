@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'login.dart';
+import 'signup.dart';
+import 'dart:async';
+import 'package:flutter/material.dart';
+
 
 void main() => runApp(MyApp());
 
@@ -8,179 +13,86 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Ostomy Care',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: SignupPage(),
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: MainPage(),
     );
   }
 }
 
-class SignupPage extends StatefulWidget {
+class MainPage extends StatefulWidget {
   @override
-  _SignupPageState createState() => _SignupPageState();
+  _MainPageState createState() => _MainPageState();
 }
 
-class _SignupPageState extends State<SignupPage> {
-  bool _obscurePassword = true;
-  bool _obscureConfirmPassword = true;
+class _MainPageState extends State<MainPage> {
+  // State for controlling the gradient animation
+  late Timer _timer;
+  List<Color> _colors = [Colors.blue, Colors.lightBlueAccent];
+  int _colorIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    // Timer to change the gradient colors every 5 seconds
+    _timer = Timer.periodic(Duration(seconds: 3), (timer) {
+      setState(() {
+        _colorIndex = (_colorIndex + 1) % 2;
+        _colors = _colorIndex == 0
+            ? [Colors.blue, Colors.lightBlueAccent]
+            : [Colors.deepPurple, Colors.purpleAccent];
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          Column(
+      body: AnimatedContainer(
+        duration: Duration(seconds: 2),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: _colors,
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              // Blue background container for the image and OstoCare text
-              Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Colors.white, Colors.lightBlueAccent, Colors.blue], // Gradient from white to blue
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                  ),
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(90),
-                    bottomRight: Radius.circular(90),
-                  ),
-                ),
-                width: double.infinity,
-                height: MediaQuery.of(context).size.height * 0.4, // Box height (40% of screen height)
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset(
-                      'assets/Logoostocare.png',
-                      width: 150,
-                      height: 150,
-                    ),
-                    SizedBox(height: 20),
-                    Text(
-                      "OstoCare",
-                      style: TextStyle(fontSize: 35, fontWeight: FontWeight.w200, color: Colors.white),
-                    ),
-                  ],
-                ),
+              Image.asset('assets/Logoostocare.png', width: 200, height: 200),
+              SizedBox(height: 20),
+              Text(
+                "OstoCare",
+                style: TextStyle(fontSize: 35, fontWeight: FontWeight.w200, color: Colors.white),
               ),
-
-              Expanded(
-                flex: 1,
-                child: Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // "Create your account" text
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Create ",
-                            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.deepPurpleAccent),
-                          ),
-                          Text(
-                            "your account",
-                            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 70),
-
-                      TextField(
-                        decoration: InputDecoration(
-                          labelText: "Username",
-                          hintText: "Enter your Username",
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      TextField(
-                        decoration: InputDecoration(
-                          labelText: "Email",
-                          hintText: "Enter your Email",
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
-                        ),
-                      ),
-                      SizedBox(height: 20),
-
-
-                      TextField(
-                        obscureText: _obscurePassword,
-                        decoration: InputDecoration(
-                          labelText: "Password",
-                          hintText: "Enter your Password",
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              _obscurePassword ? Icons.visibility_off : Icons.visibility,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                _obscurePassword = !_obscurePassword;
-                              });
-                            },
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 20),
-
-
-                      TextField(
-                        obscureText: _obscureConfirmPassword,
-                        decoration: InputDecoration(
-                          labelText: "Confirm Password",
-                          hintText: "Confirm your Password",
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              _obscureConfirmPassword ? Icons.visibility_off : Icons.visibility,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                _obscureConfirmPassword = !_obscureConfirmPassword;
-                              });
-                            },
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 40),
-
-                      Center(
-                        child: SizedBox(
-                          child: ElevatedButton(
-                            onPressed: () {},
-                            style: ElevatedButton.styleFrom(
-                              primary: Colors.deepPurple,
-                            ),
-                            child: Center(
-                              child: Text(
-                                "Create Account",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+              SizedBox(height: 50),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
+                },
+                child: Text("Login", style: TextStyle(color: Colors.white)),
+                style: ElevatedButton.styleFrom(primary: Colors.deepPurple, padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15)),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => SignupPage()));
+                },
+                child: Text("Sign Up", style: TextStyle(color: Colors.white)),
+                style: ElevatedButton.styleFrom(primary: Colors.blue, padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15)),
               ),
             ],
           ),
-
-          Positioned(
-            top: 20,
-            left: 17,
-            child: IconButton(
-              icon: Icon(Icons.arrow_back, color: Colors.black, size: 28),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
 }
+
