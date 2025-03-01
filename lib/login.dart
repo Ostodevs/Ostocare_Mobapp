@@ -105,7 +105,7 @@ class _LoginPageState extends State<LoginPage> {
                       onPressed: () {
                         // Add authentication logic here
                       },
-                      style: ElevatedButton.styleFrom(primary: Colors.deepPurple),
+                      style: ElevatedButton.styleFrom(backgroundColor: Colors.deepPurple),
                       child: Text("Login", style: TextStyle(color: Colors.white)),
                     ),
                     SizedBox(height: 20),
