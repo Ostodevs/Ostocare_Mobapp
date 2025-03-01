@@ -78,7 +78,7 @@ class _MainPageState extends State<MainPage> {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
                 },
                 child: Text("Login", style: TextStyle(color: Colors.white)),
-                style: ElevatedButton.styleFrom(primary: Colors.deepPurple, padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15)),
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.deepPurple, padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15)),
               ),
               SizedBox(height: 20),
               ElevatedButton(
@@ -86,7 +86,7 @@ class _MainPageState extends State<MainPage> {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => SignupPage()));
                 },
                 child: Text("Sign Up", style: TextStyle(color: Colors.white)),
-                style: ElevatedButton.styleFrom(primary: Colors.blue, padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15)),
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.blue, padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15)),
               ),
             ],
           ),
