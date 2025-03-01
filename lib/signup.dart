@@ -109,7 +109,7 @@ class _SignupPageState extends State<SignupPage> {
                         child: SizedBox(
                           child: ElevatedButton(
                             onPressed: () {},
-                            style: ElevatedButton.styleFrom(primary: Colors.deepPurple),
+                            style: ElevatedButton.styleFrom(backgroundColor: Colors.deepPurple),
                             child: Center(
                               child: Text("Create Account", style: TextStyle(color: Colors.white)),
                             ),
