@@ -56,3 +56,8 @@ flutter:
 
   assets:
     - assets/Logoostocare.png
+    - assets/Logos/LankaH.png
+    - assets/Logos/DurdansH.png
+    - assets/Logos/HemasH.png
+    - assets/Logos/KingsH.png
+    - assets/Logos/NawalokaH.png
