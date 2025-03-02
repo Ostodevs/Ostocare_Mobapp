@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'LankaH.dart';
+
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -59,33 +61,27 @@ class HospitalListScreen extends StatelessWidget {
         title: const Text(
           'Private Hospitals',
           style: TextStyle(
-            fontWeight: FontWeight.bold, // Bold title
+            fontWeight: FontWeight.bold,
             fontSize: 20,
-            color: Colors.black, // Better contrast
+            color: Colors.black,
           ),
         ),
-        centerTitle: true, // Center the title
-        backgroundColor: const Color(0xFFB3E5FC), // Solid light blue
+        centerTitle: true,
+        backgroundColor: const Color(0xFFB3E5FC),
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
       ),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              Color(0xFFB3E5FC), // Light blue at the top
-              Color(0xFFB3E5FC), // Keep more blue at the top
-              Color(0xFFE3F2FD), // Soft fade before white
-              Colors.white, // Smooth transition to white
+              Color(0xFFB3E5FC),
+              Color(0xFFB3E5FC),
+              Color(0xFFE3F2FD),
+              Colors.white,
             ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            stops: [0.0, 0.15, 0.3, 1.0], // Adjust color blending
+            stops: [0.0, 0.15, 0.3, 1.0],
           ),
         ),
         child: Padding(
@@ -101,13 +97,33 @@ class HospitalListScreen extends StatelessWidget {
             itemBuilder: (context, index) {
               return GestureDetector(
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          HospitalDetailScreen(hospital: hospitals[index]),
-                    ),
-                  );
+                  final hospitalName = hospitals[index]['name'];
+                  if (hospitalName == 'Lanka Hospital') {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const LankaHScreen()),
+                    );
+                  } else if (hospitalName == 'Durdans Hospital') {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const LankaHScreen()),
+                    );
+                  } else if (hospitalName == 'Hemas Hospital') {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const LankaHScreen()),
+                    );
+                  } else if (hospitalName == 'Kings Hospital') {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const LankaHScreen()),
+                    );
+                  } else if (hospitalName == 'Nawaloka Hospital') {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const LankaHScreen()),
+                    );
+                  }
                 },
                 child: HospitalCard(hospital: hospitals[index]),
               );
@@ -149,8 +165,7 @@ class HospitalCard extends StatelessWidget {
                   hospital['logo']!,
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) {
-                    return const Icon(Icons.image_not_supported,
-                        size: 40, color: Colors.grey);
+                    return const Icon(Icons.image_not_supported, size: 40, color: Colors.grey);
                   },
                 ),
               ),
@@ -172,80 +187,6 @@ class HospitalCard extends StatelessWidget {
               style: const TextStyle(fontSize: 14, color: Colors.black54),
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class HospitalDetailScreen extends StatelessWidget {
-  final Map<String, String> hospital;
-
-  const HospitalDetailScreen({super.key, required this.hospital});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          hospital['name']!,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-            color: Colors.black,
-          ),
-        ),
-        centerTitle: true,
-        backgroundColor: const Color(0xFFB3E5FC), // Solid light blue
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Color(0xFFB3E5FC), // More blue at the top
-              Color(0xFFB3E5FC),
-              Color(0xFFE3F2FD),
-              Colors.white, // Gradually fade to white
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            stops: [0.0, 0.15, 0.3, 1.0], // Adjust transition
-          ),
-        ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset(
-                hospital['logo']!,
-                height: 80,
-                errorBuilder: (context, error, stackTrace) {
-                  return const Icon(Icons.image_not_supported,
-                      size: 80, color: Colors.grey);
-                },
-              ),
-              const SizedBox(height: 20),
-              Text(
-                hospital['name']!,
-                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              Text(
-                hospital['location']!,
-                style: const TextStyle(fontSize: 18, color: Colors.black54),
-              ),
-              Text(
-                hospital['province']!,
-                style: const TextStyle(fontSize: 18, color: Colors.black54),
-              ),
-            ],
-          ),
         ),
       ),
     );
