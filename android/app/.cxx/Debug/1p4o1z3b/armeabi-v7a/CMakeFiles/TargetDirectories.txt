@@ -1,0 +1,2 @@
+C:/Users/User/Documents/GitHub/Ostocare_Mobapp/android/app/.cxx/Debug/1p4o1z3b/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Users/User/Documents/GitHub/Ostocare_Mobapp/android/app/.cxx/Debug/1p4o1z3b/armeabi-v7a/CMakeFiles/rebuild_cache.dir
