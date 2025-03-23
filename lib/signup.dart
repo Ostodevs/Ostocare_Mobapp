@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'login.dart';  // To navigate to the login page if the user already has an account
+import 'login.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'auth_service.dart';
 
 class SignupPage extends StatefulWidget {
   @override
@@ -7,8 +9,31 @@ class SignupPage extends StatefulWidget {
 }
 
 class _SignupPageState extends State<SignupPage> {
+  final _usernameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
+  final _formKey = GlobalKey<FormState>();
+
+  Future<void> _signup() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    try {
+      await AuthService().signUp(
+        _emailController.text.trim(),
+        _passwordController.text.trim(),
+        _usernameController.text.trim(),
+      );
+
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
+    } on FirebaseAuthException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.message ?? "Signup failed")),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,82 +66,100 @@ class _SignupPageState extends State<SignupPage> {
                 ),
               ),
               Expanded(
-                flex: 1,
                 child: Padding(
                   padding: EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text("Create ", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.deepPurpleAccent)),
-                          Text("your account", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                        ],
-                      ),
-                      SizedBox(height: 70),
-                      TextField(
-                        decoration: InputDecoration(
-                          labelText: "Username",
-                          hintText: "Enter your Username",
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text("Create ", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.deepPurpleAccent)),
+                            Text("your account", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                          ],
                         ),
-                      ),
-                      SizedBox(height: 20),
-                      TextField(
-                        decoration: InputDecoration(
-                          labelText: "Email",
-                          hintText: "Enter your Email",
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      TextField(
-                        obscureText: _obscurePassword,
-                        decoration: InputDecoration(
-                          labelText: "Password",
-                          hintText: "Enter your Password",
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
-                          suffixIcon: IconButton(
-                            icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
-                            onPressed: () {
-                              setState(() {
-                                _obscurePassword = !_obscurePassword;
-                              });
-                            },
+                        SizedBox(height: 50),
+                        TextFormField(
+                          controller: _usernameController,
+                          decoration: InputDecoration(
+                            labelText: "Username",
+                            hintText: "Enter your Username",
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
                           ),
+                          validator: (value) => value!.isEmpty ? "Enter a username" : null,
                         ),
-                      ),
-                      SizedBox(height: 20),
-                      TextField(
-                        obscureText: _obscureConfirmPassword,
-                        decoration: InputDecoration(
-                          labelText: "Confirm Password",
-                          hintText: "Confirm your Password",
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
-                          suffixIcon: IconButton(
-                            icon: Icon(_obscureConfirmPassword ? Icons.visibility_off : Icons.visibility),
-                            onPressed: () {
-                              setState(() {
-                                _obscureConfirmPassword = !_obscureConfirmPassword;
-                              });
-                            },
+                        SizedBox(height: 20),
+                        TextFormField(
+                          controller: _emailController,
+                          decoration: InputDecoration(
+                            labelText: "Email",
+                            hintText: "Enter your Email",
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
                           ),
+                          validator: (value) => value!.isEmpty || !value.contains('@') ? "Enter a valid email" : null,
                         ),
-                      ),
-                      SizedBox(height: 40),
-                      Center(
-                        child: SizedBox(
-                          child: ElevatedButton(
-                            onPressed: () {},
-                            style: ElevatedButton.styleFrom(backgroundColor: Colors.deepPurple),
-                            child: Center(
-                              child: Text("Create Account", style: TextStyle(color: Colors.white)),
+                        SizedBox(height: 20),
+                        TextFormField(
+                          controller: _passwordController,
+                          obscureText: _obscurePassword,
+                          decoration: InputDecoration(
+                            labelText: "Password",
+                            hintText: "Enter your Password",
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
+                            suffixIcon: IconButton(
+                              icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
+                              onPressed: () {
+                                setState(() {
+                                  _obscurePassword = !_obscurePassword;
+                                });
+                              },
+                            ),
+                          ),
+                          validator: (value) => value!.length < 6 ? "Password must be at least 6 characters" : null,
+                        ),
+                        SizedBox(height: 20),
+                        TextFormField(
+                          controller: _confirmPasswordController,
+                          obscureText: _obscureConfirmPassword,
+                          decoration: InputDecoration(
+                            labelText: "Confirm Password",
+                            hintText: "Confirm your Password",
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
+                            suffixIcon: IconButton(
+                              icon: Icon(_obscureConfirmPassword ? Icons.visibility_off : Icons.visibility),
+                              onPressed: () {
+                                setState(() {
+                                  _obscureConfirmPassword = !_obscureConfirmPassword;
+                                });
+                              },
+                            ),
+                          ),
+                          validator: (value) => value != _passwordController.text ? "Passwords do not match" : null,
+                        ),
+                        SizedBox(height: 40),
+                        Center(
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: _signup,
+                              style: ElevatedButton.styleFrom(backgroundColor: Colors.deepPurple, padding: EdgeInsets.symmetric(vertical: 15)),
+                              child: Text("Create Account", style: TextStyle(color: Colors.white, fontSize: 18)),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                        SizedBox(height: 20),
+                        Center(
+                          child: TextButton(
+                            onPressed: () {
+                              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
+                            },
+                            child: Text("Already have an account? Login"),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -128,7 +171,7 @@ class _SignupPageState extends State<SignupPage> {
             child: IconButton(
               icon: Icon(Icons.arrow_back, color: Colors.black, size: 28),
               onPressed: () {
-                Navigator.pop(context);  // Navigate back to LoginPage
+                Navigator.pop(context);
               },
             ),
           ),
@@ -137,3 +180,5 @@ class _SignupPageState extends State<SignupPage> {
     );
   }
 }
+
+

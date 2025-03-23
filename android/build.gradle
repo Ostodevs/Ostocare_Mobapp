@@ -1,3 +1,6 @@
+// Project-level build.gradle
+
+// The plugins section at the top is not required in this file (it was misplaced in your initial setup)
 buildscript {
     ext.kotlin_version = '1.7.10'
     repositories {
@@ -7,7 +10,9 @@ buildscript {
 
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.android.tools.build:gradle:8.0.2' // 🔥 Add this line
+        classpath 'com.android.tools.build:gradle:8.0.2'  // Android build tools
+        // Add the Google services Gradle plugin dependency here
+        classpath 'com.google.gms:google-services:4.4.2'  // <-- This line is correct
     }
 }
 
@@ -29,4 +34,3 @@ subprojects {
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }
-
