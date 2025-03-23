@@ -1,11 +1,27 @@
 import 'package:flutter/material.dart';
 import 'login.dart';
 import 'signup.dart';
+import 'home.dart';
 import 'dart:async';
-import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
-void main() => runApp(MyApp());
+  const FirebaseOptions firebaseOptions = FirebaseOptions(
+    apiKey: 'your-api-key',
+    authDomain: 'your-auth-domain',
+    projectId: 'your-project-id',
+    storageBucket: 'your-storage-bucket',
+    messagingSenderId: 'your-sender-id',
+    appId: 'your-app-id',
+    measurementId: 'your-measurement-id',
+  );
+
+  await Firebase.initializeApp(options: firebaseOptions);
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
@@ -14,7 +30,26 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Ostomy Care',
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: MainPage(),
+      home: AuthWrapper(),
+    );
+  }
+}
+
+class AuthWrapper extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Scaffold(body: Center(child: CircularProgressIndicator()));
+        }
+        if (snapshot.hasData) {
+          return HomePage(userName: 'Some User');
+        } else {
+          return MainPage();
+        }
+      },
     );
   }
 }
@@ -25,7 +60,6 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  // State for controlling the gradient animation
   late Timer _timer;
   List<Color> _colors = [Colors.blue, Colors.lightBlueAccent];
   int _colorIndex = 0;
@@ -33,7 +67,6 @@ class _MainPageState extends State<MainPage> {
   @override
   void initState() {
     super.initState();
-    // Timer to change the gradient colors every 5 seconds
     _timer = Timer.periodic(Duration(seconds: 3), (timer) {
       setState(() {
         _colorIndex = (_colorIndex + 1) % 2;
@@ -95,4 +128,3 @@ class _MainPageState extends State<MainPage> {
     );
   }
 }
-

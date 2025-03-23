@@ -1,24 +1,17 @@
 plugins {
     id "com.android.application"
     id "kotlin-android"
-    id "dev.flutter.flutter-gradle-plugin"
+    id "dev.flutter.flutter-gradle-plugin" // Flutter plugin for Gradle
+    id 'com.google.gms.google-services'  // Firebase plugin (no version specified here)
 }
 
-def localProperties = new Properties()
-def localPropertiesFile = rootProject.file('local.properties')
-if (localPropertiesFile.exists()) {
-    localPropertiesFile.withReader('UTF-8') { reader ->
-        localProperties.load(reader)
-    }
-}
-
-def flutterVersionCode = localProperties.getProperty('flutter.versionCode', '1')
-def flutterVersionName = localProperties.getProperty('flutter.versionName', '1.0')
+def flutterVersionCode = 1
+def flutterVersionName = "1.0.0"
 
 android {
     namespace "com.example.ostocare"
-    compileSdkVersion 34 // ✅ Set manually instead of `flutter.compileSdkVersion`
-    ndkVersion "25.2.9519653" // ✅ Specify a compatible NDK version
+    compileSdkVersion 34
+    ndkVersion "25.2.9519653"
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -34,10 +27,10 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.example.ostocare" // ✅ Fixed application ID
-        minSdkVersion 21 // ✅ Set manually instead of `flutter.minSdkVersion`
-        targetSdkVersion 34 // ✅ Set manually instead of `flutter.targetSdkVersion`
-        versionCode flutterVersionCode.toInteger()
+        applicationId "com.example.ostocare"
+        minSdkVersion 21
+        targetSdkVersion 34
+        versionCode flutterVersionCode
         versionName flutterVersionName
     }
 
@@ -50,8 +43,4 @@ android {
 
 flutter {
     source '../..'
-}
-
-dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.7.10"
 }

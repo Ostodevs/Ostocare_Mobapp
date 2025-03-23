@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'login.dart';
 
 class HomePage extends StatefulWidget {
   final String userName;
 
-  HomePage({required this.userName});
+  // Constructor with named required parameter userName
+  const HomePage({Key? key, required this.userName}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
 }
+
 
 class _HomePageState extends State<HomePage> {
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _selectedDay = DateTime.now();
   DateTime _focusedDay = DateTime.now();
   int _selectedIndex = 0;
-
 
   final List<Widget> _footerItems = [
     Icon(Icons.home, size: 40, color: Colors.deepPurple),
@@ -105,12 +107,11 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             SizedBox(height: 20),
-
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Card(
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20), // Same as Calendar
+                  borderRadius: BorderRadius.circular(20),
                 ),
                 elevation: 5,
                 child: Container(
@@ -131,7 +132,6 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             SizedBox(height: 20),
-
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Card(
@@ -145,7 +145,6 @@ class _HomePageState extends State<HomePage> {
                   padding: EdgeInsets.all(16.0),
                   child: Row(
                     children: [
-                      // Left Side - Text
                       Expanded(
                         flex: 3,
                         child: Text(
@@ -158,7 +157,6 @@ class _HomePageState extends State<HomePage> {
                           textAlign: TextAlign.center,
                         ),
                       ),
-
                       Expanded(
                         flex: 3,
                         child: Container(
@@ -177,12 +175,11 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             SizedBox(height: 2),
-
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Card(
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20), // Same as Calendar
+                  borderRadius: BorderRadius.circular(20),
                 ),
                 elevation: 5,
                 child: Container(
@@ -191,7 +188,6 @@ class _HomePageState extends State<HomePage> {
                   padding: EdgeInsets.all(16.0),
                   child: Row(
                     children: [
-
                       Expanded(
                         flex: 2,
                         child: Container(
@@ -201,13 +197,12 @@ class _HomePageState extends State<HomePage> {
                             child: Image.asset(
                               'assets/homepageimg3.png',
                               fit: BoxFit.contain,
-                              width: 100, // Adjust size as needed
+                              width: 100,
                               height: 100,
                             ),
                           ),
                         ),
                       ),
-                      // Right Side - Text
                       Expanded(
                         flex: 3,
                         child: Container(
@@ -277,3 +272,4 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
+

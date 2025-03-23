@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "180639517082",
+    "project_id": "ostocare-491c5",
+    "storage_bucket": "ostocare-491c5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:180639517082:android:7a575b34c95f7dbc429223",
+        "android_client_info": {
+          "package_name": "com.example.ostocare"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDUUilAmKV3It0xUxBcix66b7qXpAfgPWM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
