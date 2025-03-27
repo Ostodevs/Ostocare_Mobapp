@@ -1,19 +1,5 @@
 import 'package:flutter/material.dart';
-import 'pharmacy_page.dart'; // Import the pharmacy page
-
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: PharmacyPage(), // Set PharmacyPage as the starting screen
-    );
-  }
-}
+import 'supplyselect.dart'; // Ensure this is the correct import
 
 class PharmacyCard extends StatelessWidget {
   final String logoPath;
@@ -49,9 +35,10 @@ class PharmacyCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Logo & Pharmacy Name
           Row(
             children: [
-              Image.asset(logoPath, width: 60, height: 60),
+              Image.asset(logoPath, width: 60, height: 60), // Logo
               SizedBox(width: 8),
               Expanded(
                 child: Text(
@@ -65,6 +52,8 @@ class PharmacyCard extends StatelessWidget {
             ],
           ),
           SizedBox(height: 8),
+
+          // Available Brands
           Text(
             "Available Brands: $brands",
             style: TextStyle(
@@ -74,6 +63,8 @@ class PharmacyCard extends StatelessWidget {
             ),
           ),
           SizedBox(height: 8),
+
+          // Locations & Contact Numbers
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: locations.entries.map((entry) {
@@ -93,20 +84,21 @@ class PharmacyPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.white, // This ensures the entire background is white
       body: Stack(
         children: [
           Column(
             children: [
+              // Gradient Header
               Container(
-                padding: EdgeInsets.only(top: 50, left: 16, bottom: 350),
+                padding: EdgeInsets.only(top: 50, left: 16, bottom: 350), // Increased bottom padding
                 width: double.infinity,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [Color(0xFF7FD1E1), Colors.white],
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    stops: [0.4, 1.0],
+                    stops: [0.4, 15], // Adjust stops to stretch the gradient further
                   ),
                 ),
                 child: Row(
@@ -131,7 +123,7 @@ class PharmacyPage extends StatelessWidget {
             ],
           ),
           Positioned(
-            top: 120,
+            top: 120, // Adjust this to move the pharmacy section higher
             left: 0,
             right: 0,
             bottom: 0,
@@ -141,7 +133,7 @@ class PharmacyPage extends StatelessWidget {
                   child: ListView(
                     children: [
                       PharmacyCard(
-                        logoPath: 'assets/union_chemist.png',
+                        logoPath: 'images/union_chemist.png',
                         name: 'Union Chemist Pvt Ltd',
                         brands: 'Coloplast & Surgipharma',
                         locations: {
@@ -152,7 +144,7 @@ class PharmacyPage extends StatelessWidget {
                         },
                       ),
                       PharmacyCard(
-                        logoPath: 'assets/healthguard.png',
+                        logoPath: 'images/healthguard.png',
                         name: 'HealthGuard Pharmacy',
                         brands: 'Coloplast',
                         locations: {
@@ -162,7 +154,7 @@ class PharmacyPage extends StatelessWidget {
                         },
                       ),
                       PharmacyCard(
-                        logoPath: 'assets/harcourts.png',
+                        logoPath: 'images/harcourts.png',
                         name: 'Harcourts Pharmacy',
                         brands: 'Coloplast',
                         locations: {
@@ -178,6 +170,18 @@ class PharmacyPage extends StatelessWidget {
             ),
           ),
         ],
+      ),
+
+      // 🌟 Floating Action Button Added Here! 🌟
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => SupplySelectPage()),
+          );
+        },
+        backgroundColor: Color(0xFF00AED9),
+        child: Icon(Icons.shopping_cart, color: Colors.white),
       ),
     );
   }
