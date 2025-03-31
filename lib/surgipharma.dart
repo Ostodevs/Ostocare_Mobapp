@@ -81,22 +81,22 @@ class SurgiPage extends StatelessWidget {
 // Product List
 List<Map<String, String>> productList = [
   {
-    'imagePath': 'images/surgi1.png',
+    'imagePath': 'assets/surgi1.png',
     'title': 'One Piece Open ',
     'description': 'For colostomy and ileostomy, soft hydrocolloid with Cureguard component, comfortable when sticking on the body; and lower Skin irritation',
   },
   {
-    'imagePath': 'images/surgi2.png',
+    'imagePath': 'assets/surgi2.png',
     'title': 'Skin Barrier',
     'description': 'Match to BAO-HEALTH pouches with same Ring lock size. Secure coupling system, avoid leakage',
   },
   {
-    'imagePath': 'images/surgi3.png',
+    'imagePath': 'assets/surgi3.png',
     'title': 'Two Piece Open ',
     'description': 'For colostomy and ileostomy, Odor-free and noice less pouch film; High surface filter. Allow fast air-flow.',
   },
   {
-    'imagePath': 'images/surgi4.png',
+    'imagePath': 'assets/surgi4.png',
     'title': 'Urostomy Bag One/Two Pcs',
     'description': 'Balance liquid flow design anti-flow back; Flexible drainage, can control the liquid easily by small finger pressure',
   },

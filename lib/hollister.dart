@@ -81,12 +81,12 @@ class HollisterPage extends StatelessWidget {
 // Product List
 List<Map<String, String>> productList = [
   {
-    'imagePath': 'images/hollister1.png',
+    'imagePath': 'assets/hollister1.png',
     'title': 'Adapt Skin Barrier Paste',
     'description': 'Used to fill uneven skin contours to create a flatter surface. Prevents drainage from getting under the ostomy skin barrier. Help extend the wear time of the skin barrier.',
   },
   {
-    'imagePath': 'images/hollister2.png',
+    'imagePath': 'assets/hollister2.png',
     'title': 'Adapt Stoma Powder',
     'description': 'Used to absorb moisture from broken skin around the stoma, which allows for better barrier adhesion to help protect the skin.',
   },

@@ -73,7 +73,7 @@ class SupplySelectPage extends StatelessWidget {
                   Expanded(
                     child: SupplyOptionCard(
                       title: "Contact Pharmacies &\nView Locations",
-                      imagePath: "images/location.png",
+                      imagePath: "assets/location.png",
                       onTap: () {
                         Navigator.push(
                           context,
@@ -87,7 +87,7 @@ class SupplySelectPage extends StatelessWidget {
                   Expanded(
                     child: SupplyOptionCard(
                       title: "Contact Suppliers &\nView Product Catalog",
-                      imagePath: "images/catalog.png",
+                      imagePath: "assets/catalog.png",
                       onTap: () {
                         Navigator.push(
                           context,

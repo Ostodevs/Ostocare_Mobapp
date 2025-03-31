@@ -133,7 +133,7 @@ class PharmacyPage extends StatelessWidget {
                   child: ListView(
                     children: [
                       PharmacyCard(
-                        logoPath: 'images/union_chemist.png',
+                        logoPath: 'assets/union_chemist.png',
                         name: 'Union Chemist Pvt Ltd',
                         brands: 'Coloplast & Surgipharma',
                         locations: {
@@ -144,7 +144,7 @@ class PharmacyPage extends StatelessWidget {
                         },
                       ),
                       PharmacyCard(
-                        logoPath: 'images/healthguard.png',
+                        logoPath: 'assets/healthguard.png',
                         name: 'HealthGuard Pharmacy',
                         brands: 'Coloplast',
                         locations: {
@@ -154,7 +154,7 @@ class PharmacyPage extends StatelessWidget {
                         },
                       ),
                       PharmacyCard(
-                        logoPath: 'images/harcourts.png',
+                        logoPath: 'assets/harcourts.png',
                         name: 'Harcourts Pharmacy',
                         brands: 'Coloplast',
                         locations: {
