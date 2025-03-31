@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'login.dart';
+import 'home.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,7 +21,18 @@ class MyApp extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.active) {
             if (snapshot.hasData && snapshot.data!.emailVerified) {
-              return HomePage(userName: snapshot.data!.email ?? 'No Name');
+              return FutureBuilder<Map<String, dynamic>?>(
+                future: AuthService().getUserData(snapshot.data!.uid),
+                builder: (context, userSnapshot) {
+                  if (userSnapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  if (userSnapshot.hasData) {
+                    return HomePage(userName: userSnapshot.data!['username'] ?? 'No Name');
+                  }
+                  return HomePage(userName: 'No Name');
+                },
+              );
             } else {
               return LoginPage();
             }
@@ -57,6 +69,7 @@ class AuthService {
 
       User? user = userCredential.user;
       if (user != null) {
+        // Add user data to Firestore
         await _firestore.collection("users").doc(user.uid).set({
           'uid': user.uid,
           'email': email,
@@ -64,9 +77,11 @@ class AuthService {
           'createdAt': FieldValue.serverTimestamp(),
         });
 
+        // Send email verification after successful signup
         await user.sendEmailVerification();
-        return null;
+        return null; // Successfully signed up
       }
+      return "User creation failed";
     } on FirebaseAuthException catch (e) {
       return _handleAuthError(e);
     }
@@ -75,10 +90,13 @@ class AuthService {
   Future<String?> login(String email, String password) async {
     try {
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(email: email, password: password);
+
       if (!userCredential.user!.emailVerified) {
+        await _auth.signOut(); // Prevent login if email is not verified
         return "Please verify your email before logging in.";
       }
-      return null;
+
+      return null; // Successful login
     } on FirebaseAuthException catch (e) {
       return _handleAuthError(e);
     }
@@ -91,7 +109,7 @@ class AuthService {
   Future<String?> resetPassword(String email) async {
     try {
       await _auth.sendPasswordResetEmail(email: email);
-      return null;
+      return null; // Password reset email sent
     } on FirebaseAuthException catch (e) {
       return _handleAuthError(e);
     }
@@ -100,7 +118,11 @@ class AuthService {
   Future<Map<String, dynamic>?> getUserData(String uid) async {
     try {
       DocumentSnapshot userDoc = await _firestore.collection("users").doc(uid).get();
-      return userDoc.data() as Map<String, dynamic>?;
+      if (userDoc.exists) {
+        return userDoc.data() as Map<String, dynamic>?;
+      } else {
+        return null;
+      }
     } catch (e) {
       return null;
     }
@@ -125,19 +147,4 @@ class AuthService {
     }
   }
 }
-
-class HomePage extends StatelessWidget {
-  final String userName;
-
-  HomePage({required this.userName});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Home")),
-      body: Center(child: Text("Welcome to Home Page, $userName")),
-    );
-  }
-}
-
 

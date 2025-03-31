@@ -56,15 +56,15 @@ class SupplyAgentsPage extends StatelessWidget {
             child: ListView(
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
               children: [
-                SupplyAgentCard(imagePath: 'images/coloplast.png', onTap: () {
+                SupplyAgentCard(imagePath: 'assets/coloplast.png', onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => ColoplastPage()));
                 }),
                 SizedBox(height: 16),
-                SupplyAgentCard(imagePath: 'images/hollister.png', onTap: () {
+                SupplyAgentCard(imagePath: 'assets/hollister.png', onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => HollisterPage()));
                 }),
                 SizedBox(height: 16),
-                SupplyAgentCard(imagePath: 'images/surgi.png', onTap: () {
+                SupplyAgentCard(imagePath: 'assets/surgi.png', onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => SurgiPage()));
                 }),
               ],

@@ -81,62 +81,62 @@ class ColoplastPage extends StatelessWidget {
 // Product List
 List<Map<String, String>> productList = [
   {
-    'imagePath': 'images/colo1.png',
+    'imagePath': 'assets/colo1.png',
     'title': 'Assura Convex Light 1-piece drainable pouch',
     'description': 'All-in-one ileostomy or colostomy appliance for maximum discretion.',
   },
   {
-    'imagePath': 'images/colo2.png',
+    'imagePath': 'assets/colo2.png',
     'title': 'Assura pediatric 1-piece drainable pouch',
     'description': 'Small pouch size provides an all-in-one child-friendly ileostomy or colostomy pouching solution.',
   },
   {
-    'imagePath': 'images/colo3.png',
+    'imagePath': 'assets/colo3.png',
     'title': 'SenSura Convex Light 1-piece drainable pouch',
     'description': 'All-in-one ileostomy appliance for maximum security and discretion.',
   },
   {
-    'imagePath': 'images/colo4.png',
+    'imagePath': 'assets/colo4.png',
     'title': 'SenSura Mio Click Drainable Pouch',
     'description': 'New discreet 2-piece ileostomy pouch with secure mechanical coupling providing a reassuring, audible "click".',
   },
   {
-    'imagePath': 'images/colo5.png',
+    'imagePath': 'assets/colo5.png',
     'title': 'Assura 2-piece barrier',
     'description': 'Includes:Extended Wear Mechanical coupling with an audible click for extra reassurance.',
   },
   {
-    'imagePath': 'images/colo6.png',
+    'imagePath': 'assets/colo6.png',
     'title': 'SenSura Click drainable pouch',
     'description': 'A two-piece appliance for ileostomy or colostomy, with an audible click for extra reassurance',
   },
   {
-    'imagePath': 'images/colo7.png',
+    'imagePath': 'assets/colo7.png',
     'title': 'Assura Original 2-piece drainable pouch',
     'description': 'A two-piece appliance for ileostomy, with an audible click for extra reassurance',
   },
   {
-    'imagePath': 'images/colo8.png',
+    'imagePath': 'assets/colo8.png',
     'title': 'Assura pediatric 2-piece barrier',
     'description': 'Small barrier and pouch size for children, with an audible click for extra reassurance.',
   },
   {
-    'imagePath': 'images/colo9.png',
+    'imagePath': 'assets/colo9.png',
     'title': 'Assura pediatric 2-piece drainable pouch',
     'description': 'Two-piece appliance for children with small pouch size and an audible click for reassurance.',
   },
   {
-    'imagePath': 'images/colo10.png',
+    'imagePath': 'assets/colo10.png',
     'title': 'Assura pediatric 2-piece urostomy pouch',
     'description': 'Two-piece appliance for children with small pouch size and an audible click for reassurance.',
   },
   {
-    'imagePath': 'images/colo11.png',
+    'imagePath': 'assets/colo11.png',
     'title': 'Brava Adhesive Remover Spray',
     'description': 'Sting-free and easy removal of your appliance.',
   },
   {
-    'imagePath': 'images/colo12.png',
+    'imagePath': 'assets/colo12.png',
     'title': 'Brava Powder',
     'description': 'Keeps the skin dry and protects from skin irritation.',
   },

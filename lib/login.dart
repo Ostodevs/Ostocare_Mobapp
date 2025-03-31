@@ -15,9 +15,14 @@ class _LoginPageState extends State<LoginPage> {
   final _passwordController = TextEditingController();
   bool _isObscure = true;
   final _formKey = GlobalKey<FormState>();
+  bool _isLoading = false;
 
   Future<void> _login() async {
     if (!_formKey.currentState!.validate()) return;
+
+    setState(() {
+      _isLoading = true; // Show loading indicator when the login starts
+    });
 
     try {
       final userCredential = await AuthService().signIn(
@@ -25,16 +30,29 @@ class _LoginPageState extends State<LoginPage> {
         _passwordController.text.trim(),
       );
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => home.HomePage(userName: userCredential.user?.email ?? 'No Name'),
-        ),
-      );
+      // Fetch user data from Firestore
+      final userData = await AuthService().getUserData(userCredential.user!.uid);
+
+      if (userData != null) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => home.HomePage(userName: userData['username'] ?? 'No Name'),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Failed to load user data")),
+        );
+      }
     } on FirebaseAuthException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(e.message ?? "Login failed")),
       );
+    } finally {
+      setState(() {
+        _isLoading = false; // Hide the loading indicator once the process is complete
+      });
     }
   }
 
@@ -154,6 +172,16 @@ class _LoginPageState extends State<LoginPage> {
               },
             ),
           ),
+
+          if (_isLoading)
+            Center(
+              child: Container(
+                color: Colors.black.withOpacity(0.5),
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+            ),
         ],
       ),
     );

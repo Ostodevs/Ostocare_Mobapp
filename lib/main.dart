@@ -2,21 +2,26 @@ import 'package:flutter/material.dart';
 import 'login.dart';
 import 'signup.dart';
 import 'home.dart';
+import 'profile.dart';
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'search.dart';
+import 'settings.dart';
+import 'supplyagents.dart';
+import 'supplyselect.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   const FirebaseOptions firebaseOptions = FirebaseOptions(
-    apiKey: 'your-api-key',
-    authDomain: 'your-auth-domain',
-    projectId: 'your-project-id',
-    storageBucket: 'your-storage-bucket',
-    messagingSenderId: 'your-sender-id',
-    appId: 'your-app-id',
-    measurementId: 'your-measurement-id',
+    apiKey: 'AIzaSyBnqhJMTg02yTukW8cHyxSvbklunp7iSMw',
+    authDomain: 'ostocare-491c5.firebaseapp.com',
+    projectId: 'ostocare-491c5',
+    storageBucket: 'ostocare-491c5.appspot.com',
+    messagingSenderId: '180639517082',
+    appId: '1:180639517082:web:9188b8a2a8cfd823429223',
+    measurementId: 'G-RXGSZ5LSRG',
   );
 
   await Firebase.initializeApp(options: firebaseOptions);
@@ -31,6 +36,12 @@ class MyApp extends StatelessWidget {
       title: 'Ostomy Care',
       theme: ThemeData(primarySwatch: Colors.blue),
       home: AuthWrapper(),
+      routes: {
+        '/settings': (context) => SettingsPage(),
+        '/search': (context) => SearchPage(),
+        '/profile': (context) => ProfilePage(),
+        '/supplyselect': (context) => SupplySelectPage()
+      },
     );
   }
 }

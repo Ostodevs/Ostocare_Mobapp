@@ -1,268 +1,360 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'login.dart';
+import 'search.dart';
+import 'news.dart';
+import 'profile.dart';
+import 'privatehos.dart';
+import 'govhos.dart';
+import 'supplyselect.dart';
 
 class HomePage extends StatefulWidget {
   final String userName;
-
-  // Constructor with named required parameter userName
   const HomePage({Key? key, required this.userName}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
 }
 
-
 class _HomePageState extends State<HomePage> {
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _selectedDay = DateTime.now();
   DateTime _focusedDay = DateTime.now();
   int _selectedIndex = 0;
-
-  final List<Widget> _footerItems = [
-    Icon(Icons.home, size: 40, color: Colors.deepPurple),
-    Icon(Icons.search, size: 40, color: Colors.deepPurple),
-    Icon(Icons.add_circle, size: 40, color: Colors.deepPurple),
-    Icon(Icons.favorite_border, size: 40, color: Colors.deepPurple),
-    Icon(Icons.account_circle, size: 40, color: Colors.deepPurple),
-  ];
+  final ScrollController _scrollController = ScrollController();
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+    if (index == 0) {
+      _scrollController.animateTo(
+        0,
+        duration: Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+    } else if (index == 1) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => SearchPage()));
+    } else if (index == 2) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => NewsPage()));
+    } else if (index == 3) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ProfilePage(),
+        ),
+      );
+    }
   }
 
+  // Show the selection box dialog
+  void _showHospitalSelectionDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: true, // Allows tapping outside the dialog to close it
+      builder: (BuildContext context) {
+        return Dialog(
+          backgroundColor: Colors.transparent, // Transparent background for the dialog
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  "Select the Hospital Type",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => HospitalListScreen()),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: Size(double.infinity, 80), // Increase the height
+                    padding: EdgeInsets.symmetric(vertical: 9), // Add extra vertical padding
+                    backgroundColor: Colors.white, // Button color
+                  ),
+                  child: Text(
+                    "Private Hospitals",
+                    style: TextStyle(
+                      fontSize: 20, // Increase the font size
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => GovernmentHospitalsScreen()), // Navigate to GovernmentHospitalsScreen
+                    ); // Handle Government Hospital selection
+                  },
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: Size(double.infinity, 80), // Increase the height
+                    padding: EdgeInsets.symmetric(vertical: 9), // Add extra vertical padding
+                    backgroundColor: Colors.white, // Button color
+                  ),
+                  child: Text(
+                    "Government Hospitals",
+                    style: TextStyle(
+                      fontSize: 20, // Increase the font size
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.white, Colors.lightBlueAccent],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+      body: SingleChildScrollView(
+        controller: _scrollController,
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.white, Colors.lightBlueAccent],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
           ),
-        ),
-        child: Column(
-          children: [
-            SizedBox(height: 50),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Hello, ${widget.userName}",
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.deepPurple,
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                elevation: 5,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: TableCalendar(
-                    focusedDay: _focusedDay,
-                    firstDay: DateTime(2000),
-                    lastDay: DateTime(2100),
-                    calendarFormat: _calendarFormat,
-                    selectedDayPredicate: (day) {
-                      return isSameDay(_selectedDay, day);
-                    },
-                    onDaySelected: (selectedDay, focusedDay) {
-                      setState(() {
-                        _selectedDay = selectedDay;
-                        _focusedDay = focusedDay;
-                      });
-                    },
-                    headerStyle: HeaderStyle(
-                      formatButtonVisible: false,
-                      titleCentered: true,
-                      titleTextStyle: TextStyle(
-                        fontSize: 20, fontWeight: FontWeight.bold,
-                      ),
+          child: Column(
+            children: [
+              SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Hello ${widget.userName} !",
+                      style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.deepPurple),
                     ),
-                    calendarStyle: CalendarStyle(
-                      selectedDecoration: BoxDecoration(
-                        color: Colors.deepPurple,
-                        shape: BoxShape.circle,
-                      ),
-                      todayDecoration: BoxDecoration(
-                        color: Colors.deepPurple.withOpacity(0.5),
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                elevation: 5,
-                child: Container(
-                  height: 60,
-                  width: double.infinity,
-                  padding: EdgeInsets.all(16.0),
-                  child: Center(
-                    child: Text(
-                      "Track your progress today!",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.deepPurple,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                elevation: 5,
-                child: Container(
-                  height: 120,
-                  width: double.infinity,
-                  padding: EdgeInsets.all(16.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        flex: 3,
-                        child: Text(
-                          "Find hospitals and nurses near you!",
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.asset(
+                          'assets/Logoostocare.png',
+                          height: 70,
+                        ),
+                        SizedBox(height: 2),
+                        Text(
+                          "Ostocare",
                           style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
                             color: Colors.deepPurple,
                           ),
                           textAlign: TextAlign.center,
                         ),
-                      ),
-                      Expanded(
-                        flex: 3,
-                        child: Container(
-                          alignment: Alignment.center,
-                          child: Image.asset(
-                            'assets/homepageimg2.png',
-                            fit: BoxFit.contain,
-                            width: 100,
-                            height: 100,
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 20),
+              Stack(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Card(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                      elevation: 5,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: TableCalendar(
+                          focusedDay: _focusedDay,
+                          firstDay: DateTime(2000),
+                          lastDay: DateTime(2100),
+                          calendarFormat: _calendarFormat,
+                          selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+                          onDaySelected: (selectedDay, focusedDay) {
+                            setState(() {
+                              _selectedDay = selectedDay;
+                              _focusedDay = focusedDay;
+                            });
+                          },
+                          headerStyle: HeaderStyle(
+                            formatButtonVisible: false,
+                            titleCentered: true,
+                            titleTextStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                          ),
+                          calendarStyle: CalendarStyle(
+                            selectedDecoration: BoxDecoration(color: Colors.deepPurple, shape: BoxShape.circle),
+                            todayDecoration: BoxDecoration(color: Colors.deepPurple.withOpacity(0.5), shape: BoxShape.circle),
                           ),
                         ),
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
-            ),
-            SizedBox(height: 2),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                elevation: 5,
-                child: Container(
-                  height: 120,
-                  width: double.infinity,
-                  padding: EdgeInsets.all(16.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        flex: 2,
-                        child: Container(
-                          width: double.infinity,
-                          height: double.infinity,
-                          child: Center(
-                            child: Image.asset(
-                              'assets/homepageimg3.png',
-                              fit: BoxFit.contain,
-                              width: 100,
-                              height: 100,
+                  Positioned(
+                    top: 4,
+                    left: 20,
+                    right: 20,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(15),
+                        topRight: Radius.circular(15),
+                      ),
+                      child: Container(
+                        color: Colors.blueAccent.withOpacity(0.2),
+                        padding: EdgeInsets.symmetric(vertical: 5),
+                        child: Center(
+                          child: Text(
+                            "Days left for a bag change",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
                             ),
                           ),
                         ),
                       ),
-                      Expanded(
-                        flex: 3,
-                        child: Container(
-                          height: double.infinity,
-                          child: Center(
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Card(
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                  elevation: 5,
+                  child: Container(
+                    height: 60,
+                    width: double.infinity,
+                    padding: EdgeInsets.all(16.0),
+                    child: Center(
+                      child: Text(
+                        "Track your progress today!",
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.deepPurple),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              GestureDetector(
+                onTap: _showHospitalSelectionDialog, // Handle button press
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Card(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                    elevation: 5,
+                    child: Container(
+                      height: 120,
+                      width: double.infinity,
+                      padding: EdgeInsets.all(16.0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            flex: 3,
                             child: Text(
-                              "Contact your supply agents!",
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.deepPurple,
-                              ),
+                              "Find hospitals and nurses near you!",
+                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.deepPurple),
                               textAlign: TextAlign.center,
                             ),
                           ),
-                        ),
+                          Expanded(
+                            flex: 3,
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: Image.asset('assets/homepageimg2.png', fit: BoxFit.contain, width: 100, height: 100),
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+              SizedBox(height: 2),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SupplySelectPage()),
+                  );
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Card(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                    elevation: 5,
+                    child: Container(
+                      height: 120,
+                      width: double.infinity,
+                      padding: EdgeInsets.all(16.0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            flex: 2,
+                            child: Container(
+                              width: double.infinity,
+                              height: double.infinity,
+                              child: Center(
+                                child: Image.asset('assets/homepageimg3.png', fit: BoxFit.contain, width: 100, height: 100),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 3,
+                            child: Container(
+                              height: double.infinity,
+                              child: Center(
+                                child: Text(
+                                  "Contact your supply agents!",
+                                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.deepPurple),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: BottomAppBar(
-        color: Colors.white,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10.0),
+        child: Container(
+          height: 60,
+          color: Colors.transparent,
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Expanded(
                 child: IconButton(
-                  icon: _footerItems[0],
+                  icon: Icon(Icons.home, size: 35, color: Colors.deepPurple),
                   onPressed: () => _onItemTapped(0),
                 ),
               ),
               Expanded(
                 child: IconButton(
-                  icon: _footerItems[1],
+                  icon: Icon(Icons.search, size: 35, color: Colors.deepPurple),
                   onPressed: () => _onItemTapped(1),
                 ),
               ),
               Expanded(
                 child: IconButton(
-                  icon: _footerItems[2],
+                  icon: Icon(Icons.article, size: 35, color: Colors.deepPurple),
                   onPressed: () => _onItemTapped(2),
                 ),
               ),
               Expanded(
                 child: IconButton(
-                  icon: _footerItems[3],
+                  icon: Icon(Icons.account_circle, size: 35, color: Colors.deepPurple),
                   onPressed: () => _onItemTapped(3),
-                ),
-              ),
-              Expanded(
-                child: IconButton(
-                  icon: _footerItems[4],
-                  onPressed: () => _onItemTapped(4),
                 ),
               ),
             ],
@@ -272,4 +364,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
