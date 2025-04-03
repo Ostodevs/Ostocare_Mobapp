@@ -21,7 +21,7 @@ class _LoginPageState extends State<LoginPage> {
     if (!_formKey.currentState!.validate()) return;
 
     setState(() {
-      _isLoading = true; // Show loading indicator when the login starts
+      _isLoading = true;
     });
 
     try {
@@ -30,7 +30,6 @@ class _LoginPageState extends State<LoginPage> {
         _passwordController.text.trim(),
       );
 
-      // Fetch user data from Firestore
       final userData = await AuthService().getUserData(userCredential.user!.uid);
 
       if (userData != null) {
@@ -51,7 +50,7 @@ class _LoginPageState extends State<LoginPage> {
       );
     } finally {
       setState(() {
-        _isLoading = false; // Hide the loading indicator once the process is complete
+        _isLoading = false;
       });
     }
   }
@@ -134,9 +133,7 @@ class _LoginPageState extends State<LoginPage> {
                       Align(
                         alignment: Alignment.centerRight,
                         child: TextButton(
-                          onPressed: () {
-                            // Add forget password navigation logic here
-                          },
+                          onPressed: () {},
                           child: Text("Forgot Password?"),
                         ),
                       ),
@@ -163,8 +160,8 @@ class _LoginPageState extends State<LoginPage> {
             ],
           ),
           Positioned(
-            top: 40,
-            left: 16,
+            top: 20,
+            left: 17,
             child: IconButton(
               icon: Icon(Icons.arrow_back, color: Colors.black, size: 28),
               onPressed: () {
@@ -172,7 +169,6 @@ class _LoginPageState extends State<LoginPage> {
               },
             ),
           ),
-
           if (_isLoading)
             Center(
               child: Container(

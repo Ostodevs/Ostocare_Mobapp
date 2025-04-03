@@ -122,15 +122,25 @@ class _MainPageState extends State<MainPage> {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
                 },
                 child: Text("Login", style: TextStyle(color: Colors.white)),
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.deepPurple, padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15)),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.deepPurple,
+                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                  minimumSize: Size(150, 50), // Ensures equal width
+                ),
               ),
+
               SizedBox(height: 20),
+
               ElevatedButton(
                 onPressed: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => SignupPage()));
                 },
                 child: Text("Sign Up", style: TextStyle(color: Colors.white)),
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.blue, padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15)),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                  minimumSize: Size(150, 50), // Matches "Login" button
+                ),
               ),
             ],
           ),
