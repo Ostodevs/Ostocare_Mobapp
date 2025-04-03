@@ -6,6 +6,10 @@ import 'profile.dart';
 import 'privatehos.dart';
 import 'govhos.dart';
 import 'supplyselect.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+
 
 class HomePage extends StatefulWidget {
   final String userName;
@@ -21,6 +25,44 @@ class _HomePageState extends State<HomePage> {
   DateTime _focusedDay = DateTime.now();
   int _selectedIndex = 0;
   final ScrollController _scrollController = ScrollController();
+
+  int daysLeft = 0;
+  bool isOverdue = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchLastBagChangeDate();
+  }
+
+  Future<void> _fetchLastBagChangeDate() async {
+    String userId = FirebaseAuth.instance.currentUser?.uid ?? "";
+    DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
+
+    if (userDoc.exists && userDoc.data() != null) {
+      // Retrieve the last bag change date
+      Timestamp? lastChangeTimestamp = userDoc.get('lastBagChangeDate');
+      if (lastChangeTimestamp != null) {
+        DateTime lastChangeDate = lastChangeTimestamp.toDate();
+        int difference = DateTime.now().difference(lastChangeDate).inDays;
+        setState(() {
+          daysLeft = 7 - difference;
+          isOverdue = daysLeft < 0;
+        });
+      }
+    }
+  }
+  // Save the last bag change date to Firebase Firestore for the current user
+  Future<void> _saveLastBagChangeDate(DateTime date) async {
+    String userId = FirebaseAuth.instance.currentUser?.uid ?? "";
+
+    if (userId.isNotEmpty) {
+      // Save the date in Firestore
+      await FirebaseFirestore.instance.collection('users').doc(userId).update({
+        'lastBagChangeDate': date,
+      });
+    }
+  }
 
   void _onItemTapped(int index) {
     if (index == 0) {
@@ -43,6 +85,22 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  void _showDatePicker() async {
+    DateTime? selectedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime.now(),
+    );
+
+    if (selectedDate != null) {
+      // Save the selected date to Firestore
+      await _saveLastBagChangeDate(selectedDate);
+
+      // Re-fetch the updated data to reflect the new date
+      await _fetchLastBagChangeDate();
+    }
+  }
   // Show the selection box dialog
   void _showHospitalSelectionDialog() {
     showDialog(
@@ -159,6 +217,9 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               SizedBox(height: 20),
+
+              SizedBox(height: 20),
+
               Stack(
                 children: [
                   Padding(
@@ -194,24 +255,27 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   Positioned(
-                    top: 4,
+                    top: 3,
                     left: 20,
                     right: 20,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(15),
-                        topRight: Radius.circular(15),
-                      ),
-                      child: Container(
-                        color: Colors.blueAccent.withOpacity(0.2),
-                        padding: EdgeInsets.symmetric(vertical: 5),
-                        child: Center(
-                          child: Text(
-                            "Days left for a bag change",
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                    child: GestureDetector(  // Change from just displaying text to making it clickable
+                      onTap: _showDatePicker,  // Function to show date picker
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(15),
+                          topRight: Radius.circular(15),
+                        ),
+                        child: Container(
+                          color: isOverdue ? Colors.red : Colors.lightBlueAccent,
+                          padding: EdgeInsets.symmetric(vertical: 5),
+                          child: Center(
+                            child: Text(
+                              "Days left for a bag change: $daysLeft",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                         ),
