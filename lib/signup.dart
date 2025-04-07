@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart'; // Import Firestore
 import 'auth_service.dart';
 
 class SignupPage extends StatefulWidget {
@@ -15,16 +16,59 @@ class _SignupPageState extends State<SignupPage> {
   final _confirmPasswordController = TextEditingController();
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
+  bool _isLoading = false;
   final _formKey = GlobalKey<FormState>();
 
   Future<void> _signup() async {
     if (!_formKey.currentState!.validate()) return;
 
+    setState(() => _isLoading = true);
+
     try {
+      final email = _emailController.text.trim();
+      final username = _usernameController.text.trim();
+
+      // Check if email exists in Firebase Auth
+      final emailMethods = await FirebaseAuth.instance.fetchSignInMethodsForEmail(email);
+      if (emailMethods.isNotEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("This email is already in use")),
+        );
+        setState(() => _isLoading = false);
+        return;
+      }
+
+      // Check if email exists in Firestore
+      final emailQuery = await FirebaseFirestore.instance
+          .collection('users')
+          .where('email', isEqualTo: email)
+          .get();
+      if (emailQuery.docs.isNotEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("This email is already in use")),
+        );
+        setState(() => _isLoading = false);
+        return;
+      }
+
+      // Check if username is taken
+      final usernameQuery = await FirebaseFirestore.instance
+          .collection('users')
+          .where('username', isEqualTo: username)
+          .get();
+      if (usernameQuery.docs.isNotEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("This username is already in use")),
+        );
+        setState(() => _isLoading = false);
+        return;
+      }
+
+      // Proceed to sign up
       await AuthService().signUp(
-        _emailController.text.trim(),
+        email,
         _passwordController.text.trim(),
-        _usernameController.text.trim(),
+        username,
       );
 
       Navigator.pushReplacement(
@@ -33,6 +77,8 @@ class _SignupPageState extends State<SignupPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(e.message ?? "Signup failed")),
       );
+    } finally {
+      setState(() => _isLoading = false);
     }
   }
 
@@ -76,7 +122,7 @@ class _SignupPageState extends State<SignupPage> {
                     child: SingleChildScrollView(
                       physics: ClampingScrollPhysics(),
                       child: Container(
-                        constraints: BoxConstraints(minHeight: formHeight), // Ensure minimum space
+                        constraints: BoxConstraints(minHeight: formHeight),
                         padding: EdgeInsets.all(16.0),
                         child: Form(
                           key: _formKey,
@@ -153,9 +199,11 @@ class _SignupPageState extends State<SignupPage> {
                                 child: SizedBox(
                                   width: double.infinity,
                                   child: ElevatedButton(
-                                    onPressed: _signup,
+                                    onPressed: _isLoading ? null : _signup,
                                     style: ElevatedButton.styleFrom(backgroundColor: Colors.deepPurple, padding: EdgeInsets.symmetric(vertical: 15)),
-                                    child: Text("Create Account", style: TextStyle(color: Colors.white, fontSize: 18)),
+                                    child: _isLoading
+                                        ? CircularProgressIndicator(color: Colors.white)
+                                        : Text("Create Account", style: TextStyle(color: Colors.white, fontSize: 18)),
                                   ),
                                 ),
                               ),

@@ -1,46 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_database/firebase_database.dart'; // Firebase Database import
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
+class GovernmentHospitalsScreen extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: GovernmentHospitalsScreen(),
-    );
-  }
+  _GovernmentHospitalsScreenState createState() => _GovernmentHospitalsScreenState();
 }
 
-class GovernmentHospitalsScreen extends StatelessWidget {
-  final List<Map<String, String>> hospitals = [
-    {
-      'name': 'NHSL',
-      'location': 'Colombo 06',
-      'province': 'Western Province',
-      'logo': 'assets/Gov.png'
-    },
-    {
-      'name': 'Kandy',
-      'location': 'District Hospital',
-      'province': 'Central Province',
-      'logo': 'assets/Gov.png'
-    },
-    {
-      'name': 'Kurunegala',
-      'location': 'Base Hospital',
-      'province': 'Central Province',
-      'logo': 'assets/Gov.png'
-    },
-    {
-      'name': 'Gampaha',
-      'location': 'Base Hospital',
-      'province': 'Central Province',
-      'logo': 'assets/Gov.png'
-    },
-  ];
+class _GovernmentHospitalsScreenState extends State<GovernmentHospitalsScreen> {
+  late DatabaseReference _hospitalsRef;
+  List<Map<String, String>> hospitals = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _hospitalsRef = FirebaseDatabase.instance.ref('government_hospitals');  // Reference to the 'government_hospitals' node
+    _loadHospitals();
+  }
+
+  // Fetch hospitals data from Firebase
+  void _loadHospitals() async {
+    final snapshot = await _hospitalsRef.get();
+    if (snapshot.exists) {
+      Map<dynamic, dynamic> data = snapshot.value as Map<dynamic, dynamic>;
+      List<Map<String, String>> loadedHospitals = [];
+      data.forEach((key, value) {
+        loadedHospitals.add({
+          'name': value['name'] ?? 'No name',
+          'location': value['location'] ?? 'No location',
+          'province': value['province'] ?? 'No province',
+          'logo': value['logo'] ?? 'assets/default_logo.png',  // Add default logo if not available
+        });
+      });
+
+      setState(() {
+        hospitals = loadedHospitals;
+      });
+    } else {
+      print('No data available');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +63,9 @@ class GovernmentHospitalsScreen extends StatelessWidget {
           ),
         ),
         padding: EdgeInsets.all(8.0),
-        child: GridView.builder(
+        child: hospitals.isEmpty
+            ? Center(child: CircularProgressIndicator())  // Show loading indicator while data is loading
+            : GridView.builder(
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             childAspectRatio: 1.4,
@@ -101,19 +102,6 @@ class HospitalCard extends StatelessWidget {
   Widget build(BuildContext context) {
     BoxFit fitType = BoxFit.cover;
     Alignment alignment = Alignment.center;
-
-    switch (hospital['name']) {
-      case 'NHSL':
-      case 'Kandy':
-      case 'Kurunegala':
-      case 'Gampaha':
-        alignment = Alignment.center;
-        fitType = BoxFit.cover;
-        break;
-      default:
-        alignment = Alignment.center;
-        fitType = BoxFit.cover;
-    }
 
     return GestureDetector(
       onTap: () {
@@ -177,8 +165,8 @@ class HospitalDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(hospital['name']!),
-        backgroundColor: Colors.blueAccent,
+        title: Text(hospital['name'] ?? 'Hospital Details'),
+        backgroundColor: Colors.green,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
@@ -186,18 +174,71 @@ class HospitalDetailScreen extends StatelessWidget {
           },
         ),
       ),
-      body: Center(
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,  // Start from the top
+            end: Alignment.bottomCenter, // End at the bottom
+            colors: [Colors.lightBlue.shade200, Colors.white],  // Blue at the top and white at the bottom
+          ),
+        ),
+        width: double.infinity,  // Make the container take full width
+        height: double.infinity,  // Make the container take full height
+        padding: EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Image.asset(hospital['logo']!, height: 100),
+            // Load the hospital image from assets dynamically based on the image name in the database
+            hospital['logo'] != null
+                ? Image.asset(
+              'assets/${hospital['logo']}',  // Load image from assets folder
+              width: 200,
+              height: 200,
+              fit: BoxFit.cover,
+            )
+                : Image.asset(
+              'assets/default_hospital.png', // Fallback if no image name exists in the database
+              width: 200,
+              height: 200,
+              fit: BoxFit.cover,
+            ),
             SizedBox(height: 20),
+
+            // Display hospital name and details
             Text(
-              hospital['name']!,
+              hospital['name'] ?? 'No name',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
-            Text(hospital['location']!, style: TextStyle(fontSize: 18)),
-            Text(hospital['province']!, style: TextStyle(fontSize: 18)),
+            Text(
+              'Location: ${hospital['location'] ?? 'No location'}',
+              style: TextStyle(fontSize: 18),
+            ),
+            Text(
+              'Province: ${hospital['province'] ?? 'No province'}',
+              style: TextStyle(fontSize: 18),
+            ),
+            SizedBox(height: 20),
+
+            // Additional details like description and contact info
+            Text(
+              'Description: ${hospital['description'] ?? 'No description available'}',
+              style: TextStyle(fontSize: 16),
+            ),
+            SizedBox(height: 20),
+            Text(
+              'Contact Number: ${hospital['contact_number'] ?? 'No contact number'}',
+              style: TextStyle(fontSize: 16),
+            ),
+            SizedBox(height: 10),
+            Text(
+              'Email: ${hospital['email'] ?? 'No email'}',
+              style: TextStyle(fontSize: 16),
+            ),
+            SizedBox(height: 10),
+            Text(
+              'Address: ${hospital['address'] ?? 'No address available'}',
+              style: TextStyle(fontSize: 16),
+            ),
           ],
         ),
       ),

@@ -2,7 +2,7 @@
 
 // The plugins section at the top is not required in this file (it was misplaced in your initial setup)
 buildscript {
-    ext.kotlin_version = '1.7.10'
+    ext.kotlin_version = '1.8.10'
     repositories {
         google()
         mavenCentral()
