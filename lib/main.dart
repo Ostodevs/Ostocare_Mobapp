@@ -8,8 +8,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'search.dart';
 import 'settings.dart';
+import 'news.dart';
+import 'upload.dart';
 import 'supplyagents.dart';
 import 'supplyselect.dart';
+import 'privatehos.dart';
+import 'govhos.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,7 +26,9 @@ void main() async {
     messagingSenderId: '180639517082',
     appId: '1:180639517082:web:9188b8a2a8cfd823429223',
     measurementId: 'G-RXGSZ5LSRG',
+    databaseURL: 'https://ostocare-491c5-default-rtdb.asia-southeast1.firebasedatabase.app/',
   );
+  
 
   await Firebase.initializeApp(options: firebaseOptions);
   runApp(MyApp());
@@ -40,7 +46,13 @@ class MyApp extends StatelessWidget {
         '/settings': (context) => SettingsPage(),
         '/search': (context) => SearchPage(),
         '/profile': (context) => ProfilePage(),
-        '/supplyselect': (context) => SupplySelectPage()
+        '/supplyselect': (context) => SupplySelectPage(),
+        '/upload': (context) => UploadPage(),
+        '/supplyagents': (context) => SupplyAgentsPage(),
+        '/news': (context) => NewsPage(),
+        '/home': (context) => HomePage(userName: 'Some User'),
+        '/privatehos': (context) => PrivateHospitalPage(),
+        '/govhos': (context) => GovernmentHospitalsScreen(),
       },
     );
   }

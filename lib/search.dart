@@ -48,8 +48,7 @@ class _SearchPageState extends State<SearchPage> {
     }
 
     final List<SearchItem> filteredItems = _allItems.where((item) {
-      return item.title.toLowerCase().contains(query) ||
-          item.subtitle.toLowerCase().contains(query);
+      return item.title.toLowerCase().contains(query) || item.subtitle.toLowerCase().contains(query);
     }).toList();
 
     filteredItems.sort((a, b) {
@@ -89,9 +88,7 @@ class _SearchPageState extends State<SearchPage> {
                 suffixIcon: _isSearching
                     ? IconButton(
                   icon: const Icon(Icons.clear),
-                  onPressed: () {
-                    _searchController.clear();
-                  },
+                  onPressed: () => _searchController.clear(),
                 )
                     : null,
                 border: OutlineInputBorder(
@@ -104,7 +101,7 @@ class _SearchPageState extends State<SearchPage> {
             ),
           ),
           Expanded(
-            child: _isSearching ? _buildSuggestionsList() : _buildTrendingGrid(),
+            child: _isSearching ? _buildSuggestionsList() : _buildTrendingGridStyled(),
           ),
         ],
       ),
@@ -129,75 +126,72 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-  Widget _buildTrendingGrid() {
-    List<Map<String, String>> trendingData = [
-      {'title': 'Trending 1', 'description': 'Latest news and updates', 'image': 'assets/Logoostocare.png',},
-      {'title': 'Trending 2', 'description': 'Popular trends today', 'image': 'assets/Logoostocare.png'},
-      {'title': 'Trending 3', 'description': 'Hot topics around', 'image': 'assets/Kings.png'},
-      {'title': 'Trending 4', 'description': 'What’s buzzing now', 'image': 'assets/Lanka.png'},
-      {'title': 'Trending 5', 'description': 'Most talked about', 'image': 'assets/Nawaloka.png'},
-      {'title': 'Trending 6', 'description': 'Trending highlights', 'image': 'assets/Durdans.png'},
-      {'title': 'Extra 1', 'description': 'More trends', 'image': 'assets/Hemas.png'},
-      {'title': 'Extra 2', 'description': 'Latest updates', 'image': 'assets/surgi.png'},
-      {'title': 'Extra 3', 'description': 'Hot news', 'image': 'assets/surgi1.png'},
+  Widget _buildTrendingGridStyled() {
+    List<Map<String, dynamic>> trendingItems = [
+      {'title': 'Checkups are Important', 'image': 'assets/checkup.png', 'cross': 1, 'main': 2},
+      {'title': 'Adapting to Life as an Ostomate', 'image': 'assets/flower.png', 'cross': 2, 'main': 1},
+      {'title': 'A Healthy Life For Ostomates', 'image': 'assets/run.png', 'cross': 1, 'main': 1},
+      {'title': 'Relationships & Stomas', 'image': 'assets/couple.png', 'cross': 1, 'main': 2},
+      {'title': 'Mental Health Awareness', 'image': 'assets/mental.png', 'cross': 1, 'main': 1},
+      {'title': 'A Stoma Diet', 'image': 'assets/diet.png', 'cross': 1, 'main': 1},
+      {'title': 'Here to Help', 'image': 'assets/nurse.png', 'cross': 1, 'main': 1},
+      {'title': 'Weight Lifting: Yes or No?', 'image': 'assets/gym.png', 'cross': 1, 'main': 2},
+      {'title': 'Stoma Care & Hygiene', 'image': 'assets/wash.png', 'cross': 1, 'main': 2},
+      {'title': 'Weight Gain or Loss?', 'image': 'assets/weight.png', 'cross': 1, 'main': 1},
+      {'title': 'Choosing Stoma Products', 'image': 'assets/products.png', 'cross': 2, 'main': 1},
+      {'title': 'Paediatric Stomas', 'image': 'assets/kid.png', 'cross': 1, 'main': 1},
     ];
 
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            StaggeredGrid.count(
-              crossAxisCount: 3,
-              mainAxisSpacing: 4,
-              crossAxisSpacing: 4,
-              children: List.generate(trendingData.length, (index) {
-                int columnSpan = 1;
-                int rowSpan = 1;
+        child: StaggeredGrid.count(
+          crossAxisCount: 3,
+          mainAxisSpacing: 8,
+          crossAxisSpacing: 8,
+          children: trendingItems.map((item) {
+            return StaggeredGridTile.count(
+              crossAxisCellCount: item['cross'],
+              mainAxisCellCount: item['main'],
+              child: StomaCard(title: item['title'], image: item['image']),
+            );
+          }).toList(),
+        ),
+      ),
+    );
+  }
+}
 
-                if (index == 1 || index == 3 || index == 6) {
-                  columnSpan = 2;
-                  rowSpan = 2;
-                }
+class StomaCard extends StatelessWidget {
+  final String title;
+  final String image;
 
+  const StomaCard({required this.title, required this.image});
 
-                if (index >= 6) {
-                  columnSpan = 1;
-                  rowSpan = 1;
-                }
-
-                return StaggeredGridTile.count(
-                  crossAxisCellCount: columnSpan,
-                  mainAxisCellCount: rowSpan,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      image: DecorationImage(
-                        image: AssetImage(trendingData[index]['image']!),
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Align(
-                        alignment: Alignment.bottomLeft,
-                        child: Text(
-                          '${trendingData[index]['title']}\n${trendingData[index]['description']}',
-                          style: TextStyle(
-                            backgroundColor: Colors.transparent,
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          textAlign: TextAlign.left,
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              }),
-            ),
-            const SizedBox(height: 16),
-          ],
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        image: DecorationImage(
+          image: AssetImage(image),
+          fit: BoxFit.cover,
+        ),
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          gradient: LinearGradient(
+            colors: [Colors.black.withOpacity(0.6), Colors.transparent],
+            begin: Alignment.bottomCenter,
+            end: Alignment.topCenter,
+          ),
+        ),
+        padding: const EdgeInsets.all(8),
+        alignment: Alignment.bottomLeft,
+        child: Text(
+          title,
+          style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
         ),
       ),
     );

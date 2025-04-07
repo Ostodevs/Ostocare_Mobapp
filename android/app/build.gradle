@@ -1,8 +1,8 @@
 plugins {
     id "com.android.application"
     id "kotlin-android"
-    id "dev.flutter.flutter-gradle-plugin" // Flutter plugin for Gradle
-    id 'com.google.gms.google-services'  // Firebase plugin (no version specified here)
+    id "dev.flutter.flutter-gradle-plugin"
+    id 'com.google.gms.google-services'
 }
 
 def flutterVersionCode = 1
@@ -28,7 +28,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.ostocare"
-        minSdkVersion 21
+        minSdkVersion 23
         targetSdkVersion 34
         versionCode flutterVersionCode
         versionName flutterVersionName
@@ -40,6 +40,7 @@ android {
         }
     }
 }
+
 
 flutter {
     source '../..'
