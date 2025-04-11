@@ -4,6 +4,8 @@ import 'home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:ostocare/auth_service.dart';
 import 'package:ostocare/home.dart' as home;
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 
 class LoginPage extends StatefulWidget {
   @override
@@ -13,6 +15,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _usernameController = TextEditingController();
   bool _isObscure = true;
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
@@ -25,28 +28,58 @@ class _LoginPageState extends State<LoginPage> {
     });
 
     try {
-      final userCredential = await AuthService().signIn(
-        _emailController.text.trim(),
-        _passwordController.text.trim(),
-      );
+      final username = _usernameController.text.trim();
+      final password = _passwordController.text.trim();
 
-      final userData = await AuthService().getUserData(userCredential.user!.uid);
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .where('username', isEqualTo: username)
+          .get();
 
-      if (userData != null) {
+      if (querySnapshot.docs.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Invalid username")),
+        );
+        return;
+      }
+
+      final userData = querySnapshot.docs.first.data();
+      final email = userData['email'];
+
+      try {
+        final userCredential = await AuthService().signIn(email, password);
+        final fullUserData = await AuthService().getUserData(userCredential.user!.uid);
+
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => home.HomePage(userName: userData['username'] ?? 'No Name'),
+            builder: (context) => home.HomePage(userName: fullUserData?['username'] ?? 'No Name'),
           ),
         );
-      } else {
+      } on FirebaseAuthException catch (e) {
+
+        print("FirebaseAuthException: ${e.code}");
+
+        String errorMessage = "Login failed";
+
+        if (e.code == 'wrong-password') {
+          errorMessage = "Invalid password";
+        } else if (e.code == 'user-not-found') {
+          errorMessage = "No user found with this username";
+        } else if (e.code == 'invalid-credential') {
+          errorMessage = "Password does not match the username";
+        }
+
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Failed to load user data")),
+          SnackBar(content: Text(errorMessage)),
         );
       }
-    } on FirebaseAuthException catch (e) {
+
+    } catch (e) {
+
+      print("Unexpected error: $e");
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.message ?? "Login failed")),
+        SnackBar(content: Text("An unexpected error occurred.")),
       );
     } finally {
       setState(() {
@@ -103,13 +136,13 @@ class _LoginPageState extends State<LoginPage> {
                     children: [
                       SizedBox(height: 30),
                       TextFormField(
-                        controller: _emailController,
+                        controller: _usernameController,
                         decoration: InputDecoration(
-                          labelText: "Email",
-                          hintText: "Enter your email",
+                          labelText: "Username",
+                          hintText: "Enter your username",
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
                         ),
-                        validator: (value) => value!.isEmpty || !value.contains('@') ? "Enter a valid email" : null,
+                        validator: (value) => value!.isEmpty ? "Enter your username" : null,
                       ),
                       SizedBox(height: 20),
                       TextFormField(

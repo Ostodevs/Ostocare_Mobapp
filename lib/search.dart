@@ -128,18 +128,18 @@ class _SearchPageState extends State<SearchPage> {
 
   Widget _buildTrendingGridStyled() {
     List<Map<String, dynamic>> trendingItems = [
-      {'title': 'Checkups are Important', 'image': 'assets/checkup.png', 'cross': 1, 'main': 2},
-      {'title': 'Adapting to Life as an Ostomate', 'image': 'assets/flower.png', 'cross': 2, 'main': 1},
-      {'title': 'A Healthy Life For Ostomates', 'image': 'assets/run.png', 'cross': 1, 'main': 1},
-      {'title': 'Relationships & Stomas', 'image': 'assets/couple.png', 'cross': 1, 'main': 2},
-      {'title': 'Mental Health Awareness', 'image': 'assets/mental.png', 'cross': 1, 'main': 1},
-      {'title': 'A Stoma Diet', 'image': 'assets/diet.png', 'cross': 1, 'main': 1},
-      {'title': 'Here to Help', 'image': 'assets/nurse.png', 'cross': 1, 'main': 1},
-      {'title': 'Weight Lifting: Yes or No?', 'image': 'assets/gym.png', 'cross': 1, 'main': 2},
-      {'title': 'Stoma Care & Hygiene', 'image': 'assets/wash.png', 'cross': 1, 'main': 2},
-      {'title': 'Weight Gain or Loss?', 'image': 'assets/weight.png', 'cross': 1, 'main': 1},
-      {'title': 'Choosing Stoma Products', 'image': 'assets/products.png', 'cross': 2, 'main': 1},
-      {'title': 'Paediatric Stomas', 'image': 'assets/kid.png', 'cross': 1, 'main': 1},
+      {'title': 'Checkups are Important', 'image': 'assets/search1.png', 'cross': 1, 'main': 2},
+      {'title': 'Adapting to Life as an Ostomate', 'image': 'assets/search12.png', 'cross': 2, 'main': 1},
+      {'title': 'A Healthy Life For Ostomates', 'image': 'assets/search11.png', 'cross': 1, 'main': 1},
+      {'title': 'Relationships & Stomas', 'image': 'assets/search10.png', 'cross': 1, 'main': 2},
+      {'title': 'Mental Health Awareness', 'image': 'assets/search9.png', 'cross': 1, 'main': 1},
+      {'title': 'A Stoma Diet', 'image': 'assets/search8.png', 'cross': 1, 'main': 1},
+      {'title': 'Here to Help', 'image': 'assets/search7.png', 'cross': 1, 'main': 1},
+      {'title': 'Weight Lifting: Yes or No?', 'image': 'assets/search6.png', 'cross': 1, 'main': 2},
+      {'title': 'Stoma Care & Hygiene', 'image': 'assets/search5.png', 'cross': 1, 'main': 2},
+      {'title': 'Weight Gain or Loss?', 'image': 'assets/search4.png', 'cross': 1, 'main': 1},
+      {'title': 'Choosing Stoma Products', 'image': 'assets/search3.png', 'cross': 2, 'main': 1},
+      {'title': 'Paediatric Stomas', 'image': 'assets/search2.png', 'cross': 1, 'main': 1},
     ];
 
     return SingleChildScrollView(

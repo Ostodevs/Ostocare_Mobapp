@@ -83,6 +83,18 @@ flutter:
     - assets/Hemas.png
     - assets/Durdans.png
     - assets/Gov.png
+    - assets/search12.png
+    - assets/search11.png
+    - assets/search10.png
+    - assets/search9.png
+    - assets/search8.png
+    - assets/search7.png
+    - assets/search6.png
+    - assets/search5.png
+    - assets/search4.png
+    - assets/search3.png
+    - assets/search2.png
+    - assets/search1.png
 
   fonts:
     - family: Dancing Script
