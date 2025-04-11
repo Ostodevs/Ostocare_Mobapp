@@ -229,7 +229,6 @@ class _HomePageState extends State<HomePage> {
                               fontSize: 30,
                               fontWeight: FontWeight.bold,
                               color: Colors.deepPurple,
-                              fontFamily: 'Dancing Script',
                             ),
                             children: [
                               const TextSpan(text: 'Hello  '),
@@ -237,7 +236,6 @@ class _HomePageState extends State<HomePage> {
                                 text: '${widget.userName} ',
                                 style: TextStyle(
                                   fontSize: 37,
-                                  fontFamily: 'Comfortaa',
                                   color: Colors.deepPurple,
                                 ),
                               ),

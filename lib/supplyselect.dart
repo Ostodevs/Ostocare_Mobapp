@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'pharmacy_page.dart';  // Adjust the path if needed
-import 'supplyagents.dart';   // Adjust the path if needed
+import 'pharmacy_page.dart';
+import 'supplyagents.dart';
 
 class SupplySelectPage extends StatelessWidget {
   @override

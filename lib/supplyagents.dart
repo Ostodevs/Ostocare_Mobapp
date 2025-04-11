@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'coloplast.dart'; // Import Coloplast page
-import 'hollister.dart'; // Import Hollister page
+import 'coloplast.dart';
+import 'hollister.dart';
 import 'surgipharma.dart';
 
 
