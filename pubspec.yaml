@@ -95,6 +95,7 @@ flutter:
     - assets/search3.png
     - assets/search2.png
     - assets/search1.png
+    - assets/Avatar1.png
 
   fonts:
     - family: Dancing Script
