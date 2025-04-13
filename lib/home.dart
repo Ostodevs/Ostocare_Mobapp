@@ -39,13 +39,27 @@ class _HomePageState extends State<HomePage> {
   double _initialBottomPosition = 30.0;
   bool _isDragging = false;
   DateTime? _lastTapTime;
-
+  String greeting = '';
 
 
   @override
   void initState() {
     super.initState();
     _fetchLastBagChangeDate();
+    _setGreeting();
+  }
+
+  void _setGreeting() {
+    final now = DateTime.now();
+    final hour = now.hour;
+
+    if (hour >= 0 && hour < 12) {
+      greeting = 'Good Morning';
+    } else if (hour >= 12 && hour < 19) {
+      greeting = 'Good Afternoon';
+    } else {
+      greeting = 'Hello';
+    }
   }
 
   Future<void> _fetchLastBagChangeDate() async {
@@ -219,53 +233,90 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   SizedBox(height: 20),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 25),
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        RichText(
-                          text: TextSpan(
-                            style: TextStyle(
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.deepPurple,
-                            ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const TextSpan(text: 'Hello  '),
-                              TextSpan(
-                                text: '${widget.userName} ',
-                                style: TextStyle(
-                                  fontSize: 37,
-                                  color: Colors.deepPurple,
+                              GestureDetector(
+                                onTap: _showImageOverlay,
+                                child: Image.asset(
+                                  'assets/Logoostocare.png',
+                                  height: 70,
                                 ),
                               ),
-                              const TextSpan(text: ' !'),
+                              const SizedBox(height: 4),
+                              const Text(
+                                'Ostocare',
+                                style: TextStyle(
+                                  fontFamily: 'DancingScript',
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
                             ],
                           ),
                         ),
-
-                        Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            GestureDetector(
-                              onTap: _showImageOverlay,
-                              child: Image.asset(
-                                'assets/Logoostocare.png',
-                                height: 70,
-                              ),
+                        Expanded(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.deepPurple.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(20),
                             ),
-                            SizedBox(height: 2),
-                            Text(
-                              "Ostocare",
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontFamily: 'Dancing Script',
-                                fontWeight: FontWeight.w500,
-                                color: Colors.deepPurple,
-                              ),
-                              textAlign: TextAlign.center,
+                            padding: const EdgeInsets.all(16),
+                            margin: const EdgeInsets.only(left: 16),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      SizedBox(
+                                        width: 200,
+                                        child: RichText(
+                                          textAlign: TextAlign.center,
+                                          text: TextSpan(
+                                            children: [
+                                              TextSpan(
+                                                text: '$greeting\n',
+                                                style: const TextStyle(
+                                                  fontSize: 25,
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                              TextSpan(
+                                                text: widget.userName,
+                                                style: const TextStyle(
+                                                  fontSize: 37,
+                                                  color: Colors.deepPurple,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(20),
+                                  child: Image.asset(
+                                    'assets/Avatar1.png',
+                                    height: 100,
+                                    width: 80,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
                       ],
                     ),
