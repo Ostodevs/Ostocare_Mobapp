@@ -10,9 +10,9 @@ import 'trackprogress.dart';
 import 'chat.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'dart:ui';
-
+import 'package:auto_size_text/auto_size_text.dart';
+import 'dart:async';
 
 class HomePage extends StatefulWidget {
   final String userName;
@@ -40,6 +40,9 @@ class _HomePageState extends State<HomePage> {
   bool _isDragging = false;
   DateTime? _lastTapTime;
   String greeting = '';
+  String firebaseMessage = '';
+  bool showGreeting = true;
+  Timer? _messageSwitcherTimer;
 
 
   @override
@@ -47,6 +50,8 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     _fetchLastBagChangeDate();
     _setGreeting();
+    _fetchFirebaseMessage();
+    _startMessageSwitching();
   }
 
   void _setGreeting() {
@@ -61,6 +66,45 @@ class _HomePageState extends State<HomePage> {
       greeting = 'Hello';
     }
   }
+
+  @override
+  void dispose() {
+    _messageSwitcherTimer?.cancel();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _startMessageSwitching() {
+    _messageSwitcherTimer = Timer.periodic(Duration(seconds: 5), (timer) {
+      if (firebaseMessage.isNotEmpty) {
+        setState(() {
+          showGreeting = !showGreeting;
+        });
+      }
+    });
+  }
+
+  Future<void> _fetchFirebaseMessage() async {
+    try {
+      FirebaseFirestore.instance
+          .collection('appData')
+          .doc('homemessages')
+          .snapshots()
+          .listen((docSnapshot) {
+        if (docSnapshot.exists && docSnapshot.data() != null) {
+          String? message = docSnapshot.get('custom1');
+          if (message != null && message.isNotEmpty) {
+            setState(() {
+              firebaseMessage = message;
+            });
+          }
+        }
+      });
+    } catch (e) {
+      print('Error fetching global greeting: $e');
+    }
+  }
+
 
   Future<void> _fetchLastBagChangeDate() async {
     String userId = FirebaseAuth.instance.currentUser?.uid ?? "";
@@ -283,6 +327,8 @@ class _HomePageState extends State<HomePage> {
                                           text: TextSpan(
                                             children: [
                                               TextSpan(
+                                                text: showGreeting ? '$greeting\n' : '$firebaseMessage\n',
+
                                                 text: '$greeting\n',
                                                 style: const TextStyle(
                                                   fontSize: 25,
@@ -290,6 +336,24 @@ class _HomePageState extends State<HomePage> {
                                                   fontWeight: FontWeight.w500,
                                                 ),
                                               ),
+                                              if (showGreeting)
+                                                WidgetSpan(
+                                                  alignment: PlaceholderAlignment.baseline,
+                                                  baseline: TextBaseline.alphabetic,
+                                                  child: ConstrainedBox(
+                                                    constraints: BoxConstraints(maxWidth: 200),
+                                                    child: AutoSizeText(
+                                                      widget.userName,
+                                                      maxLines: 1,
+                                                      minFontSize: 12,
+                                                      style: const TextStyle(
+                                                        fontSize: 37,
+                                                        color: Colors.deepPurple,
+                                                        fontWeight: FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
                                               TextSpan(
                                                 text: widget.userName,
                                                 style: const TextStyle(
