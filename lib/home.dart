@@ -45,7 +45,6 @@ class _HomePageState extends State<HomePage> {
   Timer? _messageSwitcherTimer;
 
 
-
   @override
   void initState() {
     super.initState();
@@ -329,6 +328,8 @@ class _HomePageState extends State<HomePage> {
                                             children: [
                                               TextSpan(
                                                 text: showGreeting ? '$greeting\n' : '$firebaseMessage\n',
+
+                                                text: '$greeting\n',
                                                 style: const TextStyle(
                                                   fontSize: 25,
                                                   color: Colors.black,
@@ -353,6 +354,14 @@ class _HomePageState extends State<HomePage> {
                                                     ),
                                                   ),
                                                 ),
+                                              TextSpan(
+                                                text: widget.userName,
+                                                style: const TextStyle(
+                                                  fontSize: 37,
+                                                  color: Colors.deepPurple,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
                                             ],
                                           ),
                                         ),
