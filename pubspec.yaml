@@ -99,6 +99,7 @@ flutter:
     - assets/search2.png
     - assets/search1.png
     - assets/Avatar1.png
+    - assets/ostopost1.png
 
   fonts:
     - family: Dancing Script

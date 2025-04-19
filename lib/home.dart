@@ -322,6 +322,15 @@ class _HomePageState extends State<HomePage> {
                                     children: [
                                       SizedBox(
                                         width: 200,
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              showGreeting ? greeting : firebaseMessage,
+                                              style: const TextStyle(
+                                                fontSize: 25,
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.w500,
                                         child: RichText(
                                           textAlign: TextAlign.center,
                                           text: TextSpan(
@@ -336,24 +345,27 @@ class _HomePageState extends State<HomePage> {
                                                   fontWeight: FontWeight.w500,
                                                 ),
                                               ),
-                                              if (showGreeting)
-                                                WidgetSpan(
-                                                  alignment: PlaceholderAlignment.baseline,
-                                                  baseline: TextBaseline.alphabetic,
-                                                  child: ConstrainedBox(
-                                                    constraints: BoxConstraints(maxWidth: 200),
-                                                    child: AutoSizeText(
-                                                      widget.userName,
-                                                      maxLines: 1,
-                                                      minFontSize: 12,
-                                                      style: const TextStyle(
-                                                        fontSize: 37,
-                                                        color: Colors.deepPurple,
-                                                        fontWeight: FontWeight.bold,
-                                                      ),
-                                                    ),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                            if (!showGreeting)
+                                              const SizedBox(height: 9),
+                                            if (showGreeting)
+                                              ConstrainedBox(
+                                                constraints: BoxConstraints(maxWidth: 200),
+                                                child: AutoSizeText(
+                                                  widget.userName,
+                                                  maxLines: 1,
+                                                  minFontSize: 12,
+                                                  textAlign: TextAlign.center,
+                                                  style: const TextStyle(
+                                                    fontSize: 37,
+                                                    color: Colors.deepPurple,
+                                                    fontWeight: FontWeight.bold,
                                                   ),
                                                 ),
+
+                                              ),
+                                          ],
                                               TextSpan(
                                                 text: widget.userName,
                                                 style: const TextStyle(
