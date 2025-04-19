@@ -336,7 +336,7 @@ class _HomePageState extends State<HomePage> {
                                               textAlign: TextAlign.center,
                                             ),
                                             if (!showGreeting)
-                                              const SizedBox(height: 9),
+                                              const SizedBox(height: 10),
                                             if (showGreeting)
                                               ConstrainedBox(
                                                 constraints: BoxConstraints(maxWidth: 200),
