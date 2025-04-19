@@ -45,6 +45,7 @@ class _HomePageState extends State<HomePage> {
   Timer? _messageSwitcherTimer;
 
 
+
   @override
   void initState() {
     super.initState();
@@ -331,24 +332,11 @@ class _HomePageState extends State<HomePage> {
                                                 fontSize: 25,
                                                 color: Colors.black,
                                                 fontWeight: FontWeight.w500,
-                                        child: RichText(
-                                          textAlign: TextAlign.center,
-                                          text: TextSpan(
-                                            children: [
-                                              TextSpan(
-                                                text: showGreeting ? '$greeting\n' : '$firebaseMessage\n',
-
-                                                text: '$greeting\n',
-                                                style: const TextStyle(
-                                                  fontSize: 25,
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
                                               ),
                                               textAlign: TextAlign.center,
                                             ),
                                             if (!showGreeting)
-                                              const SizedBox(height: 9),
+                                              const SizedBox(height: 10),
                                             if (showGreeting)
                                               ConstrainedBox(
                                                 constraints: BoxConstraints(maxWidth: 200),
@@ -363,19 +351,8 @@ class _HomePageState extends State<HomePage> {
                                                     fontWeight: FontWeight.bold,
                                                   ),
                                                 ),
-
                                               ),
                                           ],
-                                              TextSpan(
-                                                text: widget.userName,
-                                                style: const TextStyle(
-                                                  fontSize: 37,
-                                                  color: Colors.deepPurple,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
                                         ),
                                       ),
                                     ],
