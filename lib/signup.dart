@@ -141,7 +141,7 @@ class _SignupPageState extends State<SignupPage> {
                                 controller: _usernameController,
                                 decoration: InputDecoration(
                                   labelText: "Username",
-                                  hintText: "Enter your Username",
+                                  hintText: "Enter your Username                               (max. of 25 letters)",
                                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
                                 ),
                                 validator: (value) => value!.isEmpty ? "Enter a username" : null,
