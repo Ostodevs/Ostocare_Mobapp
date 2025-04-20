@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 
 class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);
@@ -127,37 +129,59 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Widget _buildTrendingGridStyled() {
-    List<Map<String, dynamic>> trendingItems = [
-      {'title': 'Checkups are Important', 'image': 'assets/search1.png', 'cross': 1, 'main': 2},
-      {'title': 'Adapting to Life as an Ostomate', 'image': 'assets/search12.png', 'cross': 2, 'main': 1},
-      {'title': 'A Healthy Life For Ostomates', 'image': 'assets/search11.png', 'cross': 1, 'main': 1},
-      {'title': 'Relationships & Stomas', 'image': 'assets/search10.png', 'cross': 1, 'main': 2},
-      {'title': 'Mental Health Awareness', 'image': 'assets/search9.png', 'cross': 1, 'main': 1},
-      {'title': 'A Stoma Diet', 'image': 'assets/search8.png', 'cross': 1, 'main': 1},
-      {'title': 'Here to Help', 'image': 'assets/search7.png', 'cross': 1, 'main': 1},
-      {'title': 'Weight Lifting: Yes or No?', 'image': 'assets/search6.png', 'cross': 1, 'main': 2},
-      {'title': 'Stoma Care & Hygiene', 'image': 'assets/search5.png', 'cross': 1, 'main': 2},
-      {'title': 'Weight Gain or Loss?', 'image': 'assets/search4.png', 'cross': 1, 'main': 1},
-      {'title': 'Choosing Stoma Products', 'image': 'assets/search3.png', 'cross': 2, 'main': 1},
-      {'title': 'Paediatric Stomas', 'image': 'assets/search2.png', 'cross': 1, 'main': 1},
-    ];
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance.collection('trendingPosts').snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: StaggeredGrid.count(
-          crossAxisCount: 3,
-          mainAxisSpacing: 8,
-          crossAxisSpacing: 8,
-          children: trendingItems.map((item) {
-            return StaggeredGridTile.count(
-              crossAxisCellCount: item['cross'],
-              mainAxisCellCount: item['main'],
-              child: StomaCard(title: item['title'], image: item['image']),
-            );
-          }).toList(),
-        ),
-      ),
+        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+          return const Center(child: Text('No trending posts available'));
+        }
+
+        final docs = snapshot.data!.docs;
+        docs.sort((a, b) {
+          final aData = a.data() as Map<String, dynamic>;
+          final bData = b.data() as Map<String, dynamic>;
+
+          // Get 'position' or use an empty map if missing
+          final aPosition = aData['position'] is Map<String, dynamic> ? aData['position'] as Map<String, dynamic> : {};
+          final bPosition = bData['position'] is Map<String, dynamic> ? bData['position'] as Map<String, dynamic> : {};
+
+          // Extract x and y values with fallback
+          final aX = aPosition['x'] ?? 0;
+          final aY = aPosition['y'] ?? 0;
+          final bX = bPosition['x'] ?? 0;
+          final bY = bPosition['y'] ?? 0;
+
+          // Sort first by y, then by x
+          if (aY == bY) {
+            return aX.compareTo(bX);
+          }
+          return aY.compareTo(bY);
+        });
+
+        return SingleChildScrollView(
+          padding: const EdgeInsets.all(8.0),
+          child: StaggeredGrid.count(
+            crossAxisCount: 3,
+            mainAxisSpacing: 8,
+            crossAxisSpacing: 8,
+            children: docs.map((doc) {
+              final data = doc.data() as Map<String, dynamic>;
+              return StaggeredGridTile.count(
+                crossAxisCellCount: data['cross'] ?? 1,
+                mainAxisCellCount: data['main'] ?? 1,
+                child: StomaCard(
+                  title: data['title'] ?? '',
+                  image: data['imageUrl'] ?? '',
+                ),
+              );
+            }).toList(),
+          ),
+        );
+      },
     );
   }
 }
@@ -174,7 +198,9 @@ class StomaCard extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         image: DecorationImage(
-          image: AssetImage(image),
+          image: image.startsWith('http')
+              ? NetworkImage(image) as ImageProvider
+              : AssetImage(image),
           fit: BoxFit.cover,
         ),
       ),
