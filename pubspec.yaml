@@ -33,6 +33,7 @@ dependencies:
   lottie: ^3.1.0
   auto_size_text: ^3.0.0
   timeago: ^3.0.0
+  cloud_functions: ^5.4.0
 
 dev_dependencies:
   flutter_test:
@@ -86,18 +87,18 @@ flutter:
     - assets/Hemas.png
     - assets/Durdans.png
     - assets/Gov.png
-    - assets/search12.png
-    - assets/search11.png
-    - assets/search10.png
-    - assets/search9.png
-    - assets/search8.png
-    - assets/search7.png
-    - assets/search6.png
-    - assets/search5.png
-    - assets/search4.png
-    - assets/search3.png
-    - assets/search2.png
-    - assets/search1.png
+    - assets/Snurse.png
+    - assets/Shands.png
+    - assets/Sfigure.png
+    - assets/Slift.png
+    - assets/Soldcouple.png
+    - assets/Spink.png
+    - assets/Sostobags.png
+    - assets/Sfruits.png
+    - assets/Swash.png
+    - assets/Sbaby.png
+    - assets/Srun.png
+    - assets/Sholdhands.png
     - assets/Avatar1.png
     - assets/ostopost1.png
 
