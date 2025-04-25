@@ -25,7 +25,7 @@ exports.sendResetCode = functions.firestore
 
     const msg = {
       to: email,
-      from: "your_email@example.com", // <- Replace with your verified sender
+      from: "wppulindum@gmail.com", // <- Replace with your verified sender
       subject: "Password Reset Code",
       text: `Your password reset code is: ${code}`,
       html: `<strong>Your password reset code is: ${code}</strong>`,
@@ -38,3 +38,23 @@ exports.sendResetCode = functions.firestore
       console.error("Failed to send email:", error.toString());
     }
   });
+
+// Firebase Callable function to update user password
+exports.updateUserPassword = functions.https.onCall(async (data, context) => {
+  const email = data.email;
+  const newPassword = data.newPassword;
+
+  try {
+    const userRecord = await admin.auth().getUserByEmail(email);
+
+    // Update user password in Firebase Auth
+    await admin.auth().updateUser(userRecord.uid, {
+      password: newPassword,
+    });
+
+    return { success: true, message: "Password updated successfully" };
+  } catch (error) {
+    console.error("Error updating password:", error);
+    return { success: false, message: error.message };
+  }
+});
