@@ -13,16 +13,16 @@ class ProfileUpdatePage extends StatefulWidget {
   _ProfileUpdatePageState createState() => _ProfileUpdatePageState();
 }
 
-
 class _ProfileUpdatePageState extends State<ProfileUpdatePage> {
-  TextEditingController _dobController = TextEditingController();
-  TextEditingController _ageController = TextEditingController();
-  TextEditingController _genderController = TextEditingController();
-  TextEditingController _diagnosisController = TextEditingController();
-  TextEditingController _stomaTypeController = TextEditingController();
-  TextEditingController _surgeryDateController = TextEditingController();
-  TextEditingController _durationController = TextEditingController();
-  TextEditingController _chemoHistoryController = TextEditingController();
+  final TextEditingController _dobController = TextEditingController();
+  final TextEditingController _ageController = TextEditingController();
+  final TextEditingController _genderController = TextEditingController();
+  final TextEditingController _diagnosisController = TextEditingController();
+  final TextEditingController _stomaTypeController = TextEditingController();
+  final TextEditingController _surgeryDateController = TextEditingController();
+  final TextEditingController _durationController = TextEditingController();
+  final TextEditingController _chemoHistoryController = TextEditingController();
+
   XFile? _profileImage;
   String? _imageUrl;
 
@@ -34,7 +34,7 @@ class _ProfileUpdatePageState extends State<ProfileUpdatePage> {
     _loadProfileData();
   }
 
-  _loadProfileData() async {
+  Future<void> _loadProfileData() async {
     DocumentSnapshot snapshot = await widget.userRef.get();
     var data = snapshot.data() as Map<String, dynamic>;
 
@@ -46,10 +46,10 @@ class _ProfileUpdatePageState extends State<ProfileUpdatePage> {
     _surgeryDateController.text = data['surgeryDate'] ?? '';
     _durationController.text = data['duration'] ?? '';
     _chemoHistoryController.text = data['chemoHistory'] ?? '';
-    _imageUrl = data['profileImage'] ?? '';  // Load the existing image URL
+    _imageUrl = data['profileImage'] ?? '';
   }
 
-  _saveProfileData() async {
+  Future<void> _saveProfileData() async {
     String? imageUrl = _imageUrl;
 
     if (_profileImage != null) {
@@ -68,28 +68,20 @@ class _ProfileUpdatePageState extends State<ProfileUpdatePage> {
       'profileImage': imageUrl,
     });
 
-    Navigator.pop(context); // Go back to the profile page
+    Navigator.pop(context);
   }
 
-  _uploadImageToFirebase(XFile image) async {
-    // Create a reference to Firebase Storage
+  Future<String> _uploadImageToFirebase(XFile image) async {
     Reference storageReference = FirebaseStorage.instance
         .ref()
         .child('profile_images/${DateTime.now().millisecondsSinceEpoch}.jpg');
 
-    // Upload the image
     UploadTask uploadTask = storageReference.putFile(File(image.path));
-
-    // Wait for the upload to finish
     TaskSnapshot taskSnapshot = await uploadTask;
-
-    // Get the download URL of the uploaded image
-    String downloadUrl = await taskSnapshot.ref.getDownloadURL();
-    return downloadUrl;
+    return await taskSnapshot.ref.getDownloadURL();
   }
 
-  _pickImage() async {
-    // Allow the user to choose an image from the gallery
+  Future<void> _pickImage() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
     setState(() {
       _profileImage = pickedFile;
@@ -99,41 +91,32 @@ class _ProfileUpdatePageState extends State<ProfileUpdatePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Update Profile'),
-        backgroundColor: Colors.lightBlue.shade200, // Same as govhos.dart
+        title: Text('Update Profile', style: TextStyle(color: Colors.black)),
+        backgroundColor: Colors.white,
+        elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          icon: Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.pop(context),
         ),
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Colors.lightBlue.shade200, Colors.white], // Same gradient as govhos.dart
-          ),
-        ),
-        padding: EdgeInsets.all(8.0),
+      body: Padding(
+        padding: EdgeInsets.all(20),
         child: ListView(
           children: [
             _buildProfileImageSection(),
-            SizedBox(height: 10),
-            _buildTextField('Date of Birth', _dobController),
-            _buildTextField('Age', _ageController),
-            _buildTextField('Gender', _genderController),
-            _buildTextField('Diagnosis', _diagnosisController),
-            _buildTextField('Type of Stoma', _stomaTypeController),
-            _buildTextField('Date of Surgery', _surgeryDateController),
-            _buildTextField('Duration', _durationController),
-            _buildTextField('Chemo Therapy History', _chemoHistoryController),
+            SizedBox(height: 20),
+            _buildFormSection(),
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: _saveProfileData,
-              child: Text('Save Changes'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.deepPurple.shade400,
+                foregroundColor: Colors.white,
+                padding: EdgeInsets.symmetric(vertical: 5),
+              ),
+              child: Text('Save Changes', style: TextStyle(fontSize: 16)),
             ),
           ],
         ),
@@ -142,38 +125,103 @@ class _ProfileUpdatePageState extends State<ProfileUpdatePage> {
   }
 
   Widget _buildProfileImageSection() {
-    return Column(
-      children: [
-        GestureDetector(
-          onTap: _pickImage,
-          child: CircleAvatar(
-            radius: 50,
-            backgroundColor: Colors.grey,
-            backgroundImage: _profileImage == null
-                ? (_imageUrl != null && _imageUrl!.isNotEmpty
-                ? NetworkImage(_imageUrl!) as ImageProvider<Object>
-                : null)
-                : FileImage(File(_profileImage!.path)) as ImageProvider<Object>,
+    return Center(
+      child: Stack(
+        children: [
+          GestureDetector(
+            onTap: _pickImage,
+            child: Container(
+              width: 130,
+              height: 130,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(color: Colors.black26, blurRadius: 0, offset: Offset(0, 3)),
+                ],
+              ),
+              child: ClipOval(
+                child: _profileImage == null
+                    ? (_imageUrl != null && _imageUrl!.isNotEmpty
+                    ? Image.network(_imageUrl!, fit: BoxFit.cover)
+                    : Icon(Icons.person, size: 60, color: Colors.grey))
+                    : Image.file(File(_profileImage!.path), fit: BoxFit.cover),
+              ),
+            ),
           ),
-        ),
-        SizedBox(height: 10),
-        Text(
-          'Tap to change profile picture',
-          style: TextStyle(fontSize: 16),
-        ),
-      ],
+          Positioned(
+            bottom: 0,
+            right: 0,
+            child: GestureDetector(
+              onTap: _pickImage,
+              child: Container(
+                height: 40,
+                width: 40,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.deepPurple,
+                  border: Border.all(color: Colors.white, width: 2),
+                ),
+                child: Icon(Icons.camera_alt, color: Colors.white, size: 20),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
+
+  Widget _buildFormSection() {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Colors.deepPurple.shade100, Colors.blue.shade100],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(15),
+      ),
+      // Increase the padding here
+      padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+      child: Column(
+        children: [
+          _buildTextField('Date of Birth', _dobController),
+          _buildTextField('Age', _ageController),
+          _buildTextField('Gender', _genderController),
+          _buildTextField('Diagnosis', _diagnosisController),
+          _buildTextField('Type of Stoma', _stomaTypeController),
+          _buildTextField('Date of Surgery', _surgeryDateController),
+          _buildTextField('Duration', _durationController),
+          _buildTextField('Chemo Therapy History', _chemoHistoryController),
+        ],
+      ),
+    );
+  }
   Widget _buildTextField(String label, TextEditingController controller) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 10),
-      child: TextField(
-        controller: controller,
-        decoration: InputDecoration(
-          labelText: label,
-          border: OutlineInputBorder(),
-        ),
+      padding: const EdgeInsets.symmetric(vertical: 2.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: Colors.black87,
+            ),
+          ),
+          SizedBox(height: 4),
+          TextField(
+            controller: controller,
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: Colors.white,
+              hintText: 'Enter $label',
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+            ),
+          ),
+        ],
       ),
     );
   }
