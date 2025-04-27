@@ -5,7 +5,6 @@ import 'dart:async';
 import 'dart:math';
 import 'package:cloud_functions/cloud_functions.dart';
 
-
 class ForgotPasswordPage extends StatefulWidget {
   @override
   _ForgotPasswordPageState createState() => _ForgotPasswordPageState();
@@ -45,7 +44,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       );
     }
   }
-
 
   String get formattedTime {
     int min = _secondsLeft ~/ 60;
@@ -105,7 +103,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     setState(() => _isLoading = false);
   }
 
-
   Future<void> _resetPassword() async {
     String newPass = _newPasswordController.text.trim();
     String confirmPass = _confirmPasswordController.text.trim();
@@ -143,60 +140,118 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     }
   }
 
-
   Widget _buildStep() {
     switch (_step) {
       case ForgotStep.enterDetails:
         return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             TextFormField(
               controller: _usernameController,
-              decoration: InputDecoration(labelText: "Username"),
+              decoration: InputDecoration(
+                labelText: "Username",
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+                contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+              ),
             ),
+            SizedBox(height: 20),
             TextFormField(
               controller: _emailController,
-              decoration: InputDecoration(labelText: "Email"),
+              decoration: InputDecoration(
+                labelText: "Email",
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+                contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+              ),
             ),
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: _submitDetails,
               child: _isLoading
                   ? CircularProgressIndicator()
-                  : Text("Send Security Code"),
+                  : Text(
+                "Send Security Code",
+                style: TextStyle(color: Colors.white),
+              ),
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                backgroundColor: Colors.deepPurpleAccent,
+                foregroundColor: Colors.white, // This will change the text color
+              ),
             ),
           ],
         );
 
       case ForgotStep.verifyCode:
         return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text("Enter the 6-digit code sent to your email"),
+            Text("Enter the 6-digit code sent to your email",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             Text("Expires in $formattedTime", style: TextStyle(color: Colors.red)),
+            SizedBox(height: 20),
             TextFormField(
               controller: _codeController,
               keyboardType: TextInputType.number,
-              decoration: InputDecoration(labelText: "Security Code"),
+              decoration: InputDecoration(
+                labelText: "Security Code",
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+                contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+              ),
             ),
             SizedBox(height: 20),
-            ElevatedButton(onPressed: _verifyCode, child: Text("Verify Code")),
+            ElevatedButton(
+              onPressed: _verifyCode,
+              child: Text(
+                "Verify Code",
+              ),
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                backgroundColor: Colors.green,
+                foregroundColor: Colors.white,
+              ),
+            ),
           ],
         );
 
       case ForgotStep.resetPassword:
         return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             TextFormField(
               controller: _newPasswordController,
               obscureText: true,
-              decoration: InputDecoration(labelText: "New Password"),
+              decoration: InputDecoration(
+                labelText: "New Password",
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+                contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+              ),
             ),
+            SizedBox(height: 20),
             TextFormField(
               controller: _confirmPasswordController,
               obscureText: true,
-              decoration: InputDecoration(labelText: "Confirm Password"),
+              decoration: InputDecoration(
+                labelText: "Confirm Password",
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+                contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+              ),
             ),
             SizedBox(height: 20),
-            ElevatedButton(onPressed: _resetPassword, child: Text("Save New Password")),
+            ElevatedButton(
+              onPressed: _resetPassword,
+              child: Text("Save New Password"),
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                backgroundColor: Colors.orange,
+                foregroundColor: Colors.white,
+              ),
+            ),
           ],
         );
     }
@@ -219,7 +274,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       appBar: AppBar(title: Text("Forgot Password")),
       body: Padding(
         padding: EdgeInsets.all(20),
-        child: _buildStep(),
+        child: Center(child: _buildStep()),
       ),
     );
   }
