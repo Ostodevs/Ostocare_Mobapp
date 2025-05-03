@@ -1,0 +1,2 @@
+/home/pulindu/Documents/AndroidStudio/ostocare/android/app/.cxx/RelWithDebInfo/4t5uv2t4/x86_64/CMakeFiles/edit_cache.dir
+/home/pulindu/Documents/AndroidStudio/ostocare/android/app/.cxx/RelWithDebInfo/4t5uv2t4/x86_64/CMakeFiles/rebuild_cache.dir

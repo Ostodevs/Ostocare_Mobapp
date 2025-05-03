@@ -10,7 +10,7 @@ def flutterVersionName = "1.0.0"
 
 android {
     namespace "com.example.ostocare"
-    compileSdkVersion 34
+    compileSdkVersion 35
     ndkVersion "25.2.9519653"
 
     compileOptions {
@@ -29,7 +29,7 @@ android {
     defaultConfig {
         applicationId "com.example.ostocare"
         minSdkVersion 23
-        targetSdkVersion 34
+        targetSdkVersion 35
         versionCode flutterVersionCode
         versionName flutterVersionName
     }
@@ -40,7 +40,6 @@ android {
         }
     }
 }
-
 
 flutter {
     source '../..'
