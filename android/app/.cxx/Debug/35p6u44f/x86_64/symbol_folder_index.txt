@@ -1,0 +1,1 @@
+/home/pulindu/Documents/AndroidStudio/ostocare/build/app/intermediates/cxx/Debug/35p6u44f/obj/x86_64
