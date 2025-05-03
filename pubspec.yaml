@@ -34,6 +34,8 @@ dependencies:
   auto_size_text: ^3.0.0
   timeago: ^3.0.0
   cloud_functions: ^5.4.0
+  flutter_launcher_icons: ^0.13.1
+  permission_handler: ^11.3.1
 
 dev_dependencies:
   flutter_test:
@@ -80,7 +82,6 @@ flutter:
     - assets/surgi2.png
     - assets/surgi3.png
     - assets/surgi4.png
-    - assets/homepageimg3.png
     - assets/Lanka.png
     - assets/Kings.png
     - assets/Nawaloka.png
@@ -110,3 +111,8 @@ flutter:
       fonts:
         - asset: assets/fonts/Comfortaa-VariableFont_wght.ttf
 
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/OstoLogo.png"
