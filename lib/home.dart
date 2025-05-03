@@ -13,6 +13,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:ui';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'dart:async';
+import 'package:intl/intl.dart';
+
 
 class HomePage extends StatefulWidget {
   final String userName;
@@ -29,6 +31,10 @@ class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
   final ScrollController _scrollController = ScrollController();
 
+  List<DateTime> _highlightedDays = [];
+  List<DateTime> upcomingDays = [];
+  List<DateTime> overdueDays = [];
+  DateTime? _lastBagChangeDate;
   int daysLeft = 0;
   bool isOverdue = false;
   bool _isImageOverlayVisible = false;
@@ -43,6 +49,7 @@ class _HomePageState extends State<HomePage> {
   String firebaseMessage = '';
   bool showGreeting = true;
   Timer? _messageSwitcherTimer;
+
 
 
 
@@ -116,13 +123,20 @@ class _HomePageState extends State<HomePage> {
       Timestamp? lastChangeTimestamp = userDoc.get('lastBagChangeDate');
       if (lastChangeTimestamp != null) {
         DateTime lastChangeDate = lastChangeTimestamp.toDate();
-        int difference = DateTime
-            .now()
-            .difference(lastChangeDate)
-            .inDays;
+        int difference = DateTime.now().difference(lastChangeDate).inDays;
+
         setState(() {
           daysLeft = 7 - difference;
           isOverdue = daysLeft < 0;
+          _lastBagChangeDate = lastChangeDate;
+
+          if (isOverdue) {
+            overdueDays = List.generate(difference, (i) => lastChangeDate.add(Duration(days: i + 1)));
+          } else {
+            upcomingDays = List.generate(7, (i) => lastChangeDate.add(Duration(days: i + 1)));
+          }
+
+          _highlightedDays = [...upcomingDays, ...overdueDays];
         });
       }
     }
@@ -132,7 +146,6 @@ class _HomePageState extends State<HomePage> {
     String userId = FirebaseAuth.instance.currentUser?.uid ?? "";
 
     if (userId.isNotEmpty) {
-      // Save the date in Firestore
       await FirebaseFirestore.instance.collection('users').doc(userId).update({
         'lastBagChangeDate': date,
       });
@@ -266,16 +279,20 @@ class _HomePageState extends State<HomePage> {
         children: [
           SingleChildScrollView(
             controller: _scrollController,
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Colors.white, Colors.lightBlueAccent],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: MediaQuery.of(context).size.height,
                 ),
-              ),
-              child: Column(
-                children: [
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Colors.white, Colors.lightBlueAccent],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
+                  ),
+                  child: Column(
+                    children: [
                   SizedBox(height: 20),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -378,65 +395,173 @@ class _HomePageState extends State<HomePage> {
                   Stack(
                     children: [
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        padding: const EdgeInsets.only(top: 70.0, left: 16.0, right: 16.0),
                         child: Card(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20)),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                           elevation: 5,
                           child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: TableCalendar(
-                              focusedDay: _focusedDay,
-                              firstDay: DateTime(2000),
-                              lastDay: DateTime(2100),
-                              calendarFormat: _calendarFormat,
-                              selectedDayPredicate: (day) =>
-                                  isSameDay(_selectedDay, day),
-                              onDaySelected: (selectedDay, focusedDay) {
-                                setState(() {
-                                  _selectedDay = selectedDay;
-                                  _focusedDay = focusedDay;
-                                });
-                              },
-                              headerStyle: HeaderStyle(
-                                formatButtonVisible: false,
-                                titleCentered: true,
-                                titleTextStyle: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.bold),
-                              ),
-                              calendarStyle: CalendarStyle(
-                                selectedDecoration: BoxDecoration(
-                                    color: Colors.deepPurple,
-                                    shape: BoxShape.circle),
-                                todayDecoration: BoxDecoration(
-                                    color: Colors.deepPurple.withOpacity(0.5),
-                                    shape: BoxShape.circle),
-                              ),
+                            padding: const EdgeInsets.all(12.0),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        IconButton(
+                                          icon: const Icon(Icons.chevron_left),
+                                          onPressed: () {
+                                            setState(() {
+                                              _focusedDay = DateTime(
+                                                _focusedDay.year,
+                                                _focusedDay.month - 1,
+                                              );
+                                            });
+                                          },
+                                        ),
+                                        Text(
+                                          DateFormat.yMMMM().format(_focusedDay),
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        IconButton(
+                                          icon: const Icon(Icons.chevron_right),
+                                          onPressed: () {
+                                            setState(() {
+                                              _focusedDay = DateTime(
+                                                _focusedDay.year,
+                                                _focusedDay.month + 1,
+                                              );
+                                            });
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                    ToggleButtons(
+                                      isSelected: [
+                                        _calendarFormat == CalendarFormat.month,
+                                        _calendarFormat == CalendarFormat.twoWeeks,
+                                        _calendarFormat == CalendarFormat.week,
+                                      ],
+                                      onPressed: (int index) {
+                                        setState(() {
+                                          switch (index) {
+                                            case 0:
+                                              _calendarFormat = CalendarFormat.month;
+                                              break;
+                                            case 1:
+                                              _calendarFormat = CalendarFormat.twoWeeks;
+                                              break;
+                                            case 2:
+                                              _calendarFormat = CalendarFormat.week;
+                                              break;
+                                          }
+                                        });
+                                      },
+                                      children: const [
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(horizontal: 8),
+                                          child: Text('Month', style: TextStyle(fontSize: 12)),
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(horizontal: 8),
+                                          child: Text('Two Weeks', style: TextStyle(fontSize: 12)),
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(horizontal: 8),
+                                          child: Text('Week', style: TextStyle(fontSize: 12)),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 8),
+                                AnimatedContainer(
+                                  duration: const Duration(milliseconds: 300),
+                                  height: _calendarFormat == CalendarFormat.month
+                                      ? 280
+                                      : _calendarFormat == CalendarFormat.twoWeeks
+                                      ? 180
+                                      : 90,
+                                    child: TableCalendar(
+                                      focusedDay: _focusedDay,
+                                      firstDay: DateTime(2000),
+                                      lastDay: DateTime(2100),
+                                      calendarFormat: _calendarFormat,
+                                      headerVisible: false,
+                                      selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+                                      onDaySelected: (selectedDay, focusedDay) {
+                                        setState(() {
+                                          _selectedDay = selectedDay;
+                                          _focusedDay = focusedDay;
+                                        });
+                                      },
+                                      eventLoader: (day) => [],
+                                      calendarBuilders: CalendarBuilders(
+                                        defaultBuilder: (context, day, focusedDay) {
+                                          bool isOverdueDay = overdueDays.any((d) => isSameDay(d, day));
+                                          bool isUpcomingDay = upcomingDays.any((d) => isSameDay(d, day));
+
+                                          if (isOverdueDay) {
+                                            return Container(
+                                              margin: const EdgeInsets.all(6.0),
+                                              decoration: BoxDecoration(
+                                                color: Colors.red.withOpacity(0.5),
+                                                shape: BoxShape.circle,
+                                              ),
+                                              alignment: Alignment.center,
+                                              child: Text(
+                                                '${day.day}',
+                                                style: TextStyle(color: Colors.white),
+                                              ),
+                                            );
+                                          } else if (isUpcomingDay) {
+                                            return Container(
+                                              margin: const EdgeInsets.all(6.0),
+                                              decoration: BoxDecoration(
+                                                color: Colors.green.withOpacity(0.5),
+                                                shape: BoxShape.circle,
+                                              ),
+                                              alignment: Alignment.center,
+                                              child: Text(
+                                                '${day.day}',
+                                                style: TextStyle(color: Colors.white),
+                                              ),
+                                            );
+                                          }
+                                          return null;
+                                        },
+                                      ),
+                                    ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
                       ),
                       Positioned(
-                        top: 3,
+                        top: 10,
                         left: 20,
                         right: 20,
                         child: GestureDetector(
                           onTap: _showDatePicker,
                           child: ClipRRect(
-                            borderRadius: BorderRadius.only(
+                            borderRadius: const BorderRadius.only(
                               topLeft: Radius.circular(15),
                               topRight: Radius.circular(15),
                             ),
                             child: Container(
-                              color: isOverdue ? Colors.red : Colors
-                                  .lightBlueAccent,
-                              padding: EdgeInsets.symmetric(vertical: 5),
+                              color: isOverdue ? Colors.red : Colors.lightBlueAccent,
+                              padding: const EdgeInsets.symmetric(vertical: 8),
                               child: Center(
                                 child: Text(
                                   isOverdue
                                       ? "Overdue by ${-daysLeft} days"
                                       : "Days left for a bag change: $daysLeft",
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
@@ -580,6 +705,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   SizedBox(height: 20),
                 ],
+               ),
               ),
             ),
           ),

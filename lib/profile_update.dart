@@ -3,6 +3,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:permission_handler/permission_handler.dart';
 
 class ProfileUpdatePage extends StatefulWidget {
   final DocumentReference userRef;
@@ -82,10 +83,33 @@ class _ProfileUpdatePageState extends State<ProfileUpdatePage> {
   }
 
   Future<void> _pickImage() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-    setState(() {
-      _profileImage = pickedFile;
-    });
+    var photoStatus = await Permission.photos.request();
+    var cameraStatus = await Permission.camera.request();
+
+    if (photoStatus.isGranted && cameraStatus.isGranted) {
+      final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+      setState(() {
+        _profileImage = pickedFile;
+      });
+    } else if (photoStatus.isPermanentlyDenied || cameraStatus.isPermanentlyDenied) {
+      // If the user permanently denied permissions, guide them to app settings
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Permissions are permanently denied. Please enable them in App Settings.'),
+          action: SnackBarAction(
+            label: 'Open Settings',
+            onPressed: () {
+              openAppSettings(); // from permission_handler package
+            },
+          ),
+        ),
+      );
+    } else {
+      // If permission just denied (not permanently), show a simple message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Permission denied. Cannot pick image.')),
+      );
+    }
   }
 
   @override
