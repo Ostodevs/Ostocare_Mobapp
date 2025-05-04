@@ -588,6 +588,7 @@ class _HomePageState extends State<HomePage> {
                       },
                       borderRadius: BorderRadius.circular(20),
                       child: Card(
+                        color: Colors.white,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20)),
                         elevation: 5,
@@ -613,6 +614,7 @@ class _HomePageState extends State<HomePage> {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: Card(
+                        color: Colors.white,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20)),
                         elevation: 5,
@@ -660,6 +662,7 @@ class _HomePageState extends State<HomePage> {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: Card(
+                        color: Colors.white,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20)),
                         elevation: 5,
@@ -862,6 +865,7 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       bottomNavigationBar: BottomAppBar(
+        color: Colors.white,
         child: Container(
           height: 60,
           color: Colors.transparent,
