@@ -1,6 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class SurgiPage extends StatelessWidget {
+class SurgiPage extends StatefulWidget {
+  @override
+  _SurgiPageState createState() => _SurgiPageState();
+}
+
+class _SurgiPageState extends State<SurgiPage> {
+  List<Map<String, dynamic>> productList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchProductsFromFirestore();
+  }
+
+  void fetchProductsFromFirestore() async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection('products')
+        .doc('surgipharma')
+        .collection('items')
+        .get();
+
+    final products = snapshot.docs.map((doc) => doc.data()).toList();
+
+    setState(() {
+      productList = products;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -9,7 +37,7 @@ class SurgiPage extends StatelessWidget {
         children: [
           // Gradient Background
           Container(
-            height: 200, // Adjusted gradient height
+            height: 200,
             width: double.infinity,
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -24,7 +52,7 @@ class SurgiPage extends StatelessWidget {
           // Content
           Column(
             children: [
-              SizedBox(height: 50), // Space for status bar
+              SizedBox(height: 50),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0),
                 child: Row(
@@ -46,13 +74,15 @@ class SurgiPage extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(height: 20), // Space between title and products
+              SizedBox(height: 20),
 
               // Product List
               Expanded(
                 child: Padding(
                   padding: EdgeInsets.all(16.0),
-                  child: GridView.builder(
+                  child: productList.isEmpty
+                      ? Center(child: CircularProgressIndicator())
+                      : GridView.builder(
                     itemCount: productList.length,
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
@@ -61,10 +91,11 @@ class SurgiPage extends StatelessWidget {
                       childAspectRatio: 0.85,
                     ),
                     itemBuilder: (context, index) {
+                      final product = productList[index];
                       return ProductCard(
-                        imagePath: productList[index]['imagePath']!,
-                        title: productList[index]['title']!,
-                        description: productList[index]['description']!,
+                        imagePath: product['imagePath'] ?? '',
+                        title: product['title'] ?? '',
+                        description: product['description'] ?? '',
                       );
                     },
                   ),
@@ -78,37 +109,16 @@ class SurgiPage extends StatelessWidget {
   }
 }
 
-// Product List
-List<Map<String, String>> productList = [
-  {
-    'imagePath': 'assets/surgi1.png',
-    'title': 'One Piece Open ',
-    'description': 'For colostomy and ileostomy, soft hydrocolloid with Cureguard component, comfortable when sticking on the body; and lower Skin irritation',
-  },
-  {
-    'imagePath': 'assets/surgi2.png',
-    'title': 'Skin Barrier',
-    'description': 'Match to BAO-HEALTH pouches with same Ring lock size. Secure coupling system, avoid leakage',
-  },
-  {
-    'imagePath': 'assets/surgi3.png',
-    'title': 'Two Piece Open ',
-    'description': 'For colostomy and ileostomy, Odor-free and noice less pouch film; High surface filter. Allow fast air-flow.',
-  },
-  {
-    'imagePath': 'assets/surgi4.png',
-    'title': 'Urostomy Bag One/Two Pcs',
-    'description': 'Balance liquid flow design anti-flow back; Flexible drainage, can control the liquid easily by small finger pressure',
-  },
-];
-
-// Product Card Widget
 class ProductCard extends StatelessWidget {
   final String imagePath;
   final String title;
   final String description;
 
   ProductCard({required this.imagePath, required this.title, required this.description});
+
+  bool isAsset(String path) {
+    return path.endsWith('.png') || path.startsWith('assets/');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -126,7 +136,9 @@ class ProductCard extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(imagePath, height: 80),
+            isAsset(imagePath)
+                ? Image.asset(imagePath, height: 80)
+                : Image.network(imagePath, height: 80),
             SizedBox(height: 10),
             Text(
               title,

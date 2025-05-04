@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class HollisterPage extends StatelessWidget {
@@ -9,7 +10,7 @@ class HollisterPage extends StatelessWidget {
         children: [
           // Gradient Background
           Container(
-            height: 200, // Adjusted gradient height
+            height: 200,
             width: double.infinity,
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -24,16 +25,14 @@ class HollisterPage extends StatelessWidget {
           // Content
           Column(
             children: [
-              SizedBox(height: 50), // Space for status bar
+              SizedBox(height: 50),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0),
                 child: Row(
                   children: [
                     IconButton(
                       icon: Icon(Icons.arrow_back, size: 28),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
+                      onPressed: () => Navigator.pop(context),
                     ),
                     SizedBox(width: 8),
                     Text(
@@ -46,25 +45,45 @@ class HollisterPage extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(height: 20), // Space between title and products
+              SizedBox(height: 20),
 
-              // Product List
+              // Firestore Product List
               Expanded(
                 child: Padding(
                   padding: EdgeInsets.all(16.0),
-                  child: GridView.builder(
-                    itemCount: productList.length,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 16,
-                      mainAxisSpacing: 16,
-                      childAspectRatio: 0.85,
-                    ),
-                    itemBuilder: (context, index) {
-                      return ProductCard(
-                        imagePath: productList[index]['imagePath']!,
-                        title: productList[index]['title']!,
-                        description: productList[index]['description']!,
+                  child: StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('products')
+                        .doc('hollister')
+                        .collection('items')
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(child: CircularProgressIndicator());
+                      }
+
+                      if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                        return Center(child: Text("No products available."));
+                      }
+
+                      final products = snapshot.data!.docs;
+
+                      return GridView.builder(
+                        itemCount: products.length,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 16,
+                          mainAxisSpacing: 16,
+                          childAspectRatio: 0.85,
+                        ),
+                        itemBuilder: (context, index) {
+                          final product = products[index];
+                          return ProductCard(
+                            imagePath: product['imagePath'] ?? '',
+                            title: product['title'] ?? '',
+                            description: product['description'] ?? '',
+                          );
+                        },
                       );
                     },
                   ),
@@ -78,27 +97,17 @@ class HollisterPage extends StatelessWidget {
   }
 }
 
-// Product List
-List<Map<String, String>> productList = [
-  {
-    'imagePath': 'assets/hollister1.png',
-    'title': 'Adapt Skin Barrier Paste',
-    'description': 'Used to fill uneven skin contours to create a flatter surface. Prevents drainage from getting under the ostomy skin barrier. Help extend the wear time of the skin barrier.',
-  },
-  {
-    'imagePath': 'assets/hollister2.png',
-    'title': 'Adapt Stoma Powder',
-    'description': 'Used to absorb moisture from broken skin around the stoma, which allows for better barrier adhesion to help protect the skin.',
-  },
-];
-
 // Product Card Widget
 class ProductCard extends StatelessWidget {
   final String imagePath;
   final String title;
   final String description;
 
-  ProductCard({required this.imagePath, required this.title, required this.description});
+  ProductCard({
+    required this.imagePath,
+    required this.title,
+    required this.description,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -116,7 +125,9 @@ class ProductCard extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(imagePath, height: 80),
+            imagePath.isNotEmpty
+                ? Image.asset(imagePath, height: 80)
+                : Icon(Icons.image_not_supported, size: 80),
             SizedBox(height: 10),
             Text(
               title,

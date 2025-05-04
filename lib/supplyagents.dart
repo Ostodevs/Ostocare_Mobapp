@@ -46,8 +46,6 @@ class SupplyAgentsPage extends StatelessWidget {
               ),
             ],
           ),
-
-          // Supply Agent Cards as Buttons
           Positioned(
             top: 120,
             left: 0,

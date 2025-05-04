@@ -107,6 +107,35 @@ class _TrackProgressState extends State<TrackProgress> {
                 backgroundColor: Colors.pink[100],
                 selectedColor: Colors.pink,
               ),
+              SizedBox(height: 24),
+              Center(
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    //logic here
+                    print('Saved: $_selectedOptions');
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Progress saved successfully!')),
+                    );
+                  },
+                  label: Text(
+                    'Save',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blueAccent,
+                    padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                ),
+
+              ),
+              SizedBox(height: 32),
             ],
           ),
         ),
