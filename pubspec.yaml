@@ -102,6 +102,16 @@ flutter:
     - assets/Sholdhands.png
     - assets/Avatar1.png
     - assets/ostopost1.png
+    - assets/stoma1.jpg
+    - assets/couples.jpg
+    - assets/diet.jpg
+    - assets/fitness1.jpg
+    - assets/hygiene.jpg
+    - assets/kid.jpg
+    - assets/nurse.jpg
+    - assets/products.jpg
+    - assets/mental2.jpg
+    - assets/commu.jpg
 
   fonts:
     - family: Dancing Script

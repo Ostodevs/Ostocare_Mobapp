@@ -397,6 +397,7 @@ class _HomePageState extends State<HomePage> {
                       Padding(
                         padding: const EdgeInsets.only(top: 70.0, left: 16.0, right: 16.0),
                         child: Card(
+                          color: Colors.white,
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                           elevation: 5,
                           child: Padding(
