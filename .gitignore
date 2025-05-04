@@ -41,3 +41,25 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Android CMake and native build outputs
+/android/.cxx/
+/android/app/.cxx/
+/android/app/cmake/
+/android/app/CMakeFiles/
+/android/app/*.cmake
+/android/app/*.ninja
+/android/app/Makefile
+
+# iOS build
+ios/Flutter/App.framework
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/Flutter/Generated.xcconfig
+ios/Flutter/flutter_export_environment.sh
+ios/Flutter/ephemeral/
+ios/.symlinks/
+ios/Pods/
+ios/Runner.xcworkspace/
+ios/DerivedData/
+
