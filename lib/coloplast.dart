@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ColoplastPage extends StatelessWidget {
   @override
@@ -9,7 +10,7 @@ class ColoplastPage extends StatelessWidget {
         children: [
           // Gradient Background
           Container(
-            height: 200, // Adjusted gradient height
+            height: 200,
             width: double.infinity,
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -24,7 +25,7 @@ class ColoplastPage extends StatelessWidget {
           // Content
           Column(
             children: [
-              SizedBox(height: 50), // Space for status bar
+              SizedBox(height: 50),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0),
                 child: Row(
@@ -46,25 +47,45 @@ class ColoplastPage extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(height: 20), // Space between title and products
+              SizedBox(height: 20),
 
-              // Product List
+              // Firestore product list
               Expanded(
                 child: Padding(
                   padding: EdgeInsets.all(16.0),
-                  child: GridView.builder(
-                    itemCount: productList.length,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 16,
-                      mainAxisSpacing: 16,
-                      childAspectRatio: 0.85,
-                    ),
-                    itemBuilder: (context, index) {
-                      return ProductCard(
-                        imagePath: productList[index]['imagePath']!,
-                        title: productList[index]['title']!,
-                        description: productList[index]['description']!,
+                  child: StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('products')
+                        .doc('coloplast')
+                        .collection('items')
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(child: CircularProgressIndicator());
+                      }
+
+                      if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                        return Center(child: Text("No products available."));
+                      }
+
+                      final products = snapshot.data!.docs;
+
+                      return GridView.builder(
+                        itemCount: products.length,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 16,
+                          mainAxisSpacing: 16,
+                          childAspectRatio: 0.85,
+                        ),
+                        itemBuilder: (context, index) {
+                          final product = products[index];
+                          return ProductCard(
+                            imagePath: product['imagePath'] ?? '',
+                            title: product['title'] ?? '',
+                            description: product['description'] ?? '',
+                          );
+                        },
                       );
                     },
                   ),
@@ -78,77 +99,16 @@ class ColoplastPage extends StatelessWidget {
   }
 }
 
-// Product List
-List<Map<String, String>> productList = [
-  {
-    'imagePath': 'assets/colo1.png',
-    'title': 'Assura Convex Light 1-piece drainable pouch',
-    'description': 'All-in-one ileostomy or colostomy appliance for maximum discretion.',
-  },
-  {
-    'imagePath': 'assets/colo2.png',
-    'title': 'Assura pediatric 1-piece drainable pouch',
-    'description': 'Small pouch size provides an all-in-one child-friendly ileostomy or colostomy pouching solution.',
-  },
-  {
-    'imagePath': 'assets/colo3.png',
-    'title': 'SenSura Convex Light 1-piece drainable pouch',
-    'description': 'All-in-one ileostomy appliance for maximum security and discretion.',
-  },
-  {
-    'imagePath': 'assets/colo4.png',
-    'title': 'SenSura Mio Click Drainable Pouch',
-    'description': 'New discreet 2-piece ileostomy pouch with secure mechanical coupling providing a reassuring, audible "click".',
-  },
-  {
-    'imagePath': 'assets/colo5.png',
-    'title': 'Assura 2-piece barrier',
-    'description': 'Includes:Extended Wear Mechanical coupling with an audible click for extra reassurance.',
-  },
-  {
-    'imagePath': 'assets/colo6.png',
-    'title': 'SenSura Click drainable pouch',
-    'description': 'A two-piece appliance for ileostomy or colostomy, with an audible click for extra reassurance',
-  },
-  {
-    'imagePath': 'assets/colo7.png',
-    'title': 'Assura Original 2-piece drainable pouch',
-    'description': 'A two-piece appliance for ileostomy, with an audible click for extra reassurance',
-  },
-  {
-    'imagePath': 'assets/colo8.png',
-    'title': 'Assura pediatric 2-piece barrier',
-    'description': 'Small barrier and pouch size for children, with an audible click for extra reassurance.',
-  },
-  {
-    'imagePath': 'assets/colo9.png',
-    'title': 'Assura pediatric 2-piece drainable pouch',
-    'description': 'Two-piece appliance for children with small pouch size and an audible click for reassurance.',
-  },
-  {
-    'imagePath': 'assets/colo10.png',
-    'title': 'Assura pediatric 2-piece urostomy pouch',
-    'description': 'Two-piece appliance for children with small pouch size and an audible click for reassurance.',
-  },
-  {
-    'imagePath': 'assets/colo11.png',
-    'title': 'Brava Adhesive Remover Spray',
-    'description': 'Sting-free and easy removal of your appliance.',
-  },
-  {
-    'imagePath': 'assets/colo12.png',
-    'title': 'Brava Powder',
-    'description': 'Keeps the skin dry and protects from skin irritation.',
-  },
-];
-
-// Product Card Widget
 class ProductCard extends StatelessWidget {
   final String imagePath;
   final String title;
   final String description;
 
-  ProductCard({required this.imagePath, required this.title, required this.description});
+  ProductCard({
+    required this.imagePath,
+    required this.title,
+    required this.description,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -166,7 +126,9 @@ class ProductCard extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(imagePath, height: 80),
+            imagePath.startsWith('http')
+                ? Image.network(imagePath, height: 80)
+                : Image.asset(imagePath, height: 80),
             SizedBox(height: 10),
             Text(
               title,
@@ -181,7 +143,6 @@ class ProductCard extends StatelessWidget {
             ),
           ],
         ),
-
       ),
     );
   }
