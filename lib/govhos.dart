@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:firebase_database/firebase_database.dart'; // Firebase Database import
 import 'package:firebase_core/firebase_core.dart';
+
 
 class GovernmentHospitalsScreen extends StatefulWidget {
   @override
@@ -14,7 +16,7 @@ class _GovernmentHospitalsScreenState extends State<GovernmentHospitalsScreen> {
   @override
   void initState() {
     super.initState();
-    _hospitalsRef = FirebaseDatabase.instance.ref('government_hospitals');  // Reference to the 'government_hospitals' node
+    _hospitalsRef = FirebaseDatabase.instance.ref('government_hospitals');
     _loadHospitals();
   }
 
@@ -29,7 +31,7 @@ class _GovernmentHospitalsScreenState extends State<GovernmentHospitalsScreen> {
           'name': value['name'] ?? 'No name',
           'location': value['location'] ?? 'No location',
           'province': value['province'] ?? 'No province',
-          'logo': value['logo'] ?? 'assets/default_logo.png',  // Add default logo if not available
+          'logo': value['logo'] ?? 'assets/default_logo.png',
         });
       });
 
@@ -64,7 +66,7 @@ class _GovernmentHospitalsScreenState extends State<GovernmentHospitalsScreen> {
         ),
         padding: EdgeInsets.all(8.0),
         child: hospitals.isEmpty
-            ? Center(child: CircularProgressIndicator())  // Show loading indicator while data is loading
+            ? Center(child: CircularProgressIndicator())
             : GridView.builder(
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
@@ -128,7 +130,7 @@ class HospitalCard extends StatelessWidget {
           Align(
             alignment: Alignment.centerLeft,
             child: Container(
-              width: MediaQuery.of(context).size.width * 0.3, // Covers 50% of the box from the left
+              width: MediaQuery.of(context).size.width * 0.3,
               decoration: BoxDecoration(
                 color: Colors.black.withOpacity(0.5),
                 borderRadius: BorderRadius.horizontal(left: Radius.circular(10)),
@@ -157,7 +159,7 @@ class HospitalCard extends StatelessWidget {
 }
 
 class HospitalDetailScreen extends StatelessWidget {
-  final Map<String, String> hospital;
+  final Map<dynamic, dynamic> hospital;
 
   const HospitalDetailScreen({super.key, required this.hospital});
 
@@ -166,80 +168,150 @@ class HospitalDetailScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(hospital['name'] ?? 'Hospital Details'),
-        backgroundColor: Colors.green,
+        backgroundColor: Colors.lightBlue.shade200,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          onPressed: () => Navigator.pop(context),
         ),
       ),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topCenter,  // Start from the top
-            end: Alignment.bottomCenter, // End at the bottom
-            colors: [Colors.lightBlue.shade200, Colors.white],  // Blue at the top and white at the bottom
+            colors: [Colors.lightBlue.shade200, Colors.white],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
         ),
-        width: double.infinity,  // Make the container take full width
-        height: double.infinity,  // Make the container take full height
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Load the hospital image from assets dynamically based on the image name in the database
-            hospital['logo'] != null
-                ? Image.asset(
-              'assets/${hospital['logo']}',  // Load image from assets folder
-              width: 200,
-              height: 200,
-              fit: BoxFit.cover,
-            )
-                : Image.asset(
-              'assets/default_hospital.png', // Fallback if no image name exists in the database
-              width: 200,
-              height: 200,
-              fit: BoxFit.cover,
-            ),
-            SizedBox(height: 20),
+        padding: EdgeInsets.all(16),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                child: IntrinsicHeight(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: hospital['logo'] != null
+                            ? Image.asset(
+                          'assets/${hospital['logo']}',
+                          width: 200,
+                          height: 200,
+                          fit: BoxFit.cover,
+                        )
+                            : Image.asset(
+                          'assets/default_hospital.png',
+                          width: double.infinity,
+                          height: 200,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      SizedBox(height: 20),
 
-            // Display hospital name and details
-            Text(
-              hospital['name'] ?? 'No name',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            Text(
-              'Location: ${hospital['location'] ?? 'No location'}',
-              style: TextStyle(fontSize: 18),
-            ),
-            Text(
-              'Province: ${hospital['province'] ?? 'No province'}',
-              style: TextStyle(fontSize: 18),
-            ),
-            SizedBox(height: 20),
+                      // Hospital Name
+                      Text(
+                        hospital['name'] ?? 'No Name',
+                        style: TextStyle(
+                          fontSize: 26,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blue.shade900,
+                        ),
+                      ),
+                      SizedBox(height: 20),
 
-            // Additional details like description and contact info
-            Text(
-              'Description: ${hospital['description'] ?? 'No description available'}',
-              style: TextStyle(fontSize: 16),
-            ),
-            SizedBox(height: 20),
-            Text(
-              'Contact Number: ${hospital['contact_number'] ?? 'No contact number'}',
-              style: TextStyle(fontSize: 16),
-            ),
-            SizedBox(height: 10),
-            Text(
-              'Email: ${hospital['email'] ?? 'No email'}',
-              style: TextStyle(fontSize: 16),
-            ),
-            SizedBox(height: 10),
-            Text(
-              'Address: ${hospital['address'] ?? 'No address available'}',
-              style: TextStyle(fontSize: 16),
-            ),
-          ],
+                      // Description
+                      Card(
+                        margin: EdgeInsets.symmetric(vertical: 8),
+                        elevation: 4,
+                        color: Colors.grey.shade200,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
+                        child: ListTile(
+                          leading: Icon(Icons.description,
+                              color: Colors.blue.shade700),
+                          title: Text('About'),
+                          subtitle:
+                          Text(hospital['description'] ?? 'Not available'),
+                        ),
+                      ),
+
+                      // Details Section
+                      Card(
+                        margin: EdgeInsets.symmetric(vertical: 8),
+                        elevation: 4,
+                        color: Colors.grey.shade200,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 12.0),
+                          child: Column(
+                            children: [
+                              _infoTile(context, Icons.location_on, 'Location',
+                                  hospital['location']),
+                              _infoTile(context, Icons.map, 'Province',
+                                  hospital['province']),
+                              _infoTileWithCopy(
+                                context,
+                                Icons.phone,
+                                'Contact Number',
+                                hospital['contact'],
+                              ),
+                              _infoTileWithCopy(
+                                context,
+                                Icons.email,
+                                'Email',
+                                hospital['email'],
+                              ),
+                              _infoTile(context, Icons.home, 'Address',
+                                  hospital['address']),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _infoTile(BuildContext context, IconData icon, String title, String? value) {
+    return ListTile(
+      leading: Icon(icon, color: Colors.blue.shade700),
+      title: Text(title),
+      subtitle: Text(value ?? 'Not available'),
+    );
+  }
+
+  Widget _infoTileWithCopy(
+      BuildContext context, IconData icon, String title, String? value) {
+    return ListTile(
+      leading: Icon(icon, color: Colors.blue.shade700),
+      title: Text(title),
+      subtitle: GestureDetector(
+        onTap: () {
+          if (value != null) {
+            Clipboard.setData(ClipboardData(text: value));
+            String message = title.toLowerCase().contains('email')
+                ? 'Email address copied to clipboard'
+                : 'Contact number copied to clipboard';
+
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(message)),
+            );
+          }
+        },
+        child: Text(
+          value ?? 'Not available',
+          style: TextStyle(
+              color: Colors.blue.shade900,
+              decoration: TextDecoration.underline),
         ),
       ),
     );
