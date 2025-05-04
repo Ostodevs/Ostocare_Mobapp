@@ -556,18 +556,31 @@ class _HomePageState extends State<HomePage> {
                             ),
                             child: Container(
                               color: isOverdue ? Colors.red : Colors.lightBlueAccent,
-                              padding: const EdgeInsets.symmetric(vertical: 8),
-                              child: Center(
-                                child: Text(
-                                  isOverdue
-                                      ? "Overdue by ${-daysLeft} days"
-                                      : "Days left for a bag change: $daysLeft",
-                                  style: const TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                              child: Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  Center(
+                                    child: Text(
+                                      isOverdue
+                                          ? "Overdue by ${-daysLeft} days"
+                                          : "Days left for a bag change: $daysLeft",
+                                      style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                  Positioned(
+                                    right: 0,
+                                    child: Icon(
+                                      Icons.edit,
+                                      color: Colors.white,
+                                      size: 17,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
