@@ -150,6 +150,7 @@ class HospitalCard extends StatelessWidget {
     );
   }
 }
+
 class HospitalDetailScreen extends StatelessWidget {
   final Map<dynamic, dynamic> hospital;
 
