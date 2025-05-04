@@ -1,2 +1,0 @@
-/home/pulindu/Documents/AndroidStudio/ostocare/android/app/.cxx/RelWithDebInfo/4t5uv2t4/armeabi-v7a/CMakeFiles/edit_cache.dir
-/home/pulindu/Documents/AndroidStudio/ostocare/android/app/.cxx/RelWithDebInfo/4t5uv2t4/armeabi-v7a/CMakeFiles/rebuild_cache.dir

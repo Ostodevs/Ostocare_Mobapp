@@ -1,2 +1,0 @@
-/home/pulindu/Documents/AndroidStudio/ostocare/android/app/.cxx/Debug/35p6u44f/x86/CMakeFiles/edit_cache.dir
-/home/pulindu/Documents/AndroidStudio/ostocare/android/app/.cxx/Debug/35p6u44f/x86/CMakeFiles/rebuild_cache.dir

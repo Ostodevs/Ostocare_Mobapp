@@ -1,1 +1,0 @@
-/home/pulindu/Documents/AndroidStudio/ostocare/build/app/intermediates/cxx/RelWithDebInfo/4t5uv2t4/obj/x86
