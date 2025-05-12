@@ -53,6 +53,7 @@ class MyApp extends StatelessWidget {
         '/home': (context) => HomePage(userName: 'Some User'),
         '/privatehos': (context) => PrivateHospitalPage(),
         '/govhos': (context) => GovernmentHospitalsScreen(),
+        '/login': (context) => LoginPage(),
       },
     );
   }
