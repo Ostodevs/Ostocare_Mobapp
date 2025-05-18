@@ -31,6 +31,7 @@ void main() async {
   
 
   await Firebase.initializeApp(options: firebaseOptions);
+  await FirebaseAuth.instance.setPersistence(Persistence.LOCAL);
   runApp(MyApp());
 }
 
