@@ -140,6 +140,11 @@ class _ChatScreenState extends State<ChatScreen> {
       _sendRouteReply(reply, '/');
       return;
     }
+    else if (lowerMessage.contains("products")) {
+      reply = "Click to visit available products.";
+      _sendRouteReply(reply, '/supplyagents');
+      return;
+    }
 
     await FirebaseFirestore.instance
         .collection('chat_history')
