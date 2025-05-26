@@ -112,6 +112,8 @@ flutter:
     - assets/products.jpg
     - assets/mental2.jpg
     - assets/commu.jpg
+    - assets/Lpatient.png
+    - assets/Lnurse.png
 
   fonts:
     - family: Dancing Script

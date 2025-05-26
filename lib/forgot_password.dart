@@ -151,18 +151,24 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               controller: _usernameController,
               decoration: InputDecoration(
                 labelText: "Username",
+                filled: true, // Important!
+                fillColor: Colors.grey[200], // Light grey background
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
                 contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
               ),
+
             ),
             SizedBox(height: 20),
             TextFormField(
               controller: _emailController,
               decoration: InputDecoration(
-                labelText: "Email",
+                labelText: "Your Email",
+                filled: true, // Important!
+                fillColor: Colors.grey[200], // Light grey background
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
                 contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
               ),
+
             ),
             SizedBox(height: 20),
             ElevatedButton(
@@ -176,8 +182,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-                backgroundColor: Colors.deepPurpleAccent,
-                foregroundColor: Colors.white, // This will change the text color
+                backgroundColor: Colors.blueGrey,
+                foregroundColor: Colors.black87, // This will change the text color
               ),
             ),
           ],
@@ -197,21 +203,25 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 labelText: "Security Code",
+                filled: true, // Important!
+                fillColor: Colors.grey[200], // Light grey background
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
                 contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
               ),
+
             ),
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: _verifyCode,
               child: Text(
                 "Verify Code",
+                style: TextStyle(color: Colors.white),
               ),
               style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-                backgroundColor: Colors.green,
-                foregroundColor: Colors.white,
+                backgroundColor: Colors.blueGrey,
+                foregroundColor: Colors.black87,
               ),
             ),
           ],
@@ -227,9 +237,12 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               obscureText: true,
               decoration: InputDecoration(
                 labelText: "New Password",
+                filled: true, // Important!
+                fillColor: Colors.grey[200], // Light grey background
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
                 contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
               ),
+
             ),
             SizedBox(height: 20),
             TextFormField(
@@ -237,19 +250,25 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               obscureText: true,
               decoration: InputDecoration(
                 labelText: "Confirm Password",
+                filled: true, // Important!
+                fillColor: Colors.grey[200], // Light grey background
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
                 contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
               ),
+
             ),
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: _resetPassword,
-              child: Text("Save New Password"),
+              child: Text(
+                "Save New Password",
+                style: TextStyle(color: Colors.white),
+              ),
               style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-                backgroundColor: Colors.orange,
-                foregroundColor: Colors.white,
+                backgroundColor: Colors.blueGrey,
+                foregroundColor: Colors.black87,
               ),
             ),
           ],
@@ -270,11 +289,34 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Forgot Password")),
-      body: Padding(
-        padding: EdgeInsets.all(20),
-        child: Center(child: _buildStep()),
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Color(0xFF9CE7F8), Color(0xFF00A8CF)],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        ),
+      ),
+      child: Scaffold(
+        backgroundColor: Colors.transparent, // Important for showing gradient
+        appBar: AppBar(
+          title: Text("Forgot Password"),
+          backgroundColor: Colors.transparent, // Transparent to show gradient
+          elevation: 0,
+        ),
+        body: Padding(
+          padding: EdgeInsets.all(20),
+          child: Center(
+            child: Container(
+              width: double.infinity,
+              child: _buildStep(),
+            ),
+          ),
+        ),
+        bottomNavigationBar: Container(
+          height: 50,
+          color: Colors.transparent, // Transparent to show gradient
+        ),
       ),
     );
   }
