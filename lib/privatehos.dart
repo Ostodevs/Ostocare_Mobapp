@@ -21,7 +21,7 @@ class _PrivateHospitalPageState extends State<PrivateHospitalPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Private Hospitals'),
-        backgroundColor: Colors.lightBlue.shade200,
+        backgroundColor: Color(0xFF9CE7F8),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
@@ -47,11 +47,11 @@ class _PrivateHospitalPageState extends State<PrivateHospitalPage> {
           var hospitalsData = snapshot.data!.value as Map<dynamic, dynamic>;
 
           return Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               gradient: LinearGradient(
+                colors: [Color(0xFF9CE7F8), Color(0xFF00A8CF)],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [Colors.lightBlue.shade200, Colors.white],
               ),
             ),
             padding: EdgeInsets.all(8.0),
@@ -161,16 +161,16 @@ class HospitalDetailScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(hospital['name'] ?? 'Hospital Details'),
-        backgroundColor: Colors.lightBlue.shade200,
+        backgroundColor: Color(0xFF9CE7F8),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
       ),
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.lightBlue.shade200, Colors.white],
+            colors: [Color(0xFF9CE7F8), Color(0xFF00A8CF)],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
