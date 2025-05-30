@@ -75,37 +75,50 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Search'), elevation: 0),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                hintText: 'Search...',
-                prefixIcon: const Icon(Icons.search),
-                suffixIcon: _isSearching
-                    ? IconButton(
-                  icon: const Icon(Icons.clear),
-                  onPressed: () => _searchController.clear(),
-                )
-                    : null,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide.none,
+      appBar: AppBar(
+          title: const Text('Search'),
+          backgroundColor: Color(0xFF9CE7F8),
+          elevation: 0),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFF9CE7F8), Color(0xFF00A8CF)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                  hintText: 'Search...',
+                  prefixIcon: const Icon(Icons.search),
+                  suffixIcon: _isSearching
+                      ? IconButton(
+                    icon: const Icon(Icons.clear),
+                    onPressed: () => _searchController.clear(),
+                  )
+                      : null,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide.none,
+                  ),
+                  filled: true,
+                  fillColor: Colors.white.withOpacity(0.8),
                 ),
-                filled: true,
-                fillColor: Colors.grey[200],
               ),
             ),
-          ),
-          Expanded(
-            child: _isSearching ? _buildSuggestionsList() : _buildTrendingGridStyled(),
-          ),
-        ],
+            Expanded(
+              child: _isSearching ? _buildSuggestionsList() : _buildTrendingGridStyled(),
+            ),
+          ],
+        ),
       ),
     );
   }

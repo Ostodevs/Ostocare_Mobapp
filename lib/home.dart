@@ -51,8 +51,6 @@ class _HomePageState extends State<HomePage> {
   Timer? _messageSwitcherTimer;
 
 
-
-
   @override
   void initState() {
     super.initState();
@@ -284,9 +282,9 @@ class _HomePageState extends State<HomePage> {
                   minHeight: MediaQuery.of(context).size.height,
                 ),
                 child: Container(
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [Colors.white, Colors.lightBlueAccent],
+                      colors: [Color(0xFF9CE7F8), Color(0xFF00A8CF)],
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                     ),
@@ -326,7 +324,7 @@ class _HomePageState extends State<HomePage> {
                         Expanded(
                           child: Container(
                             decoration: BoxDecoration(
-                              color: Colors.deepPurple.withOpacity(0.1),
+                              color: Colors.white.withOpacity(0.7),
                               borderRadius: BorderRadius.circular(20),
                             ),
                             padding: const EdgeInsets.all(16),
@@ -339,7 +337,7 @@ class _HomePageState extends State<HomePage> {
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
                                       SizedBox(
-                                        width: 200,
+                                        width: 180,
                                         child: Column(
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: [

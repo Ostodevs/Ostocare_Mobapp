@@ -6,7 +6,7 @@ class SupplySelectPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // Keep background white
+      backgroundColor: Color(0xFF00A8CF),// Keep background white
       body: Stack(
         children: [
           // Gradient Header
@@ -17,7 +17,7 @@ class SupplySelectPage extends StatelessWidget {
                 width: double.infinity,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [Color(0xFF7FD1E1), Colors.white],
+                    colors: [Colors.white, Color(0xFF00A8CF)],
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     stops: [0.4, 1], // Stretch gradient like in Pharmacy Page
