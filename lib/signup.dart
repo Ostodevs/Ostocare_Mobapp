@@ -11,7 +11,7 @@ class SignupPage extends StatefulWidget {
 
 
 class TopWaveClipper extends CustomClipper<Path> {
-  final double direction; // 1.0 for normal, -1.0 for flipped
+  final double direction;
 
   TopWaveClipper({required this.direction});
 
@@ -107,6 +107,7 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
     try {
       final email = _emailController.text.trim();
       final username = _usernameController.text.trim();
+      final password = _passwordController.text.trim();
 
       final emailMethods = await FirebaseAuth.instance.fetchSignInMethodsForEmail(email);
       if (emailMethods.isNotEmpty) {
@@ -117,8 +118,10 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
         return;
       }
 
+      final collectionName = _isAdminMode ? 'admins' : 'users';
+
       final emailQuery = await FirebaseFirestore.instance
-          .collection('users')
+          .collection(collectionName)
           .where('email', isEqualTo: email)
           .get();
       if (emailQuery.docs.isNotEmpty) {
@@ -130,7 +133,7 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
       }
 
       final usernameQuery = await FirebaseFirestore.instance
-          .collection('users')
+          .collection(collectionName)
           .where('username', isEqualTo: username)
           .get();
       if (usernameQuery.docs.isNotEmpty) {
@@ -141,22 +144,24 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
         return;
       }
 
-      // Continue to sign up
-      await AuthService().signUp(
-        email,
-        _passwordController.text.trim(),
-        username,
+      final userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
       );
 
-      // 🔐 Admin-specific Firestore document
-      if (_isAdminMode) {
-        final uid = FirebaseAuth.instance.currentUser!.uid;
+      final userId = userCredential.user!.uid;
 
-        await FirebaseFirestore.instance.collection('admins').doc(uid).set({
+      if (_isAdminMode) {
+        await FirebaseFirestore.instance.collection('admins').doc(userId).set({
           'username': username,
           'email': email,
           'adminID': _adminIdController.text.trim(),
           'nic': _nicController.text.trim(),
+        });
+      } else {
+        await FirebaseFirestore.instance.collection('users').doc(userId).set({
+          'username': username,
+          'email': email,
         });
       }
 
@@ -172,6 +177,7 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
       setState(() => _isLoading = false);
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
