@@ -61,7 +61,14 @@ class AuthService {
     }
   }
 
-  Future<String?> signUp(String email, String password, String username) async {
+  Future<String?> signUp({
+    required String email,
+    required String password,
+    required String username,
+    required bool isAdmin,
+    String? adminId,
+    String? nic,
+  }) async {
     try {
       UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
         email: email,
@@ -70,34 +77,43 @@ class AuthService {
 
       User? user = userCredential.user;
       if (user != null) {
-        // Add user data to Firestore
-        await _firestore.collection("users").doc(user.uid).set({
+        final collection = isAdmin ? 'adminusers' : 'users';
+
+        final data = {
           'uid': user.uid,
           'email': email,
           'username': username,
           'createdAt': FieldValue.serverTimestamp(),
-        });
+        };
 
-        // Send email verification after successful signup
+        if (isAdmin) {
+          data['adminId'] = adminId ?? '';
+          data['nic'] = nic ?? '';
+        }
+
+        await _firestore.collection(collection).doc(user.uid).set(data);
+
         await user.sendEmailVerification();
-        return null; // Successfully signed up
+        return null;
       }
+
       return "User creation failed";
     } on FirebaseAuthException catch (e) {
       return _handleAuthError(e);
     }
   }
 
+
   Future<String?> login(String email, String password) async {
     try {
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(email: email, password: password);
 
       if (!userCredential.user!.emailVerified) {
-        await _auth.signOut(); // Prevent login if email is not verified
+        await _auth.signOut();
         return "Please verify your email before logging in.";
       }
 
-      return null; // Successful login
+      return null;
     } on FirebaseAuthException catch (e) {
       return _handleAuthError(e);
     }
@@ -110,7 +126,7 @@ class AuthService {
   Future<String?> resetPassword(String email) async {
     try {
       await _auth.sendPasswordResetEmail(email: email);
-      return null; // Password reset email sent
+      return null;
     } on FirebaseAuthException catch (e) {
       return _handleAuthError(e);
     }
@@ -118,16 +134,25 @@ class AuthService {
 
   Future<Map<String, dynamic>?> getUserData(String uid) async {
     try {
+
       DocumentSnapshot userDoc = await _firestore.collection("users").doc(uid).get();
       if (userDoc.exists) {
-        return userDoc.data() as Map<String, dynamic>?;
-      } else {
-        return null;
+        return {...(userDoc.data() as Map<String, dynamic>), 'userType': 'patient'};
       }
+
+
+      DocumentSnapshot adminDoc = await _firestore.collection("admins").doc(uid).get();
+      if (adminDoc.exists) {
+        return {...(adminDoc.data() as Map<String, dynamic>), 'userType': 'admin'};
+      }
+
+      return null;
     } catch (e) {
+      print("Error getting user data: $e");
       return null;
     }
   }
+
 
   String _handleAuthError(FirebaseAuthException e) {
     switch (e.code) {
