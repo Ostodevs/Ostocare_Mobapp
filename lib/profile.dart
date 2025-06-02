@@ -21,21 +21,21 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
     _fetchUserData();
     _controller = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 1300),  // Slightly longer for natural feel
+      duration: Duration(milliseconds: 1300),
     );
 
     _fadeAnimation = CurvedAnimation(
       parent: _controller,
-      curve: Curves.easeInOut, // More fluid fade
+      curve: Curves.easeInOut,
     );
 
     _slideAnimation = Tween<Offset>(
-      begin: Offset(0, -0.15), // Smaller vertical slide
+      begin: Offset(0, -0.15),
       end: Offset.zero,
     ).animate(
       CurvedAnimation(
         parent: _controller,
-        curve: Curves.easeOutQuart, // Softer sliding curve
+        curve: Curves.easeOutQuart,
       ),
     );
 

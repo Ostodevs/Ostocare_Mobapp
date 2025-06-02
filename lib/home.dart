@@ -337,7 +337,7 @@ class _HomePageState extends State<HomePage> {
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
                                       SizedBox(
-                                        width: 180,
+                                        width: 200,
                                         child: Column(
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
@@ -389,14 +389,17 @@ class _HomePageState extends State<HomePage> {
                       ],
                     ),
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 5),
                   Stack(
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(top: 70.0, left: 16.0, right: 16.0),
                         child: Card(
                           color: Colors.white,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                          shape: RoundedRectangleBorder(borderRadius: const BorderRadius.only(
+                            bottomLeft: Radius.circular(15),
+                            bottomRight: Radius.circular(15),
+                          ),),
                           elevation: 5,
                           child: Padding(
                             padding: const EdgeInsets.all(12.0),
@@ -542,7 +545,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       Positioned(
-                        top: 10,
+                        top: 32,
                         left: 20,
                         right: 20,
                         child: GestureDetector(
@@ -586,7 +589,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 10),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: InkWell(
@@ -619,7 +622,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 10),
                   GestureDetector(
                     onTap: _showHospitalSelectionDialog,
                     child: Padding(

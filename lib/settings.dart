@@ -14,38 +14,55 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   bool notificationsEnabled = true;
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      extendBodyBehindAppBar: true, // So the gradient flows behind the AppBar
+      backgroundColor: Colors.transparent, // Let gradient show through
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent, // Transparent AppBar for gradient
         leading: const BackButton(color: Colors.black),
         title: const Text('Setting', style: TextStyle(color: Colors.black)),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFF9CE7F8), Color(0xFF00A8CF)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _sectionTitle('Support'),
-            _card([
-              _simpleTile("Help Center"),
-              _simpleTile("Suggestion Improvement"),
-            ]),
-            const SizedBox(height: 20),
-            _sectionTitle('Account'),
-            _card([
-              _toggleTile(
-                title: "Enable Notifications",
-                value: notificationsEnabled,
-                onChanged: (value) => setState(() => notificationsEnabled = value),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(16, kToolbarHeight + 16, 16, 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _sectionTitle('Support'),
+                    _card([
+                      _simpleTile("Help Center"),
+                      _simpleTile("Suggestion Improvement"),
+                    ]),
+                    const SizedBox(height: 20),
+                    _sectionTitle('Account'),
+                    _card([
+                      _toggleTile(
+                        title: "Enable Notifications",
+                        value: notificationsEnabled,
+                        onChanged: (value) => setState(() => notificationsEnabled = value),
+                      ),
+                      _simpleTile("Delete Account", icon: Icons.delete, color: Colors.red),
+                      _simpleTile("Logout", icon: Icons.logout, color: Colors.black),
+                    ]),
+                  ],
+                ),
               ),
-              _simpleTile("Delete Account", icon: Icons.delete, color: Colors.red),
-              _simpleTile("Logout", icon: Icons.logout, color: Colors.black),
-            ]),
+            ),
           ],
         ),
       ),
