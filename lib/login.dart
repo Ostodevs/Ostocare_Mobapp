@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'signup.dart';
 import 'home.dart';
+import 'adminhome.dart';
 import 'forgot_password.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:ostocare/auth_service.dart';
@@ -104,44 +105,94 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
       final username = _usernameController.text.trim();
       final password = _passwordController.text.trim();
 
-      final querySnapshot = await FirebaseFirestore.instance
-          .collection('users')
-          .where('username', isEqualTo: username)
-          .get();
+      if (_isAdminMode) {
+        final adminId = _adminIdController.text.trim();
 
-      if (querySnapshot.docs.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Invalid username")),
-        );
-        return;
-      }
+        final querySnapshot = await FirebaseFirestore.instance
+            .collection('admins')
+            .where('username', isEqualTo: username)
+            .get();
 
-      final userData = querySnapshot.docs.first.data();
-      final email = userData['email'];
-
-      try {
-        final userCredential = await AuthService().signIn(email, password);
-        final fullUserData = await AuthService().getUserData(userCredential.user!.uid);
-
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => HomePage(userName: fullUserData?['username'] ?? 'No Name'),
-          ),
-        );
-      } on FirebaseAuthException catch (e) {
-        String errorMessage = "Login failed";
-        if (e.code == 'wrong password') {
-          errorMessage = "Invalid password";
-        } else if (e.code == 'user not found') {
-          errorMessage = "No user found with this username";
-        } else if (e.code == 'invalid credential') {
-          errorMessage = "Password does not match the username";
+        if (querySnapshot.docs.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Invalid User")),
+          );
+          return;
         }
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(errorMessage)),
-        );
+        final adminData = querySnapshot.docs.first.data();
+        final email = adminData['email'];
+        final storedAdminId = adminData['adminID'];
+
+        if (storedAdminId != adminId) {
+          // Case: Admin ID does not match the username
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Admin ID is not matched with the Username")),
+          );
+          return;
+        }
+
+        try {
+          final userCredential = await AuthService().signIn(email, password);
+          final fullAdminData = await AuthService().getUserData(userCredential.user!.uid);
+
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  AdminHomePage(userName: fullAdminData?['username'] ?? 'Admin'),
+            ),
+          );
+        } on FirebaseAuthException catch (e) {
+          // Case: Password is incorrect
+          String errorMessage = "Password is incorrect";
+          if (e.code == 'user-not-found') {
+            errorMessage = "No admin found with these credentials";
+          }
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(errorMessage)),
+          );
+        }
+
+      } else {
+        // Patient login
+        final querySnapshot = await FirebaseFirestore.instance
+            .collection('users')
+            .where('username', isEqualTo: username)
+            .get();
+
+        if (querySnapshot.docs.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Invalid username")),
+          );
+          return;
+        }
+
+        final userData = querySnapshot.docs.first.data();
+        final email = userData['email'];
+
+        try {
+          final userCredential = await AuthService().signIn(email, password);
+          final fullUserData = await AuthService().getUserData(userCredential.user!.uid);
+
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  HomePage(userName: fullUserData?['username'] ?? 'No Name'),
+            ),
+          );
+        } on FirebaseAuthException catch (e) {
+          String errorMessage = "Invalid password";
+          if (e.code == 'user-not-found') {
+            errorMessage = "No user found with this username";
+          }
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(errorMessage)),
+          );
+        }
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
