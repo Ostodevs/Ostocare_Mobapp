@@ -8,19 +8,19 @@ class AdminHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue[50],
+      backgroundColor: const Color(0xFFE8F5FD),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header Section
+              // Header
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(colors: [Colors.blueAccent, Colors.cyan]),
-                  borderRadius: BorderRadius.circular(20),
+                  gradient: const LinearGradient(colors: [Color(0xFF3DB8FF), Color(0xFF67D1F3)]),
+                  borderRadius: BorderRadius.circular(30),
                 ),
                 child: Row(
                   children: [
@@ -35,39 +35,88 @@ class AdminHomePage extends StatelessWidget {
                     Column(
                       children: const [
                         Icon(Icons.health_and_safety, color: Colors.white),
-                        Text("OstoCare", style: TextStyle(color: Colors.white))
+                        Text("OstoCare", style: TextStyle(color: Colors.white, fontSize: 12)),
                       ],
-                    )
+                    ),
                   ],
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 24),
 
-              // Buttons Grid Section
-              Wrap(
-                spacing: 16,
-                runSpacing: 16,
-                children: [
-                  _buildCurvedButton(
-                    context,
-                    title: "Ostomy Meeting",
-                    subtitle: "View Tasks",
-                    color: Colors.purpleAccent,
-                    onTap: () {
-                      Navigator.pushNamed(context, '/meeting');
-                    },
-                    extra: "MON\n1",
+              // Ostomy Meeting Card
+              GestureDetector(
+                onTap: () => Navigator.pushNamed(context, '/meeting'),
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFB368F1),
+                    borderRadius: BorderRadius.circular(30),
                   ),
-                  _buildStatCard(context, "Hours Worked", "7", Colors.indigo, '/hours'),
-                  _buildStatCard(context, "T.Patients Assigned", "10", Colors.deepPurple, '/patients'),
-                  _buildStatCard(context, "Patients watched for Today", "5", Colors.blue, '/watched'),
-                  _buildMeetingCard(context),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text("MON", style: TextStyle(color: Colors.white70)),
+                      SizedBox(height: 4),
+                      Text("1", style: TextStyle(color: Colors.white, fontSize: 26, fontWeight: FontWeight.bold)),
+                      SizedBox(height: 8),
+                      Text("Ostomy Meeting", style: TextStyle(color: Colors.white, fontSize: 18)),
+                      SizedBox(height: 4),
+                      Text("View Tasks", style: TextStyle(color: Colors.white70)),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Stats Cards
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _buildStatCard("Hours Worked", "7", Colors.indigo, context, '/hours'),
+                  _buildStatCard("T.Patients Assigned", "10", Colors.deepPurple, context, '/patients'),
                 ],
               ),
+              const SizedBox(height: 16),
+              _buildStatCard("Patients watched for Today", "5", Colors.blue, context, '/watched'),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 16),
 
-              // Patient Updates Section
+              // Senior Admin Meeting
+              GestureDetector(
+                onTap: () => Navigator.pushNamed(context, '/meetings'),
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF3A3A3A),
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: Row(
+                    children: [
+                      const Expanded(
+                        child: Text(
+                          "Next in 1 hour 15min",
+                          style: TextStyle(color: Colors.white, fontSize: 16),
+                        ),
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: const [
+                          Text("Senior Admin Meeting",
+                              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                          SizedBox(height: 4),
+                          Text("12:00 PM - 01:00 PM", style: TextStyle(color: Colors.white70, fontSize: 12)),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 24),
+
+              // Patient Updates
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: const [
@@ -91,8 +140,9 @@ class AdminHomePage extends StatelessWidget {
               ),
               const SizedBox(height: 10),
 
-              // Notifications (dummy for now)
+              // Notification Cards
               ..._buildPatientUpdateList(),
+              const SizedBox(height: 80),
             ],
           ),
         ),
@@ -113,52 +163,16 @@ class AdminHomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildCurvedButton(BuildContext context,
-      {required String title,
-        required String subtitle,
-        required Color color,
-        required VoidCallback onTap,
-        String? extra}) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 160,
-        height: 130,
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(30),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (extra != null)
-              Text(extra, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-            const Spacer(),
-            Text(title, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 4),
-            Text(subtitle, style: const TextStyle(color: Colors.white)),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildStatCard(
-      BuildContext context,
-      String title,
-      String count,
-      Color color,
-      String route,
-      ) {
+  Widget _buildStatCard(String title, String value, Color color, BuildContext context, String route) {
     return GestureDetector(
       onTap: () => Navigator.pushNamed(context, route),
       child: Container(
-        width: 160,
+        width: (MediaQuery.of(context).size.width - 48) / 2,
         height: 80,
         padding: const EdgeInsets.all(12),
+        margin: const EdgeInsets.only(bottom: 8),
         decoration: BoxDecoration(
-          gradient: LinearGradient(colors: [color.withOpacity(0.8), color]),
+          gradient: LinearGradient(colors: [color.withOpacity(0.85), color]),
           borderRadius: BorderRadius.circular(20),
         ),
         child: Column(
@@ -166,40 +180,7 @@ class AdminHomePage extends StatelessWidget {
           children: [
             Text(title, style: const TextStyle(color: Colors.white, fontSize: 12)),
             const Spacer(),
-            Text(count, style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildMeetingCard(BuildContext context) {
-    return GestureDetector(
-      onTap: () => Navigator.pushNamed(context, '/meetings'),
-      child: Container(
-        width: double.infinity,
-        height: 100,
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.grey[800],
-          borderRadius: BorderRadius.circular(30),
-        ),
-        child: Row(
-          children: [
-            const Expanded(
-              child: Text(
-                "Next in 1 hour 15min",
-                style: TextStyle(color: Colors.white, fontSize: 16),
-              ),
-            ),
-            const Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("Senior Admin Meeting", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                SizedBox(height: 4),
-                Text("12:00 PM - 01:00 PM", style: TextStyle(color: Colors.white70, fontSize: 12)),
-              ],
-            ),
+            Text(value, style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
           ],
         ),
       ),
@@ -216,12 +197,16 @@ class AdminHomePage extends StatelessWidget {
     return updates.map((u) {
       return GestureDetector(
         onTap: () {
-          // Navigate to patient details or message
+          // Future navigation to message details
         },
-        child: Card(
-          color: Colors.cyan[100],
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        child: Container(
+          margin: const EdgeInsets.only(bottom: 10),
+          decoration: BoxDecoration(
+            color: Colors.cyan[100],
+            borderRadius: BorderRadius.circular(20),
+          ),
           child: ListTile(
+            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             leading: const CircleAvatar(backgroundImage: AssetImage("assets/patient.png")),
             title: Text(u["name"] as String, style: const TextStyle(fontWeight: FontWeight.bold)),
             subtitle: Text(u["message"] as String),
@@ -249,5 +234,4 @@ class AdminHomePage extends StatelessWidget {
       );
     }).toList();
   }
-
 }
