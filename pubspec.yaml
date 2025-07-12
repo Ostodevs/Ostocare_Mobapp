@@ -8,9 +8,10 @@ environment:
   sdk: '>=3.2.0 <4.0.0'
 
 dependencies:
-  go_router: ^13.0.0
+
   flutter:
     sdk: flutter
+  go_router: ^13.0.0
   firebase_core: ^3.12.1
   firebase_auth: ^5.5.1
   cloud_firestore: ^5.6.5
