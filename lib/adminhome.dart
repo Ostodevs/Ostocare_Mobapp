@@ -1,360 +1,190 @@
 import 'package:flutter/material.dart';
 
-class AdminHomePage extends StatelessWidget {
+class AdminHomePage extends StatefulWidget {
   final String userName;
 
   const AdminHomePage({Key? key, required this.userName}) : super(key: key);
 
   @override
+  _AdminHomePageState createState() => _AdminHomePageState();
+}
+
+class _AdminHomePageState extends State<AdminHomePage> {
+  int _selectedIndex = 0;
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+    // Optional: Add navigation logic here
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFE8F5FD),
+      backgroundColor: Colors.blue.shade50,
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.zero,
-          child: Column(
-            children: [
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 20, horizontal: 12),
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFF3DB8FF), Color(0xFF67D1F3)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: const BorderRadius.only(
-                    bottomLeft: Radius.circular(30),
-                    bottomRight: Radius.circular(30),
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.blue.withOpacity(0.2),
-                      blurRadius: 15,
-                      offset: const Offset(0, 8),
-                    )
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Image.asset("assets/Cuteavatar.png", height: 70),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Text(
-                            "Hello, $userName!",
-                            style: const TextStyle(
-                              fontSize: 26,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                        Column(
-                          children: [
-                            Image.asset("assets/Logoostocare.png", height: 40),
-                            const SizedBox(height: 4),
-                            const Text("OstoCare",
-                                style: TextStyle(color: Colors.white)),
-                          ],
-                        )
-                      ],
-                    ),
-                    const SizedBox(height: 24),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          flex: 2,
-                          child: Container(
-                            padding: const EdgeInsets.all(14),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFB368F1),
-                              borderRadius: BorderRadius.circular(30),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.purple.withOpacity(0.3),
-                                  blurRadius: 12,
-                                  offset: const Offset(0, 6),
-                                ),
-                              ],
-                            ),
-                            child: const Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("MON",
-                                    style: TextStyle(color: Colors.white70)),
-                                SizedBox(height: 4),
-                                Text("1",
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 26,
-                                        fontWeight: FontWeight.bold)),
-                                SizedBox(height: 8),
-                                Text("Ostomy Meeting",
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 18)),
-                                SizedBox(height: 4),
-                                Text("View Tasks",
-                                    style: TextStyle(color: Colors.white70)),
-                              ],
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          flex: 3,
-                          child: Column(
-                            children: [
-                              _roundedStatCard("Hours Worked", "7",
-                                  [Color(0xFF536DFE), Color(0xFF5C6BC0)]),
-                              const SizedBox(height: 10),
-                              _roundedStatCard("T.Patients Assigned", "10",
-                                  [Color(0xFF7B1FA2), Color(0xFF9575CD)]),
-                              const SizedBox(height: 10),
-                              _roundedStatCard("Patients watched for Today",
-                                  "5", [Color(0xFF1976D2), Color(0xFF64B5F6)]),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    Container(
-                      padding: const EdgeInsets.all(14),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF3A3A3A),
-                        borderRadius: BorderRadius.circular(30),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
-                            blurRadius: 10,
-                            offset: const Offset(0, 4),
-                          )
-                        ],
-                      ),
-                      child: Row(
-                        children: [
-                          const Expanded(
-                            child: Text(
-                              "Next in 1 hour 15min",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 16),
-                            ),
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: const [
-                              Text("Senior Admin Meeting",
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold)),
-                              SizedBox(height: 4),
-                              Text("12:00 PM - 01:00 PM",
-                                  style: TextStyle(
-                                      color: Colors.white70, fontSize: 12)),
-                            ],
-                          )
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              const SizedBox(height: 30),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text("Patient Updates",
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold)),
-                    Row(
-                      children: const [
-                        CircleAvatar(
-                            radius: 10,
-                            backgroundColor: Colors.green,
-                            child: Text("3",
-                                style: TextStyle(
-                                    fontSize: 12, color: Colors.white))),
-                        SizedBox(width: 6),
-                        Text("New ", style: TextStyle(fontSize: 16)),
-                        Text("messages",
-                            style: TextStyle(color: Colors.blue, fontSize: 16)),
-                      ],
-                    )
-                  ],
-                ),
-              ),
-              const SizedBox(height: 14),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: Column(
-                  children: [
-                    _messageCard("Mr. Thenura", "Stoma supplier query",
-                        "Change in", "05", Colors.green, "Status"),
-                    _messageCard("Mr. Mangala", "Consultation delay notice",
-                        "Overdue in", "02", Colors.red, "Status",
-                        secondaryColor: Colors.yellow),
-                    _messageCard("Mr. Rathnayaka", "Consultation delay notice",
-                        "Change in", "02", Colors.green, "Status"),
-                    _messageCard("Mr. Mangala", "Consultation delay notice",
-                        "Overdue in", "02", Colors.red, "Status",
-                        secondaryColor: Colors.yellow),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 80),
-            ],
-          ),
-        ),
-      ),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(24),
-            topRight: Radius.circular(24),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.15),
-              spreadRadius: 4,
-              blurRadius: 20,
-              offset: const Offset(0, -4),
-            ),
-          ],
-        ),
-        child: BottomNavigationBar(
-          currentIndex: 0,
-          selectedItemColor: Colors.deepPurple,
-          unselectedItemColor: Colors.grey,
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: ""),
-            BottomNavigationBarItem(icon: Icon(Icons.search), label: ""),
-            BottomNavigationBarItem(icon: Icon(Icons.article), label: ""),
-            BottomNavigationBarItem(icon: Icon(Icons.person), label: ""),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _roundedStatCard(
-      String title, String value, List<Color> gradientColors) {
-    return Container(
-      width: double.infinity,
-      height: 55,
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        gradient: LinearGradient(colors: gradientColors),
-        boxShadow: [
-          BoxShadow(
-            color: gradientColors.last.withOpacity(0.4),
-            blurRadius: 12,
-            offset: const Offset(0, 6),
-          )
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Flexible(
-              child: Text(title,
-                  style: const TextStyle(color: Colors.white, fontSize: 13))),
-          Text(value,
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold)),
-        ],
-      ),
-    );
-  }
-
-  Widget _messageCard(String name, String message, String statusLabel,
-      String statusValue, Color statusColor, String tag,
-      {Color? secondaryColor}) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.cyan.withOpacity(0.2),
-            blurRadius: 12,
-            offset: const Offset(0, 6),
-          )
-        ],
-      ),
-      padding: const EdgeInsets.all(16),
-      child: Row(
-        children: [
-          const CircleAvatar(
-              backgroundImage: AssetImage("assets/patient.png"), radius: 24),
-          const SizedBox(width: 12),
-          Expanded(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(name,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 16)),
-                const SizedBox(height: 4),
-                Text(message),
+                // Header Section
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    CircleAvatar(
+                        radius: 28, backgroundColor: Colors.deepPurple),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Welcome,",
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.w500)),
+                        Text(widget.userName,
+                            style: TextStyle(
+                                fontSize: 22, fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                    Icon(Icons.notifications_none, size: 30),
+                  ],
+                ),
+                SizedBox(height: 30),
+
+                // Calendar Card
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.deepPurple.shade100,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.calendar_today, size: 30, color: Colors.white),
+                      SizedBox(width: 15),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Upcoming Meeting",
+                              style:
+                                  TextStyle(fontSize: 16, color: Colors.white)),
+                          SizedBox(height: 4),
+                          Text("10:00 AM - 10:30 AM",
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white)),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 20),
+
+                // Stats Row
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _buildStatCard(Icons.work, "Projects", "12"),
+                    _buildStatCard(Icons.check_circle, "Tasks", "34"),
+                    _buildStatCard(Icons.people, "Teams", "5"),
+                  ],
+                ),
+                SizedBox(height: 20),
+
+                // Messages
+                Text("Latest Messages",
+                    style:
+                        TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+                SizedBox(height: 10),
+                _buildMessageCard("Project Update",
+                    "Just completed the login module.", "Now"),
+                _buildMessageCard("Client Feedback",
+                    "Looks great! Let's move to QA.", "1h ago"),
+                _buildMessageCard(
+                    "Reminder", "Team meeting tomorrow.", "2h ago"),
               ],
             ),
           ),
-          Column(
+        ),
+      ),
+
+      // Bottom Navigation Bar
+      bottomNavigationBar: BottomAppBar(
+        color: Colors.white,
+        child: Container(
+          height: 60,
+          color: Colors.transparent,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: Colors.blue[100],
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: const Text("Status", style: TextStyle(fontSize: 10)),
-              ),
-              const SizedBox(height: 4),
-              Row(
-                children: [
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                    decoration: BoxDecoration(
-                      color: statusColor.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    child: Text(statusLabel,
-                        style: TextStyle(color: statusColor, fontSize: 10)),
-                  ),
-                  const SizedBox(width: 4),
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                    decoration: BoxDecoration(
-                      color: (secondaryColor ?? statusColor).withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    child: Text(statusValue,
-                        style: TextStyle(
-                            color: secondaryColor ?? statusColor,
-                            fontWeight: FontWeight.bold)),
-                  ),
-                ],
-              ),
+              _buildNavIcon(Icons.home, 0),
+              _buildNavIcon(Icons.search, 1),
+              _buildNavIcon(Icons.article, 2),
+              _buildNavIcon(Icons.account_circle, 3),
             ],
-          )
-        ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Nav icon builder
+  Widget _buildNavIcon(IconData icon, int index) {
+    return Expanded(
+      child: IconButton(
+        icon: Icon(
+          icon,
+          size: 30,
+          color: _selectedIndex == index ? Colors.deepPurple : Colors.grey,
+        ),
+        onPressed: () => _onItemTapped(index),
+      ),
+    );
+  }
+
+  // Stat card builder
+  Widget _buildStatCard(IconData icon, String label, String count) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        margin: const EdgeInsets.symmetric(horizontal: 4),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+                color: Colors.black12, blurRadius: 8, offset: Offset(0, 2)),
+          ],
+        ),
+        child: Column(
+          children: [
+            Icon(icon, size: 28, color: Colors.deepPurple),
+            SizedBox(height: 8),
+            Text(count,
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            Text(label, style: TextStyle(fontSize: 14)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Message card builder
+  Widget _buildMessageCard(String title, String message, String time) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.symmetric(vertical: 6),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 6)],
+      ),
+      child: ListTile(
+        title: Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
+        subtitle: Text(message),
+        trailing: Text(time, style: TextStyle(color: Colors.grey)),
       ),
     );
   }
