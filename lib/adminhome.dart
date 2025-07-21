@@ -16,106 +16,185 @@ class _AdminHomePageState extends State<AdminHomePage> {
     setState(() {
       _selectedIndex = index;
     });
-    // Optional: Add navigation logic here
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue.shade50,
+      backgroundColor: Colors.white,
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: SingleChildScrollView(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Header Section
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    CircleAvatar(
-                        radius: 28, backgroundColor: Colors.deepPurple),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    Row(
                       children: [
-                        Text("Welcome,",
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.w500)),
-                        Text(widget.userName,
-                            style: TextStyle(
-                                fontSize: 22, fontWeight: FontWeight.bold)),
+                        Image.asset("Logoostocare.png", height: 60),
+                        SizedBox(width: 12),
+                        Text(
+                          "Hello, ${widget.userName}!",
+                          style: TextStyle(
+                              fontSize: 24, fontWeight: FontWeight.bold),
+                        ),
                       ],
                     ),
-                    Icon(Icons.notifications_none, size: 30),
+                    Column(
+                      children: [
+                        Icon(Icons.health_and_safety_outlined,
+                            size: 30, color: Colors.deepPurple),
+                        Text("OstoCare",
+                            style: TextStyle(color: Colors.deepPurple)),
+                      ],
+                    )
                   ],
                 ),
-                SizedBox(height: 30),
-
-                // Calendar Card
+                SizedBox(height: 24),
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: Container(
+                        padding: EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                              colors: [Colors.purple, Colors.purpleAccent]),
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("MON", style: TextStyle(color: Colors.white)),
+                            Text("1",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 36,
+                                    fontWeight: FontWeight.bold)),
+                            Text("Ostomy Meeting",
+                                style: TextStyle(color: Colors.white)),
+                            SizedBox(height: 10),
+                            Text("View Tasks",
+                                style: TextStyle(color: Colors.white70)),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 12),
+                    Expanded(
+                      flex: 3,
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                  child: _buildInfoCard("Hours Worked", "7")),
+                              SizedBox(width: 8),
+                              Expanded(
+                                  child: _buildInfoCard(
+                                      "T.Patients Assigned", "10")),
+                            ],
+                          ),
+                          SizedBox(height: 8),
+                          _buildInfoCard("Patients watched for Today", "5",
+                              doubleCard: true),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 16),
                 Container(
-                  padding: const EdgeInsets.all(20),
+                  padding: EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Colors.deepPurple.shade100,
-                    borderRadius: BorderRadius.circular(20),
+                    color: Colors.grey.shade800,
+                    borderRadius: BorderRadius.circular(30),
                   ),
                   child: Row(
                     children: [
-                      Icon(Icons.calendar_today, size: 30, color: Colors.white),
-                      SizedBox(width: 15),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("Next in 1 hour 15min",
+                                style: TextStyle(color: Colors.white70)),
+                            Text("Senior Admin Meeting",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold)),
+                          ],
+                        ),
+                      ),
                       Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          Text("Upcoming Meeting",
-                              style:
-                                  TextStyle(fontSize: 16, color: Colors.white)),
-                          SizedBox(height: 4),
-                          Text("10:00 AM - 10:30 AM",
-                              style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white)),
+                          Row(
+                            children: [
+                              CircleAvatar(
+                                  radius: 6, backgroundColor: Colors.teal),
+                              SizedBox(width: 4),
+                              CircleAvatar(
+                                  radius: 6, backgroundColor: Colors.green),
+                            ],
+                          ),
+                          SizedBox(height: 6),
+                          Text("12:00 PM - 01:00 PM",
+                              style: TextStyle(color: Colors.white54)),
                         ],
                       ),
                     ],
                   ),
                 ),
-                SizedBox(height: 20),
-
-                // Stats Row
+                SizedBox(height: 24),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    _buildStatCard(Icons.work, "Projects", "12"),
-                    _buildStatCard(Icons.check_circle, "Tasks", "34"),
-                    _buildStatCard(Icons.people, "Teams", "5"),
+                    Text("Patient Updates",
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold)),
+                    Row(
+                      children: [
+                        Container(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: Colors.green.shade800,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child:
+                              Text("3", style: TextStyle(color: Colors.white)),
+                        ),
+                        SizedBox(width: 4),
+                        Text("New",
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                        SizedBox(width: 4),
+                        Text("messages",
+                            style: TextStyle(color: Colors.deepPurple)),
+                      ],
+                    )
                   ],
                 ),
-                SizedBox(height: 20),
-
-                // Messages
-                Text("Latest Messages",
-                    style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
-                SizedBox(height: 10),
-                _buildMessageCard("Project Update",
-                    "Just completed the login module.", "Now"),
-                _buildMessageCard("Client Feedback",
-                    "Looks great! Let's move to QA.", "1h ago"),
-                _buildMessageCard(
-                    "Reminder", "Team meeting tomorrow.", "2h ago"),
+                SizedBox(height: 12),
+                _buildPatientCard("Mr. Thenura", "Stoma supplier query", "05",
+                    Colors.green, false),
+                _buildPatientCard("Mr. Mangala", "Consultation delay notice",
+                    "02", Colors.yellow, true),
+                _buildPatientCard(
+                    "Mr. Rathnayaka", "", "02", Colors.red, false),
+                _buildPatientCard("Mr. Mangala", "Consultation delay notice",
+                    "02", Colors.yellow, true),
               ],
             ),
           ),
         ),
       ),
-
-      // Bottom Navigation Bar
       bottomNavigationBar: BottomAppBar(
         color: Colors.white,
         child: Container(
           height: 60,
-          color: Colors.transparent,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -130,61 +209,100 @@ class _AdminHomePageState extends State<AdminHomePage> {
     );
   }
 
-  // Nav icon builder
   Widget _buildNavIcon(IconData icon, int index) {
     return Expanded(
       child: IconButton(
         icon: Icon(
           icon,
           size: 30,
-          color: _selectedIndex == index ? Colors.deepPurple : Colors.grey,
+          color: _selectedIndex == index ? Colors.teal : Colors.deepPurple,
         ),
         onPressed: () => _onItemTapped(index),
       ),
     );
   }
 
-  // Stat card builder
-  Widget _buildStatCard(IconData icon, String label, String count) {
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        margin: const EdgeInsets.symmetric(horizontal: 4),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-                color: Colors.black12, blurRadius: 8, offset: Offset(0, 2)),
-          ],
-        ),
-        child: Column(
-          children: [
-            Icon(icon, size: 28, color: Colors.deepPurple),
-            SizedBox(height: 8),
-            Text(count,
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-            Text(label, style: TextStyle(fontSize: 14)),
-          ],
-        ),
+  Widget _buildInfoCard(String label, String count, {bool doubleCard = false}) {
+    return Container(
+      padding: EdgeInsets.all(12),
+      height: doubleCard ? 70 : 60,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+            colors: [Colors.blueAccent, Colors.deepPurpleAccent]),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Center(
+        child: Text("$label\n$count",
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500)),
       ),
     );
   }
 
-  // Message card builder
-  Widget _buildMessageCard(String title, String message, String time) {
+  Widget _buildPatientCard(String name, String note, String minutes,
+      Color statusColor, bool overdue) {
     return Container(
-      padding: const EdgeInsets.all(16),
-      margin: const EdgeInsets.symmetric(vertical: 6),
+      margin: EdgeInsets.symmetric(vertical: 6),
+      padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.lightBlueAccent.shade100,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 6)],
+        boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 4)],
       ),
-      child: ListTile(
-        title: Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
-        subtitle: Text(message),
-        trailing: Text(time, style: TextStyle(color: Colors.grey)),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CircleAvatar(
+            radius: 22,
+            backgroundImage: AssetImage("assets/profile.png"),
+          ),
+          SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(name, style: TextStyle(fontWeight: FontWeight.bold)),
+                    SizedBox(width: 6),
+                    Icon(Icons.circle, size: 10, color: Colors.blue),
+                  ],
+                ),
+                if (note.isNotEmpty) Text(note),
+              ],
+            ),
+          ),
+          Column(
+            children: [
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                decoration: BoxDecoration(
+                  color: Colors.blue.shade300,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text("Status",
+                    style: TextStyle(fontSize: 10, color: Colors.white)),
+              ),
+              SizedBox(height: 4),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                decoration: BoxDecoration(
+                  color: overdue ? Colors.pink.shade100 : Colors.blue.shade100,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  children: [
+                    Text(overdue ? "Overdue in" : "Change in",
+                        style: TextStyle(fontSize: 10)),
+                    SizedBox(width: 4),
+                    Text(minutes,
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ],
+                ),
+              ),
+            ],
+          )
+        ],
       ),
     );
   }
