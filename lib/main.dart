@@ -14,6 +14,8 @@ import 'supplyagents.dart';
 import 'supplyselect.dart';
 import 'privatehos.dart';
 import 'govhos.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'adminhome.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,9 +28,9 @@ void main() async {
     messagingSenderId: '180639517082',
     appId: '1:180639517082:web:9188b8a2a8cfd823429223',
     measurementId: 'G-RXGSZ5LSRG',
-    databaseURL: 'https://ostocare-491c5-default-rtdb.asia-southeast1.firebasedatabase.app/',
+    databaseURL:
+        'https://ostocare-491c5-default-rtdb.asia-southeast1.firebasedatabase.app/',
   );
-  
 
   await Firebase.initializeApp(options: firebaseOptions);
   await FirebaseAuth.instance.setPersistence(Persistence.LOCAL);
@@ -68,8 +70,7 @@ class AuthWrapper extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(body: Center(child: CircularProgressIndicator()));
-        }
-        else {
+        } else {
           return MainPage();
         }
       },
@@ -126,32 +127,35 @@ class _MainPageState extends State<MainPage> {
               SizedBox(height: 20),
               Text(
                 "OstoCare",
-                style: TextStyle(fontSize: 35, fontWeight: FontWeight.w200, color: Colors.white),
+                style: TextStyle(
+                    fontSize: 35,
+                    fontWeight: FontWeight.w200,
+                    color: Colors.white),
               ),
               SizedBox(height: 50),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => LoginPage()));
                 },
                 child: Text("Login", style: TextStyle(color: Colors.white)),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.deepPurple,
                   padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                  minimumSize: Size(150, 50), // Ensures equal width
+                  minimumSize: Size(150, 50),
                 ),
               ),
-
               SizedBox(height: 20),
-
               ElevatedButton(
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => SignupPage()));
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => SignupPage()));
                 },
                 child: Text("Sign Up", style: TextStyle(color: Colors.white)),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
                   padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                  minimumSize: Size(150, 50), // Matches "Login" button
+                  minimumSize: Size(150, 50),
                 ),
               ),
             ],

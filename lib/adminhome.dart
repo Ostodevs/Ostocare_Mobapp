@@ -11,12 +11,12 @@ class AdminHomePage extends StatelessWidget {
       backgroundColor: const Color(0xFFE8F5FD),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(0),
+          padding: EdgeInsets.zero,
           child: Column(
             children: [
-              // Header
               Container(
-                padding: const EdgeInsets.all(0),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 20, horizontal: 12),
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
                     colors: [Color(0xFF3DB8FF), Color(0xFF67D1F3)],
@@ -24,8 +24,8 @@ class AdminHomePage extends StatelessWidget {
                     end: Alignment.bottomRight,
                   ),
                   borderRadius: const BorderRadius.only(
-                    bottomLeft: Radius.circular(60),
-                    bottomRight: Radius.circular(60),
+                    bottomLeft: Radius.circular(30),
+                    bottomRight: Radius.circular(30),
                   ),
                   boxShadow: [
                     BoxShadow(
@@ -41,7 +41,7 @@ class AdminHomePage extends StatelessWidget {
                     Row(
                       children: [
                         Image.asset("assets/Cuteavatar.png", height: 70),
-                        const SizedBox(width: 16),
+                        const SizedBox(width: 12),
                         Expanded(
                           child: Text(
                             "Hello, $userName!",
@@ -69,7 +69,7 @@ class AdminHomePage extends StatelessWidget {
                         Expanded(
                           flex: 2,
                           child: Container(
-                            padding: const EdgeInsets.all(16),
+                            padding: const EdgeInsets.all(14),
                             decoration: BoxDecoration(
                               color: const Color(0xFFB368F1),
                               borderRadius: BorderRadius.circular(30),
@@ -103,17 +103,17 @@ class AdminHomePage extends StatelessWidget {
                             ),
                           ),
                         ),
-                        const SizedBox(width: 12),
+                        const SizedBox(width: 10),
                         Expanded(
                           flex: 3,
                           child: Column(
                             children: [
                               _roundedStatCard("Hours Worked", "7",
                                   [Color(0xFF536DFE), Color(0xFF5C6BC0)]),
-                              const SizedBox(height: 12),
+                              const SizedBox(height: 10),
                               _roundedStatCard("T.Patients Assigned", "10",
                                   [Color(0xFF7B1FA2), Color(0xFF9575CD)]),
-                              const SizedBox(height: 12),
+                              const SizedBox(height: 10),
                               _roundedStatCard("Patients watched for Today",
                                   "5", [Color(0xFF1976D2), Color(0xFF64B5F6)]),
                             ],
@@ -123,7 +123,7 @@ class AdminHomePage extends StatelessWidget {
                     ),
                     const SizedBox(height: 20),
                     Container(
-                      padding: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(14),
                       decoration: BoxDecoration(
                         color: const Color(0xFF3A3A3A),
                         borderRadius: BorderRadius.circular(30),
@@ -163,41 +163,50 @@ class AdminHomePage extends StatelessWidget {
                   ],
                 ),
               ),
-
               const SizedBox(height: 30),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text("Patient Updates",
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                  Row(
-                    children: const [
-                      CircleAvatar(
-                          radius: 10,
-                          backgroundColor: Colors.green,
-                          child: Text("3",
-                              style: TextStyle(
-                                  fontSize: 12, color: Colors.white))),
-                      SizedBox(width: 6),
-                      Text("New ", style: TextStyle(fontSize: 16)),
-                      Text("messages",
-                          style: TextStyle(color: Colors.blue, fontSize: 16)),
-                    ],
-                  )
-                ],
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text("Patient Updates",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold)),
+                    Row(
+                      children: const [
+                        CircleAvatar(
+                            radius: 10,
+                            backgroundColor: Colors.green,
+                            child: Text("3",
+                                style: TextStyle(
+                                    fontSize: 12, color: Colors.white))),
+                        SizedBox(width: 6),
+                        Text("New ", style: TextStyle(fontSize: 16)),
+                        Text("messages",
+                            style: TextStyle(color: Colors.blue, fontSize: 16)),
+                      ],
+                    )
+                  ],
+                ),
               ),
               const SizedBox(height: 14),
-              _messageCard("Mr. Thenura", "Stoma supplier query", "Change in",
-                  "05", Colors.green, "Status"),
-              _messageCard("Mr. Mangala", "Consultation delay notice",
-                  "Overdue in", "02", Colors.red, "Status",
-                  secondaryColor: Colors.yellow),
-              _messageCard("Mr. Rathnayaka", "Consultation delay notice",
-                  "Change in", "02", Colors.green, "Status"),
-              _messageCard("Mr. Mangala", "Consultation delay notice",
-                  "Overdue in", "02", Colors.red, "Status",
-                  secondaryColor: Colors.yellow),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Column(
+                  children: [
+                    _messageCard("Mr. Thenura", "Stoma supplier query",
+                        "Change in", "05", Colors.green, "Status"),
+                    _messageCard("Mr. Mangala", "Consultation delay notice",
+                        "Overdue in", "02", Colors.red, "Status",
+                        secondaryColor: Colors.yellow),
+                    _messageCard("Mr. Rathnayaka", "Consultation delay notice",
+                        "Change in", "02", Colors.green, "Status"),
+                    _messageCard("Mr. Mangala", "Consultation delay notice",
+                        "Overdue in", "02", Colors.red, "Status",
+                        secondaryColor: Colors.yellow),
+                  ],
+                ),
+              ),
               const SizedBox(height: 80),
             ],
           ),
