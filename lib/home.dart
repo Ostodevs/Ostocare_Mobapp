@@ -14,7 +14,7 @@ import 'dart:ui';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'dart:async';
 import 'package:intl/intl.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   final String userName;
@@ -50,14 +50,20 @@ class _HomePageState extends State<HomePage> {
   bool showGreeting = true;
   Timer? _messageSwitcherTimer;
 
-
   @override
   void initState() {
     super.initState();
+    _saveLastVisitedScreen();
     _fetchLastBagChangeDate();
     _setGreeting();
     _fetchFirebaseMessage();
     _startMessageSwitching();
+  }
+
+  Future<void> _saveLastVisitedScreen() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('lastRoute', '/home');
+    await prefs.setString('lastUserName', widget.userName);
   }
 
   void _setGreeting() {
@@ -111,11 +117,10 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-
   Future<void> _fetchLastBagChangeDate() async {
     String userId = FirebaseAuth.instance.currentUser?.uid ?? "";
-    DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection(
-        'users').doc(userId).get();
+    DocumentSnapshot userDoc =
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
 
     if (userDoc.exists && userDoc.data() != null) {
       Timestamp? lastChangeTimestamp = userDoc.get('lastBagChangeDate');
@@ -129,9 +134,11 @@ class _HomePageState extends State<HomePage> {
           _lastBagChangeDate = lastChangeDate;
 
           if (isOverdue) {
-            overdueDays = List.generate(difference, (i) => lastChangeDate.add(Duration(days: i + 1)));
+            overdueDays = List.generate(
+                difference, (i) => lastChangeDate.add(Duration(days: i + 1)));
           } else {
-            upcomingDays = List.generate(7, (i) => lastChangeDate.add(Duration(days: i + 1)));
+            upcomingDays = List.generate(
+                7, (i) => lastChangeDate.add(Duration(days: i + 1)));
           }
 
           _highlightedDays = [...upcomingDays, ...overdueDays];
@@ -198,7 +205,6 @@ class _HomePageState extends State<HomePage> {
       _isImageOverlayVisible = false;
     });
   }
-
 
   void _showHospitalSelectionDialog() {
     showDialog(
@@ -277,224 +283,254 @@ class _HomePageState extends State<HomePage> {
         children: [
           SingleChildScrollView(
             controller: _scrollController,
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  minHeight: MediaQuery.of(context).size.height,
-                ),
-                child: Container(
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [Color(0xFF9CE7F8), Color(0xFF00A8CF)],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                    ),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: MediaQuery.of(context).size.height,
+              ),
+              child: Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Color(0xFF9CE7F8), Color(0xFF00A8CF)],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
                   ),
-                  child: Column(
-                    children: [
-                  SizedBox(height: 20),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 20),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              GestureDetector(
-                                onTap: _showImageOverlay,
-                                child: Image.asset(
-                                  'assets/Logoostocare.png',
-                                  height: 70,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              const Text(
-                                'Ostocare',
-                                style: TextStyle(
-                                  fontFamily: 'DancingScript',
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.7),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            padding: const EdgeInsets.all(16),
-                            margin: const EdgeInsets.only(left: 16),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                ),
+                child: Column(
+                  children: [
+                    SizedBox(height: 20),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0, vertical: 8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(left: 20),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      SizedBox(
-                                        width: 200,
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              showGreeting ? greeting : firebaseMessage,
-                                              style: const TextStyle(
-                                                fontSize: 25,
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                              textAlign: TextAlign.center,
-                                            ),
-                                            if (!showGreeting)
-                                              const SizedBox(height: 9),
-                                            if (showGreeting)
-                                              ConstrainedBox(
-                                                constraints: BoxConstraints(maxWidth: 200),
-                                                child: AutoSizeText(
-                                                  widget.userName,
-                                                  maxLines: 1,
-                                                  minFontSize: 12,
-                                                  textAlign: TextAlign.center,
-                                                  style: const TextStyle(
-                                                    fontSize: 37,
-                                                    color: Colors.deepPurple,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
+                                GestureDetector(
+                                  onTap: _showImageOverlay,
+                                  child: Image.asset(
+                                    'assets/Logoostocare.png',
+                                    height: 70,
                                   ),
                                 ),
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(20),
-                                  child: Image.asset(
-                                    'assets/Cuteavatar.png',
-                                    height: 100,
-                                    width: 80,
-                                    fit: BoxFit.cover,
+                                const SizedBox(height: 4),
+                                const Text(
+                                  'Ostocare',
+                                  style: TextStyle(
+                                    fontFamily: 'DancingScript',
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w400,
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 5),
-                  Stack(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 70.0, left: 16.0, right: 16.0),
-                        child: Card(
-                          color: Colors.white,
-                          shape: RoundedRectangleBorder(borderRadius: const BorderRadius.only(
-                            bottomLeft: Radius.circular(15),
-                            bottomRight: Radius.circular(15),
-                          ),),
-                          elevation: 5,
-                          child: Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
+                          Expanded(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.7),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              padding: const EdgeInsets.all(16),
+                              margin: const EdgeInsets.only(left: 16),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
                                       children: [
-                                        IconButton(
-                                          icon: const Icon(Icons.chevron_left),
-                                          onPressed: () {
-                                            setState(() {
-                                              _focusedDay = DateTime(
-                                                _focusedDay.year,
-                                                _focusedDay.month - 1,
-                                              );
-                                            });
-                                          },
-                                        ),
-                                        Text(
-                                          DateFormat.yMMMM().format(_focusedDay),
-                                          style: const TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
+                                        SizedBox(
+                                          width: 200,
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                showGreeting
+                                                    ? greeting
+                                                    : firebaseMessage,
+                                                style: const TextStyle(
+                                                  fontSize: 25,
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                                textAlign: TextAlign.center,
+                                              ),
+                                              if (!showGreeting)
+                                                const SizedBox(height: 9),
+                                              if (showGreeting)
+                                                ConstrainedBox(
+                                                  constraints: BoxConstraints(
+                                                      maxWidth: 200),
+                                                  child: AutoSizeText(
+                                                    widget.userName,
+                                                    maxLines: 1,
+                                                    minFontSize: 12,
+                                                    textAlign: TextAlign.center,
+                                                    style: const TextStyle(
+                                                      fontSize: 37,
+                                                      color: Colors.deepPurple,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ),
+                                            ],
                                           ),
                                         ),
-                                        IconButton(
-                                          icon: const Icon(Icons.chevron_right),
-                                          onPressed: () {
-                                            setState(() {
-                                              _focusedDay = DateTime(
-                                                _focusedDay.year,
-                                                _focusedDay.month + 1,
-                                              );
-                                            });
-                                          },
-                                        ),
                                       ],
                                     ),
-                                    ToggleButtons(
-                                      isSelected: [
-                                        _calendarFormat == CalendarFormat.month,
-                                        _calendarFormat == CalendarFormat.twoWeeks,
-                                        _calendarFormat == CalendarFormat.week,
-                                      ],
-                                      onPressed: (int index) {
-                                        setState(() {
-                                          switch (index) {
-                                            case 0:
-                                              _calendarFormat = CalendarFormat.month;
-                                              break;
-                                            case 1:
-                                              _calendarFormat = CalendarFormat.twoWeeks;
-                                              break;
-                                            case 2:
-                                              _calendarFormat = CalendarFormat.week;
-                                              break;
-                                          }
-                                        });
-                                      },
-                                      children: const [
-                                        Padding(
-                                          padding: EdgeInsets.symmetric(horizontal: 8),
-                                          child: Text('Month', style: TextStyle(fontSize: 12)),
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.symmetric(horizontal: 8),
-                                          child: Text('Two Weeks', style: TextStyle(fontSize: 12)),
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.symmetric(horizontal: 8),
-                                          child: Text('Week', style: TextStyle(fontSize: 12)),
-                                        ),
-                                      ],
+                                  ),
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(20),
+                                    child: Image.asset(
+                                      'assets/Cuteavatar.png',
+                                      height: 100,
+                                      width: 80,
+                                      fit: BoxFit.cover,
                                     ),
-                                  ],
-                                ),
-                                const SizedBox(height: 8),
-                                AnimatedContainer(
-                                  duration: const Duration(milliseconds: 300),
-                                  height: _calendarFormat == CalendarFormat.month
-                                      ? 280
-                                      : _calendarFormat == CalendarFormat.twoWeeks
-                                      ? 180
-                                      : 90,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 5),
+                    Stack(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              top: 70.0, left: 16.0, right: 16.0),
+                          child: Card(
+                            color: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: const BorderRadius.only(
+                                bottomLeft: Radius.circular(15),
+                                bottomRight: Radius.circular(15),
+                              ),
+                            ),
+                            elevation: 5,
+                            child: Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          IconButton(
+                                            icon:
+                                                const Icon(Icons.chevron_left),
+                                            onPressed: () {
+                                              setState(() {
+                                                _focusedDay = DateTime(
+                                                  _focusedDay.year,
+                                                  _focusedDay.month - 1,
+                                                );
+                                              });
+                                            },
+                                          ),
+                                          Text(
+                                            DateFormat.yMMMM()
+                                                .format(_focusedDay),
+                                            style: const TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          IconButton(
+                                            icon:
+                                                const Icon(Icons.chevron_right),
+                                            onPressed: () {
+                                              setState(() {
+                                                _focusedDay = DateTime(
+                                                  _focusedDay.year,
+                                                  _focusedDay.month + 1,
+                                                );
+                                              });
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                      ToggleButtons(
+                                        isSelected: [
+                                          _calendarFormat ==
+                                              CalendarFormat.month,
+                                          _calendarFormat ==
+                                              CalendarFormat.twoWeeks,
+                                          _calendarFormat ==
+                                              CalendarFormat.week,
+                                        ],
+                                        onPressed: (int index) {
+                                          setState(() {
+                                            switch (index) {
+                                              case 0:
+                                                _calendarFormat =
+                                                    CalendarFormat.month;
+                                                break;
+                                              case 1:
+                                                _calendarFormat =
+                                                    CalendarFormat.twoWeeks;
+                                                break;
+                                              case 2:
+                                                _calendarFormat =
+                                                    CalendarFormat.week;
+                                                break;
+                                            }
+                                          });
+                                        },
+                                        children: const [
+                                          Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 8),
+                                            child: Text('Month',
+                                                style: TextStyle(fontSize: 12)),
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 8),
+                                            child: Text('Two Weeks',
+                                                style: TextStyle(fontSize: 12)),
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 8),
+                                            child: Text('Week',
+                                                style: TextStyle(fontSize: 12)),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 8),
+                                  AnimatedContainer(
+                                    duration: const Duration(milliseconds: 300),
+                                    height:
+                                        _calendarFormat == CalendarFormat.month
+                                            ? 280
+                                            : _calendarFormat ==
+                                                    CalendarFormat.twoWeeks
+                                                ? 180
+                                                : 90,
                                     child: TableCalendar(
                                       focusedDay: _focusedDay,
                                       firstDay: DateTime(2000),
                                       lastDay: DateTime(2100),
                                       calendarFormat: _calendarFormat,
                                       headerVisible: false,
-                                      selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+                                      selectedDayPredicate: (day) =>
+                                          isSameDay(_selectedDay, day),
                                       onDaySelected: (selectedDay, focusedDay) {
                                         setState(() {
                                           _selectedDay = selectedDay;
@@ -503,34 +539,41 @@ class _HomePageState extends State<HomePage> {
                                       },
                                       eventLoader: (day) => [],
                                       calendarBuilders: CalendarBuilders(
-                                        defaultBuilder: (context, day, focusedDay) {
-                                          bool isOverdueDay = overdueDays.any((d) => isSameDay(d, day));
-                                          bool isUpcomingDay = upcomingDays.any((d) => isSameDay(d, day));
+                                        defaultBuilder:
+                                            (context, day, focusedDay) {
+                                          bool isOverdueDay = overdueDays
+                                              .any((d) => isSameDay(d, day));
+                                          bool isUpcomingDay = upcomingDays
+                                              .any((d) => isSameDay(d, day));
 
                                           if (isOverdueDay) {
                                             return Container(
                                               margin: const EdgeInsets.all(6.0),
                                               decoration: BoxDecoration(
-                                                color: Colors.red.withOpacity(0.5),
+                                                color:
+                                                    Colors.red.withOpacity(0.5),
                                                 shape: BoxShape.circle,
                                               ),
                                               alignment: Alignment.center,
                                               child: Text(
                                                 '${day.day}',
-                                                style: TextStyle(color: Colors.white),
+                                                style: TextStyle(
+                                                    color: Colors.white),
                                               ),
                                             );
                                           } else if (isUpcomingDay) {
                                             return Container(
                                               margin: const EdgeInsets.all(6.0),
                                               decoration: BoxDecoration(
-                                                color: Colors.green.withOpacity(0.5),
+                                                color: Colors.green
+                                                    .withOpacity(0.5),
                                                 shape: BoxShape.circle,
                                               ),
                                               alignment: Alignment.center,
                                               child: Text(
                                                 '${day.day}',
-                                                style: TextStyle(color: Colors.white),
+                                                style: TextStyle(
+                                                    color: Colors.white),
                                               ),
                                             );
                                           }
@@ -538,192 +581,199 @@ class _HomePageState extends State<HomePage> {
                                         },
                                       ),
                                     ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        top: 32,
-                        left: 20,
-                        right: 20,
-                        child: GestureDetector(
-                          onTap: _showDatePicker,
-                          child: ClipRRect(
-                            borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(15),
-                              topRight: Radius.circular(15),
-                            ),
-                            child: Container(
-                              color: isOverdue ? Colors.red : Colors.lightBlueAccent,
-                              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                              child: Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  Center(
-                                    child: Text(
-                                      isOverdue
-                                          ? "Overdue by ${-daysLeft} days"
-                                          : "Days left for a bag change: $daysLeft",
-                                      style: const TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                  Positioned(
-                                    right: 0,
-                                    child: Icon(
-                                      Icons.edit,
-                                      color: Colors.white,
-                                      size: 17,
-                                    ),
                                   ),
                                 ],
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 10),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) =>
-                              TrackProgress()),
-                        );
-                      },
-                      borderRadius: BorderRadius.circular(20),
-                      child: Card(
-                        color: Colors.white,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20)),
-                        elevation: 5,
-                        child: Container(
-                          height: 60,
-                          width: double.infinity,
-                          padding: EdgeInsets.all(16.0),
-                          child: Center(
-                            child: Text(
-                              "Track your progress today!",
-                              style: TextStyle(fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.deepPurple),
+                        Positioned(
+                          top: 32,
+                          left: 20,
+                          right: 20,
+                          child: GestureDetector(
+                            onTap: _showDatePicker,
+                            child: ClipRRect(
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(15),
+                                topRight: Radius.circular(15),
+                              ),
+                              child: Container(
+                                color: isOverdue
+                                    ? Colors.red
+                                    : Colors.lightBlueAccent,
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 8, horizontal: 16),
+                                child: Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    Center(
+                                      child: Text(
+                                        isOverdue
+                                            ? "Overdue by ${-daysLeft} days"
+                                            : "Days left for a bag change: $daysLeft",
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                    Positioned(
+                                      right: 0,
+                                      child: Icon(
+                                        Icons.edit,
+                                        color: Colors.white,
+                                        size: 17,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 10),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => TrackProgress()),
+                          );
+                        },
+                        borderRadius: BorderRadius.circular(20),
+                        child: Card(
+                          color: Colors.white,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20)),
+                          elevation: 5,
+                          child: Container(
+                            height: 60,
+                            width: double.infinity,
+                            padding: EdgeInsets.all(16.0),
+                            child: Center(
+                              child: Text(
+                                "Track your progress today!",
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.deepPurple),
+                              ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                  SizedBox(height: 10),
-                  GestureDetector(
-                    onTap: _showHospitalSelectionDialog,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Card(
-                        color: Colors.white,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20)),
-                        elevation: 5,
-                        child: Container(
-                          height: 120,
-                          width: double.infinity,
-                          padding: EdgeInsets.all(16.0),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                flex: 3,
-                                child: Text(
-                                  "Find hospitals and nurses near you!",
-                                  style: TextStyle(fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.deepPurple),
-                                  textAlign: TextAlign.center,
+                    SizedBox(height: 10),
+                    GestureDetector(
+                      onTap: _showHospitalSelectionDialog,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Card(
+                          color: Colors.white,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20)),
+                          elevation: 5,
+                          child: Container(
+                            height: 120,
+                            width: double.infinity,
+                            padding: EdgeInsets.all(16.0),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  flex: 3,
+                                  child: Text(
+                                    "Find hospitals and nurses near you!",
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.deepPurple),
+                                    textAlign: TextAlign.center,
+                                  ),
                                 ),
-                              ),
-                              Expanded(
-                                flex: 3,
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  child: Image.asset('assets/homepageimg2.png',
-                                      fit: BoxFit.contain,
-                                      width: 100,
-                                      height: 100),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 2),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => SupplySelectPage()),
-                      );
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Card(
-                        color: Colors.white,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20)),
-                        elevation: 5,
-                        child: Container(
-                          height: 120,
-                          width: double.infinity,
-                          padding: EdgeInsets.all(16.0),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                flex: 2,
-                                child: Container(
-                                  width: double.infinity,
-                                  height: double.infinity,
-                                  child: Center(
+                                Expanded(
+                                  flex: 3,
+                                  child: Container(
+                                    alignment: Alignment.center,
                                     child: Image.asset(
-                                        'assets/homepageimg3.png',
+                                        'assets/homepageimg2.png',
                                         fit: BoxFit.contain,
                                         width: 100,
                                         height: 100),
                                   ),
                                 ),
-                              ),
-                              Expanded(
-                                flex: 3,
-                                child: Container(
-                                  height: double.infinity,
-                                  child: Center(
-                                    child: Text(
-                                      "Contact your supply agents!",
-                                      style: TextStyle(fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.deepPurple),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                  SizedBox(height: 20),
-                ],
-               ),
+                    SizedBox(height: 2),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SupplySelectPage()),
+                        );
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Card(
+                          color: Colors.white,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20)),
+                          elevation: 5,
+                          child: Container(
+                            height: 120,
+                            width: double.infinity,
+                            padding: EdgeInsets.all(16.0),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  flex: 2,
+                                  child: Container(
+                                    width: double.infinity,
+                                    height: double.infinity,
+                                    child: Center(
+                                      child: Image.asset(
+                                          'assets/homepageimg3.png',
+                                          fit: BoxFit.contain,
+                                          width: 100,
+                                          height: 100),
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 3,
+                                  child: Container(
+                                    height: double.infinity,
+                                    child: Center(
+                                      child: Text(
+                                        "Contact your supply agents!",
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.deepPurple),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                  ],
+                ),
               ),
             ),
           ),
@@ -767,9 +817,9 @@ class _HomePageState extends State<HomePage> {
                             SizedBox(height: 10),
                             Text(
                               "We are the creators of this comprehensive platform, designed to support individuals facing health challenges. "
-                                  "We understand the daily struggles you endure in this ongoing fight, and we have made it our mission to stand alongside you. "
-                                  "Remember, you are not alone in this journey, We are here to support you in every step of the way.\n\n"
-                                  "~ Ostocare family",
+                              "We understand the daily struggles you endure in this ongoing fight, and we have made it our mission to stand alongside you. "
+                              "Remember, you are not alone in this journey, We are here to support you in every step of the way.\n\n"
+                              "~ Ostocare family",
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.w400,
@@ -802,8 +852,10 @@ class _HomePageState extends State<HomePage> {
                   const bubbleSize = 70.0;
                   const headerHeight = 100.0;
 
-                  _rightPosition = _rightPosition.clamp(0.0, screenWidth - bubbleSize);
-                  _bottomPosition = _bottomPosition.clamp(0.0, screenHeight - bubbleSize - headerHeight);
+                  _rightPosition =
+                      _rightPosition.clamp(0.0, screenWidth - bubbleSize);
+                  _bottomPosition = _bottomPosition.clamp(
+                      0.0, screenHeight - bubbleSize - headerHeight);
                 });
               },
               onPanEnd: (_) {
@@ -812,9 +864,9 @@ class _HomePageState extends State<HomePage> {
 
                 setState(() {
                   if (bubbleMidX > screenWidth / 2) {
-                    _rightPosition = 10.0; // Snap to right
+                    _rightPosition = 10.0;
                   } else {
-                    _rightPosition = screenWidth - 80.0; // Snap to left
+                    _rightPosition = screenWidth - 80.0;
                   }
                 });
               },
@@ -825,7 +877,6 @@ class _HomePageState extends State<HomePage> {
                 });
               },
               onTap: () {
-                // Navigate to the Chat screen when tapped
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => ChatScreen()),
@@ -906,8 +957,8 @@ class _HomePageState extends State<HomePage> {
               ),
               Expanded(
                 child: IconButton(
-                  icon: Icon(
-                      Icons.account_circle, size: 35, color: Colors.deepPurple),
+                  icon: Icon(Icons.account_circle,
+                      size: 35, color: Colors.deepPurple),
                   onPressed: () => _onItemTapped(3),
                 ),
               ),

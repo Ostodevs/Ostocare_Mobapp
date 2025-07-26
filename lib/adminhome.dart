@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AdminHomePage extends StatefulWidget {
   final String userName;
@@ -6,11 +7,23 @@ class AdminHomePage extends StatefulWidget {
   const AdminHomePage({Key? key, required this.userName}) : super(key: key);
 
   @override
-  _AdminHomePageState createState() => _AdminHomePageState();
+  State<AdminHomePage> createState() => _AdminHomePageState();
 }
 
 class _AdminHomePageState extends State<AdminHomePage> {
   int _selectedIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _saveLastVisitedScreen();
+  }
+
+  Future<void> _saveLastVisitedScreen() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('lastRoute', '/adminhome');
+    await prefs.setString('lastUserName', widget.userName);
+  }
 
   void _onItemTapped(int index) {
     setState(() => _selectedIndex = index);
@@ -19,306 +32,291 @@ class _AdminHomePageState extends State<AdminHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade50,
+      backgroundColor: Colors.grey[100],
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildHeader(),
-              const SizedBox(height: 24),
-              _buildTopCards(),
-              const SizedBox(height: 20),
-              _buildUpcomingMeetingCard(),
-              const SizedBox(height: 28),
-              _buildPatientUpdatesHeader(),
-              const SizedBox(height: 12),
-              _buildPatientCard("Mr. Thenura", "Stoma supplier query", "05",
-                  Colors.green, false),
-              _buildPatientCard("Mr. Mangala", "Consultation delay notice",
-                  "02", Colors.orange, true),
-              _buildPatientCard("Mr. Rathnayaka", "", "02", Colors.red, false),
-            ],
-          ),
-        ),
-      ),
-      bottomNavigationBar: _buildBottomBar(),
-    );
-  }
-
-  Widget _buildHeader() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
-          children: [
-            Image.asset("Logoostocare.png", height: 55),
-            const SizedBox(width: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("Hello,",
-                    style:
-                        TextStyle(fontSize: 18, color: Colors.grey.shade700)),
-                Text(widget.userName,
-                    style: const TextStyle(
-                        fontSize: 22, fontWeight: FontWeight.bold)),
-              ],
-            )
-          ],
-        ),
-        Column(
-          children: const [
-            Icon(Icons.health_and_safety_outlined,
-                size: 30, color: Colors.deepPurple),
-            Text("OstoCare", style: TextStyle(color: Colors.deepPurple)),
-          ],
-        )
-      ],
-    );
-  }
-
-  Widget _buildTopCards() {
-    return Row(
-      children: [
-        // Calendar Card
-        Expanded(
-          flex: 2,
-          child: Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color(0xFF9C27B0), Color(0xFFE040FB)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
+              // Greeting card
+              Container(
+                decoration: BoxDecoration(
+                  color: Color(0xFFD5C7FF),
+                  borderRadius: BorderRadius.circular(28),
+                  boxShadow: [
+                    BoxShadow(color: Colors.grey.shade400, blurRadius: 8)
+                  ],
+                ),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Hello ${widget.userName.split(' ').first}!',
+                      style: TextStyle(
+                          fontSize: 26,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
+                    ),
+                    Image.asset('assets/Cuteavatar.png', height: 60),
+                  ],
+                ),
               ),
-              borderRadius: BorderRadius.circular(24),
-              boxShadow: [
-                BoxShadow(
-                    color: Colors.purple.shade100,
-                    blurRadius: 8,
-                    offset: const Offset(0, 6))
-              ],
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: const [
-                Text("MON",
-                    style: TextStyle(
-                        color: Colors.white70,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 14)),
-                SizedBox(height: 6),
-                Text("1",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 40,
-                        fontWeight: FontWeight.bold)),
-                SizedBox(height: 6),
-                Text("Ostomy Meeting",
-                    style: TextStyle(color: Colors.white, fontSize: 14)),
-                SizedBox(height: 12),
-                Text("View Tasks",
-                    style: TextStyle(color: Colors.white70, fontSize: 13)),
-              ],
-            ),
-          ),
-        ),
-        const SizedBox(width: 12),
-        // Stat Cards
-        Expanded(
-          flex: 3,
-          child: Column(
-            children: [
+              const SizedBox(height: 16),
+
+              // Search bar
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(18),
+                ),
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Search',
+                    prefixIcon: Icon(Icons.search, size: 30),
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.symmetric(vertical: 14),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Action cards
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(child: _buildInfoCard("Hours Worked", "7")),
-                  const SizedBox(width: 8),
-                  Expanded(child: _buildInfoCard("T.Patients Assigned", "10")),
+                  SizedBox(
+                    width: 160, // Adjust width here
+                    height: 160, // Adjust height here
+                    child: _buildGradientCard(
+                      "MON\n1",
+                      "Ostomy Meeting",
+                      "View Tasks",
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      children: [
+                        _buildSmallCard(
+                          title: "Senior Admin Meeting",
+                          time: "12:00 PM - 01:00 PM",
+                          hasIcons: true,
+                        ),
+                        const SizedBox(height: 10),
+                        _buildSmallCard(
+                          title: "Patients watched for Today",
+                          number: "5",
+                          hasIcons: false,
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
-              const SizedBox(height: 8),
-              _buildInfoCard("Patients watched for Today", "5",
-                  doubleCard: true),
+
+              const SizedBox(height: 24),
+
+              // Recent Activity Title
+              Text("Recent Activity",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
+
+              const SizedBox(height: 12),
+
+              // Horizontal info cards
+              Row(
+                children: [
+                  _buildInfoCard(
+                      "Lab results", "3 new tests results\navailable"),
+                  const SizedBox(width: 8),
+                  _buildInfoCard("WH day", "Today..."),
+                ],
+              ),
+
+              const SizedBox(height: 24),
+
+              // Patients Corner
+              _buildSection("Patients Corner", 2, [
+                _buildPatientTile("Mr. Thenura", "Stoma supplier query"),
+                _buildPatientTile("Mr. Mangala", "Consultation delay notice"),
+                _buildPatientTile("Mr. Mangala", "Consultation delay notice"),
+              ]),
+
+              const SizedBox(height: 12),
+
+              // Nurses Corner (empty structure for now)
+              _buildSection("Nurses Corner", 3, []),
             ],
           ),
         ),
-      ],
+      ),
+      // Bottom bar
+      bottomNavigationBar: BottomAppBar(
+        color: Colors.white,
+        child: Container(
+          height: 60,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              _navBarIcon(Icons.home, 0),
+              _navBarIcon(Icons.search, 1),
+              _navBarIcon(Icons.article, 2),
+              _navBarIcon(Icons.account_circle, 3),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
-  Widget _buildUpcomingMeetingCard() {
+  Widget _buildGradientCard(String day, String title, String action) {
     return Container(
-      padding: const EdgeInsets.all(18),
+      width: 160,
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.grey.shade800,
+        gradient: LinearGradient(
+          colors: [Colors.purple.shade300, Colors.purple.shade600],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
         borderRadius: BorderRadius.circular(24),
       ),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.access_time, color: Colors.white),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Text("Next in 1 hour 15min",
-                    style: TextStyle(color: Colors.white70, fontSize: 13)),
-                SizedBox(height: 4),
-                Text("Senior Admin Meeting",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold)),
-              ],
-            ),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: const [
-              Text("12:00 PM", style: TextStyle(color: Colors.white60)),
-              Text("- 01:00 PM", style: TextStyle(color: Colors.white60)),
-            ],
-          ),
+          Text(day,
+              style:
+                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+          SizedBox(height: 8),
+          Text(title, style: TextStyle(color: Colors.white, fontSize: 16)),
+          SizedBox(height: 12),
+          Text(action, style: TextStyle(color: Colors.white70, fontSize: 13)),
         ],
       ),
     );
   }
 
-  Widget _buildPatientUpdatesHeader() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        const Text("Patient Updates",
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-          decoration: BoxDecoration(
-            color: Colors.green.shade700,
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Row(
-            children: const [
-              Icon(Icons.mark_chat_unread, size: 16, color: Colors.white),
-              SizedBox(width: 6),
-              Text("3 New",
-                  style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white)),
-            ],
-          ),
-        )
-      ],
-    );
-  }
-
-  Widget _buildInfoCard(String label, String count, {bool doubleCard = false}) {
+  Widget _buildSmallCard(
+      {required String title,
+      String? time,
+      String? number,
+      bool hasIcons = false}) {
     return Container(
-      padding: const EdgeInsets.all(12),
-      height: doubleCard ? 70 : 60,
+      width: double.infinity,
+      padding: EdgeInsets.all(14),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-            colors: [Colors.blueAccent, Colors.deepPurpleAccent]),
+        gradient: LinearGradient(
+          colors: [Colors.purple.shade300, Colors.purple.shade600],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
         borderRadius: BorderRadius.circular(20),
       ),
-      child: Center(
-        child: Text("$label\n$count",
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-                color: Colors.white, fontWeight: FontWeight.w600)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title,
+              style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white)),
+          SizedBox(height: 6),
+          if (hasIcons)
+            Row(
+              children: [
+                Icon(Icons.circle, size: 12, color: Colors.green),
+                SizedBox(width: 4),
+                Icon(Icons.circle, size: 12, color: Colors.amber),
+                SizedBox(width: 8),
+                Text(time!,
+                    style: TextStyle(fontSize: 12, color: Colors.white)),
+              ],
+            )
+          else
+            Text(number!,
+                style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white)),
+        ],
       ),
     );
   }
 
-  Widget _buildPatientCard(String name, String note, String minutes,
-      Color statusColor, bool overdue) {
+  Widget _buildInfoCard(String title, String subtitle) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 6),
-      padding: const EdgeInsets.all(12),
+      width: 160,
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade300,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title,
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+          SizedBox(height: 8),
+          Text(subtitle, style: TextStyle(fontSize: 14)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSection(String title, int newCount, List<Widget> items) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
         color: Colors.white,
-        border: Border.all(color: Colors.blue.shade50),
-        borderRadius: BorderRadius.circular(18),
-        boxShadow: const [
-          BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2))
-        ],
+        borderRadius: BorderRadius.circular(20),
       ),
-      child: Row(
-        children: [
-          const CircleAvatar(
-            radius: 22,
-            backgroundImage: AssetImage("assets/profile.png"),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(name,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 15)),
-                if (note.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 4),
-                    child: Text(note,
-                        style: TextStyle(color: Colors.grey.shade700)),
-                  ),
-              ],
-            ),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: statusColor,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: const Text("Status",
-                    style: TextStyle(color: Colors.white, fontSize: 10)),
-              ),
-              const SizedBox(height: 6),
-              Text(overdue ? "Overdue in $minutes" : "Change in $minutes",
-                  style: const TextStyle(fontSize: 12, color: Colors.black54)),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildBottomBar() {
-    return BottomAppBar(
-      color: Colors.white,
-      shape: const CircularNotchedRectangle(),
-      notchMargin: 6.0,
-      child: SizedBox(
-        height: 60,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Row(
           children: [
-            _buildNavIcon(Icons.home, 0),
-            _buildNavIcon(Icons.search, 1),
-            _buildNavIcon(Icons.calendar_today, 2),
-            _buildNavIcon(Icons.person, 3),
+            Text(title,
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            SizedBox(width: 6),
+            Icon(Icons.fiber_manual_record, size: 10, color: Colors.cyan),
+            SizedBox(width: 4),
+            Text("$newCount New",
+                style: TextStyle(fontWeight: FontWeight.bold)),
           ],
         ),
-      ),
+        const SizedBox(height: 10),
+        ...items,
+        if (items.isNotEmpty)
+          Align(
+            alignment: Alignment.centerRight,
+            child: ElevatedButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.cyan),
+              child: Text("View All"),
+            ),
+          )
+      ]),
     );
   }
 
-  Widget _buildNavIcon(IconData icon, int index) {
-    return IconButton(
-      icon: Icon(
-        icon,
-        size: 30,
-        color: _selectedIndex == index ? Colors.teal : Colors.grey.shade600,
+  Widget _buildPatientTile(String name, String message) {
+    return ListTile(
+      leading:
+          CircleAvatar(backgroundImage: AssetImage('assets/Cuteavatar.png')),
+      title: Text(name, style: TextStyle(fontWeight: FontWeight.bold)),
+      subtitle: Text(message),
+      trailing: Icon(Icons.circle, size: 14, color: Colors.cyan),
+    );
+  }
+
+  Widget _navBarIcon(IconData icon, int index) {
+    return Expanded(
+      child: IconButton(
+        icon: Icon(icon,
+            size: 28,
+            color: _selectedIndex == index ? Colors.deepPurple : Colors.grey),
+        onPressed: () => _onItemTapped(index),
       ),
-      onPressed: () => _onItemTapped(index),
     );
   }
 }

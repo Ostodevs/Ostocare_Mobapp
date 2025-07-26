@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'login.dart';
 import 'signup.dart';
 import 'home.dart';
 import 'profile.dart';
-import 'dart:async';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'search.dart';
 import 'settings.dart';
 import 'news.dart';
@@ -14,8 +14,8 @@ import 'supplyagents.dart';
 import 'supplyselect.dart';
 import 'privatehos.dart';
 import 'govhos.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'adminhome.dart';
+import 'dart:async';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,41 +38,50 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Ostomy Care',
-      theme: ThemeData(primarySwatch: Colors.blue),
-      home: AuthWrapper(),
-      routes: {
-        '/settings': (context) => SettingsPage(),
-        '/search': (context) => SearchPage(),
-        '/profile': (context) => ProfilePage(),
-        '/supplyselect': (context) => SupplySelectPage(),
-        '/upload': (context) => UploadPage(),
-        '/supplyagents': (context) => SupplyAgentsPage(),
-        '/news': (context) => NewsPage(),
-        '/home': (context) => HomePage(userName: 'Some User'),
-        '/privatehos': (context) => PrivateHospitalPage(),
-        '/govhos': (context) => GovernmentHospitalsScreen(),
-        '/login': (context) => LoginPage(),
-      },
-    );
-  }
-}
+  Future<Widget> _getInitialScreen() async {
+    final prefs = await SharedPreferences.getInstance();
+    final lastRoute = prefs.getString('lastRoute');
+    final userName = prefs.getString('lastUserName') ?? 'Some User';
 
-class AuthWrapper extends StatelessWidget {
+    final isLoggedIn = FirebaseAuth.instance.currentUser != null;
+
+    if (isLoggedIn && lastRoute != null) {
+      if (lastRoute == '/home') return HomePage(userName: userName);
+      if (lastRoute == '/adminhome') return AdminHomePage(userName: userName);
+    }
+
+    return MainPage();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<User?>(
-      stream: FirebaseAuth.instance.authStateChanges(),
+    return FutureBuilder<Widget>(
+      future: _getInitialScreen(),
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Scaffold(body: Center(child: CircularProgressIndicator()));
-        } else {
-          return MainPage();
+        if (snapshot.connectionState != ConnectionState.done) {
+          return MaterialApp(
+              home: Scaffold(body: Center(child: CircularProgressIndicator())));
         }
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Ostomy Care',
+          theme: ThemeData(primarySwatch: Colors.blue),
+          home: snapshot.data!,
+          routes: {
+            '/settings': (context) => SettingsPage(),
+            '/search': (context) => SearchPage(),
+            '/profile': (context) => ProfilePage(),
+            '/supplyselect': (context) => SupplySelectPage(),
+            '/upload': (context) => UploadPage(),
+            '/supplyagents': (context) => SupplyAgentsPage(),
+            '/news': (context) => NewsPage(),
+            '/home': (context) => HomePage(userName: 'Some User'),
+            '/privatehos': (context) => PrivateHospitalPage(),
+            '/govhos': (context) => GovernmentHospitalsScreen(),
+            '/login': (context) => LoginPage(),
+            '/adminhome': (context) => AdminHomePage(userName: 'Some User'),
+          },
+        );
       },
     );
   }
