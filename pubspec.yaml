@@ -38,6 +38,7 @@ dependencies:
   cloud_functions: ^5.4.0
   flutter_launcher_icons: ^0.13.1
   permission_handler: ^11.3.1
+  shared_preferences: ^2.2.2
 
 dev_dependencies:
   flutter_test:
