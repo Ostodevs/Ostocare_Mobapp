@@ -39,34 +39,50 @@ class _AdminHomePageState extends State<AdminHomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Greeting card
-              Container(
-                decoration: BoxDecoration(
-                  color: Color(0xFFD5C7FF),
-                  borderRadius: BorderRadius.circular(28),
-                  boxShadow: [
-                    BoxShadow(color: Colors.grey.shade400, blurRadius: 8)
-                  ],
-                ),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Hello ${widget.userName.split(' ').first}!',
-                      style: TextStyle(
-                          fontSize: 26,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
+              // Top Section: Logo + Greeting
+              Row(
+                children: [
+                  Image.asset('assets/Logoostocare.png', height: 70),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [Color(0xFFD5C7FF), Color(0xFFC8B5FF)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(28),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.shade400,
+                            blurRadius: 6,
+                            offset: Offset(2, 4),
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Hello ${widget.userName.split(' ').first}!',
+                            style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                          Image.asset('assets/Cuteavatar.png', height: 50),
+                        ],
+                      ),
                     ),
-                    Image.asset('assets/Cuteavatar.png', height: 60),
-                  ],
-                ),
+                  ),
+                ],
               ),
               const SizedBox(height: 16),
 
-              // Search bar
+              // Search Bar
               Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -75,7 +91,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
                 child: TextField(
                   decoration: InputDecoration(
                     hintText: 'Search',
-                    prefixIcon: Icon(Icons.search, size: 30),
+                    prefixIcon: Icon(Icons.search, size: 28),
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.symmetric(vertical: 14),
                   ),
@@ -83,18 +99,15 @@ class _AdminHomePageState extends State<AdminHomePage> {
               ),
               const SizedBox(height: 16),
 
-              // Action cards
+              // Action Cards
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
-                    width: 160, // Adjust width here
-                    height: 160, // Adjust height here
+                    width: 160,
+                    height: 160,
                     child: _buildGradientCard(
-                      "MON\n1",
-                      "Ostomy Meeting",
-                      "View Tasks",
-                    ),
+                        "MON\n1", "Ostomy Meeting", "View Tasks"),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -116,16 +129,12 @@ class _AdminHomePageState extends State<AdminHomePage> {
                   ),
                 ],
               ),
-
               const SizedBox(height: 24),
 
-              // Recent Activity Title
               Text("Recent Activity",
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
-
               const SizedBox(height: 12),
 
-              // Horizontal info cards
               Row(
                 children: [
                   _buildInfoCard(
@@ -137,7 +146,6 @@ class _AdminHomePageState extends State<AdminHomePage> {
 
               const SizedBox(height: 24),
 
-              // Patients Corner
               _buildSection("Patients Corner", 2, [
                 _buildPatientTile("Mr. Thenura", "Stoma supplier query"),
                 _buildPatientTile("Mr. Mangala", "Consultation delay notice"),
@@ -146,15 +154,20 @@ class _AdminHomePageState extends State<AdminHomePage> {
 
               const SizedBox(height: 12),
 
-              // Nurses Corner (empty structure for now)
-              _buildSection("Nurses Corner", 3, []),
+              _buildSection("Nurses Corner", 3, [
+                _buildPatientTile("Nurse Chamari", "Schedule update"),
+                _buildPatientTile("Nurse Silva", "Report submission delay"),
+                _buildPatientTile("Nurse Seneviratne", "Overtime request"),
+              ]),
             ],
           ),
         ),
       ),
-      // Bottom bar
+
+      // Bottom Navigation Bar
       bottomNavigationBar: BottomAppBar(
         color: Colors.white,
+        elevation: 10,
         child: Container(
           height: 60,
           child: Row(
@@ -163,7 +176,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
               _navBarIcon(Icons.home, 0),
               _navBarIcon(Icons.search, 1),
               _navBarIcon(Icons.article, 2),
-              _navBarIcon(Icons.account_circle, 3),
+              _navBarIcon(Icons.person, 3),
             ],
           ),
         ),
@@ -173,7 +186,6 @@ class _AdminHomePageState extends State<AdminHomePage> {
 
   Widget _buildGradientCard(String day, String title, String action) {
     return Container(
-      width: 160,
       padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -291,7 +303,9 @@ class _AdminHomePageState extends State<AdminHomePage> {
             alignment: Alignment.centerRight,
             child: ElevatedButton(
               onPressed: () {},
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.cyan),
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.cyan,
+                  padding: EdgeInsets.symmetric(horizontal: 20)),
               child: Text("View All"),
             ),
           )
@@ -301,6 +315,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
 
   Widget _buildPatientTile(String name, String message) {
     return ListTile(
+      contentPadding: EdgeInsets.symmetric(horizontal: 0),
       leading:
           CircleAvatar(backgroundImage: AssetImage('assets/Cuteavatar.png')),
       title: Text(name, style: TextStyle(fontWeight: FontWeight.bold)),
