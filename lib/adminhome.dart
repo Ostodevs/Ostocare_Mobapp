@@ -13,6 +13,13 @@ class AdminHomePage extends StatefulWidget {
 class _AdminHomePageState extends State<AdminHomePage> {
   int _selectedIndex = 0;
 
+  // Example patient messages (replace with real data later)
+  final List<Map<String, String>> patientMessages = [
+    {"name": "Mr. Thenura", "message": "Stoma supplier query"},
+    {"name": "Mr. Mangala", "message": "Consultation delay notice"},
+    {"name": "Mr. Silva", "message": "Need urgent appointment"},
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -31,129 +38,162 @@ class _AdminHomePageState extends State<AdminHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    const double sectionSpacing = 16; // standard vertical space
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: const Color(0xFFEAF6FB),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Top Section: Logo + Greeting
-              Row(
-                children: [
-                  Image.asset('assets/Logoostocare.png', height: 70),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [Color(0xFFD5C7FF), Color(0xFFC8B5FF)],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        borderRadius: BorderRadius.circular(28),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.shade400,
-                            blurRadius: 6,
-                            offset: Offset(2, 4),
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Hello ${widget.userName.split(' ').first}!',
-                            style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                          Image.asset('assets/Cuteavatar.png', height: 50),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-
-              // Search Bar
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(18),
-                ),
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Search',
-                    prefixIcon: Icon(Icons.search, size: 28),
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.symmetric(vertical: 14),
+        child: Column(
+          children: [
+            // Greeting Row
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 11),
+                  child: Image.asset(
+                    'assets/Logoostocare.png',
+                    height: 85,
                   ),
                 ),
-              ),
-              const SizedBox(height: 16),
-
-              // Action Cards
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: 160,
-                    height: 160,
-                    child: _buildGradientCard(
-                        "MON\n1", "Ostomy Meeting", "View Tasks"),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      children: [
-                        _buildSmallCard(
-                          title: "Senior Admin Meeting",
-                          time: "12:00 PM - 01:00 PM",
-                          hasIcons: true,
-                        ),
-                        const SizedBox(height: 10),
-                        _buildSmallCard(
-                          title: "Patients watched for Today",
-                          number: "5",
-                          hasIcons: false,
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Container(
+                    alignment: Alignment.topRight,
+                    margin: EdgeInsets.zero,
+                    padding: const EdgeInsets.all(15),
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Color(0xFFD5C7FF), Color(0xFFC8B5FF)],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(28),
+                        bottomLeft: Radius.circular(28),
+                        bottomRight: Radius.circular(28),
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Color(0x55000000),
+                          blurRadius: 6,
+                          offset: Offset(2, 4),
                         ),
                       ],
                     ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Hello ${widget.userName.split(' ').first}!',
+                          style: const TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                        Image.asset('assets/Cuteavatar.png', height: 80),
+                      ],
+                    ),
                   ),
-                ],
+                ),
+              ],
+            ),
+
+            // Main content
+            Expanded(
+              child: SingleChildScrollView(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: sectionSpacing),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(18),
+                      ),
+                      child: const TextField(
+                        decoration: InputDecoration(
+                          hintText: 'Search',
+                          prefixIcon: Icon(Icons.search, size: 28),
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.symmetric(vertical: 14),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: sectionSpacing),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: 160,
+                          height: 160,
+                          child: _buildGradientCard(
+                            "MON\n1",
+                            "Ostomy Meeting",
+                            "View Tasks",
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            children: [
+                              _buildSmallCard(
+                                title: "Senior Admin Meeting",
+                                time: "12:00 PM - 01:00 PM",
+                                hasIcons: true,
+                              ),
+                              SizedBox(height: sectionSpacing),
+                              _buildSmallCard(
+                                title: "Patients watched for Today",
+                                number: "5",
+                                hasIcons: false,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: sectionSpacing),
+
+                    // Patients Corner
+                    _buildSection(
+                      "Patients Corner",
+                      patientMessages.length,
+                      patientMessages
+                          .map(
+                            (msg) => GestureDetector(
+                              onTap: () {
+                                debugPrint(
+                                    "Open chat with ${msg['name']} (Message: ${msg['message']})");
+                              },
+                              child: _buildMessageTile(
+                                msg["name"]!,
+                                msg["message"]!,
+                              ),
+                            ),
+                          )
+                          .toList(),
+                    ),
+
+                    SizedBox(height: sectionSpacing),
+
+                    // Nurses Corner
+                    _buildSection("Nurses Corner", 1, [
+                      _buildMessageTile("Mr. Thenura", "Stoma supplier query"),
+                    ]),
+                  ],
+                ),
               ),
-              const SizedBox(height: 24),
-
-              // Patients Corner Section
-              _buildSection("Patients Corner", 2, [
-                _buildMessageTile("Mr. Thenura", "Stoma supplier query"),
-                _buildMessageTile("Mr. Mangala", "Consultation delay notice"),
-                _buildMessageTile("Mr. Mangala", "Consultation delay notice"),
-              ]),
-
-              const SizedBox(height: 12),
-
-              // Nurses Corner Section
-              _buildSection("Nurses Corner", 2, [
-                _buildMessageTile("Mr. Thenura", "Stoma supplier query"),
-              ]),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
-
-      // Bottom Navigation Bar
       bottomNavigationBar: BottomAppBar(
         color: Colors.white,
         elevation: 10,
-        child: Container(
+        child: SizedBox(
           height: 60,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -169,33 +209,45 @@ class _AdminHomePageState extends State<AdminHomePage> {
     );
   }
 
-  Widget _buildGradientCard(String day, String title, String action) {
-    return Container(
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.purple.shade300, Colors.purple.shade600],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+  static Widget _buildGradientCard(String day, String title, String action) {
+    return GestureDetector(
+      onTap: () {},
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.purple.shade300, Colors.purple.shade600],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(24),
         ),
-        borderRadius: BorderRadius.circular(24),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(day,
-              style:
-                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-          SizedBox(height: 8),
-          Text(title, style: TextStyle(color: Colors.white, fontSize: 16)),
-          SizedBox(height: 12),
-          Text(action, style: TextStyle(color: Colors.white70, fontSize: 13)),
-        ],
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(day,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16)),
+              const SizedBox(height: 8),
+              Text(title,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: Colors.white, fontSize: 14)),
+              const SizedBox(height: 8),
+              Text(action,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: Colors.white70, fontSize: 13)),
+            ],
+          ),
+        ),
       ),
     );
   }
 
-  Widget _buildSmallCard({
+  static Widget _buildSmallCard({
     required String title,
     String? time,
     String? number,
@@ -203,7 +255,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
   }) {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(14),
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [Colors.purple.shade300, Colors.purple.shade600],
@@ -216,25 +268,25 @@ class _AdminHomePageState extends State<AdminHomePage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(title,
-              style: TextStyle(
+              style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
                   color: Colors.white)),
-          SizedBox(height: 6),
+          const SizedBox(height: 6),
           if (hasIcons)
             Row(
               children: [
-                Icon(Icons.circle, size: 12, color: Colors.green),
-                SizedBox(width: 4),
-                Icon(Icons.circle, size: 12, color: Colors.amber),
-                SizedBox(width: 8),
+                const Icon(Icons.circle, size: 12, color: Colors.green),
+                const SizedBox(width: 4),
+                const Icon(Icons.circle, size: 12, color: Colors.amber),
+                const SizedBox(width: 8),
                 Text(time!,
-                    style: TextStyle(fontSize: 12, color: Colors.white)),
+                    style: const TextStyle(fontSize: 12, color: Colors.white)),
               ],
             )
           else
             Text(number!,
-                style: TextStyle(
+                style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                     color: Colors.white)),
@@ -245,7 +297,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
 
   Widget _buildSection(String title, int newCount, List<Widget> items) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
@@ -256,10 +308,11 @@ class _AdminHomePageState extends State<AdminHomePage> {
           Row(
             children: [
               Text(title,
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              SizedBox(width: 6),
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold)),
+              const SizedBox(width: 6),
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
                   color: Colors.cyan[100],
                   borderRadius: BorderRadius.circular(10),
@@ -299,20 +352,20 @@ class _AdminHomePageState extends State<AdminHomePage> {
             backgroundColor: Colors.grey[300],
             child: Icon(Icons.person, color: Colors.grey[600]),
           ),
-          SizedBox(width: 12),
+          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(name,
-                    style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 14)),
                 Text(message,
                     style: TextStyle(fontSize: 12, color: Colors.grey[600])),
               ],
             ),
           ),
-          Icon(Icons.circle, size: 12, color: Colors.cyan),
+          const Icon(Icons.circle, size: 12, color: Colors.cyan),
         ],
       ),
     );

@@ -15,6 +15,7 @@ import 'supplyselect.dart';
 import 'privatehos.dart';
 import 'govhos.dart';
 import 'adminhome.dart';
+import 'taskpage.dart';
 import 'dart:async';
 
 void main() async {
@@ -80,6 +81,7 @@ class MyApp extends StatelessWidget {
             '/govhos': (context) => GovernmentHospitalsScreen(),
             '/login': (context) => LoginPage(),
             '/adminhome': (context) => AdminHomePage(userName: 'Some User'),
+            '/taskpage': (context) => TaskPage(),
           },
         );
       },
