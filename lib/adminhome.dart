@@ -46,7 +46,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
                   const SizedBox(width: 12),
                   Expanded(
                     child: Container(
-                      padding: const EdgeInsets.all(20),
+                      padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [Color(0xFFD5C7FF), Color(0xFFC8B5FF)],
@@ -131,33 +131,18 @@ class _AdminHomePageState extends State<AdminHomePage> {
               ),
               const SizedBox(height: 24),
 
-              Text("Recent Activity",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
-              const SizedBox(height: 12),
-
-              Row(
-                children: [
-                  _buildInfoCard(
-                      "Lab results", "3 new tests results\navailable"),
-                  const SizedBox(width: 8),
-                  _buildInfoCard("WH day", "Today..."),
-                ],
-              ),
-
-              const SizedBox(height: 24),
-
+              // Patients Corner Section
               _buildSection("Patients Corner", 2, [
-                _buildPatientTile("Mr. Thenura", "Stoma supplier query"),
-                _buildPatientTile("Mr. Mangala", "Consultation delay notice"),
-                _buildPatientTile("Mr. Mangala", "Consultation delay notice"),
+                _buildMessageTile("Mr. Thenura", "Stoma supplier query"),
+                _buildMessageTile("Mr. Mangala", "Consultation delay notice"),
+                _buildMessageTile("Mr. Mangala", "Consultation delay notice"),
               ]),
 
               const SizedBox(height: 12),
 
-              _buildSection("Nurses Corner", 3, [
-                _buildPatientTile("Nurse Chamari", "Schedule update"),
-                _buildPatientTile("Nurse Silva", "Report submission delay"),
-                _buildPatientTile("Nurse Seneviratne", "Overtime request"),
+              // Nurses Corner Section
+              _buildSection("Nurses Corner", 2, [
+                _buildMessageTile("Mr. Thenura", "Stoma supplier query"),
               ]),
             ],
           ),
@@ -210,11 +195,12 @@ class _AdminHomePageState extends State<AdminHomePage> {
     );
   }
 
-  Widget _buildSmallCard(
-      {required String title,
-      String? time,
-      String? number,
-      bool hasIcons = false}) {
+  Widget _buildSmallCard({
+    required String title,
+    String? time,
+    String? number,
+    bool hasIcons = false,
+  }) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(14),
@@ -257,26 +243,6 @@ class _AdminHomePageState extends State<AdminHomePage> {
     );
   }
 
-  Widget _buildInfoCard(String title, String subtitle) {
-    return Container(
-      width: 160,
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade300,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title,
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-          SizedBox(height: 8),
-          Text(subtitle, style: TextStyle(fontSize: 14)),
-        ],
-      ),
-    );
-  }
-
   Widget _buildSection(String title, int newCount, List<Widget> items) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
@@ -284,43 +250,71 @@ class _AdminHomePageState extends State<AdminHomePage> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
       ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Row(
-          children: [
-            Text(title,
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            SizedBox(width: 6),
-            Icon(Icons.fiber_manual_record, size: 10, color: Colors.cyan),
-            SizedBox(width: 4),
-            Text("$newCount New",
-                style: TextStyle(fontWeight: FontWeight.bold)),
-          ],
-        ),
-        const SizedBox(height: 10),
-        ...items,
-        if (items.isNotEmpty)
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Text(title,
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              SizedBox(width: 6),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                decoration: BoxDecoration(
+                  color: Colors.cyan[100],
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Text("$newCount New",
+                    style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.cyan[800])),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          ...items,
           Align(
             alignment: Alignment.centerRight,
-            child: ElevatedButton(
+            child: TextButton(
               onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.cyan,
-                  padding: EdgeInsets.symmetric(horizontal: 20)),
-              child: Text("View All"),
+              child: Text("View All",
+                  style: TextStyle(
+                      color: Colors.cyan[800], fontWeight: FontWeight.bold)),
             ),
-          )
-      ]),
+          ),
+        ],
+      ),
     );
   }
 
-  Widget _buildPatientTile(String name, String message) {
-    return ListTile(
-      contentPadding: EdgeInsets.symmetric(horizontal: 0),
-      leading:
-          CircleAvatar(backgroundImage: AssetImage('assets/Cuteavatar.png')),
-      title: Text(name, style: TextStyle(fontWeight: FontWeight.bold)),
-      subtitle: Text(message),
-      trailing: Icon(Icons.circle, size: 14, color: Colors.cyan),
+  Widget _buildMessageTile(String name, String message) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CircleAvatar(
+            radius: 20,
+            backgroundColor: Colors.grey[300],
+            child: Icon(Icons.person, color: Colors.grey[600]),
+          ),
+          SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(name,
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                Text(message,
+                    style: TextStyle(fontSize: 12, color: Colors.grey[600])),
+              ],
+            ),
+          ),
+          Icon(Icons.circle, size: 12, color: Colors.cyan),
+        ],
+      ),
     );
   }
 
