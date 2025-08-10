@@ -38,13 +38,12 @@ class _AdminHomePageState extends State<AdminHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    const double sectionSpacing = 16; // standard vertical space
+    const double sectionSpacing = 16;
     return Scaffold(
       backgroundColor: const Color(0xFFEAF6FB),
       body: SafeArea(
         child: Column(
           children: [
-            // Greeting Row
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -98,8 +97,6 @@ class _AdminHomePageState extends State<AdminHomePage> {
                 ),
               ],
             ),
-
-            // Main content
             Expanded(
               child: SingleChildScrollView(
                 padding:
@@ -178,8 +175,6 @@ class _AdminHomePageState extends State<AdminHomePage> {
                     ),
 
                     SizedBox(height: sectionSpacing),
-
-                    // Nurses Corner
                     _buildSection("Nurses Corner", 1, [
                       _buildMessageTile("Mr. Thenura", "Stoma supplier query"),
                     ]),
