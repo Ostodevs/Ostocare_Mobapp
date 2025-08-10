@@ -49,7 +49,6 @@ class TaskPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header Row
             Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12),
@@ -64,8 +63,6 @@ class TaskPage extends StatelessWidget {
                 ],
               ),
             ),
-
-            // Date
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Text(
@@ -77,10 +74,7 @@ class TaskPage extends StatelessWidget {
                 ),
               ),
             ),
-
             SizedBox(height: 10),
-
-            // Weekday Selector
             Container(
               height: 60,
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -131,10 +125,7 @@ class TaskPage extends StatelessWidget {
                 },
               ),
             ),
-
             SizedBox(height: 16),
-
-            // Task Timeline
             Expanded(
               child: ListView.builder(
                 padding: const EdgeInsets.symmetric(horizontal: 16),

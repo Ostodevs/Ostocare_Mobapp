@@ -516,72 +516,92 @@ class _HomePageState extends State<HomePage> {
                                   const SizedBox(height: 8),
                                   AnimatedContainer(
                                     duration: const Duration(milliseconds: 300),
-                                    height:
-                                        _calendarFormat == CalendarFormat.month
-                                            ? 280
-                                            : _calendarFormat ==
-                                                    CalendarFormat.twoWeeks
-                                                ? 180
-                                                : 90,
-                                    child: TableCalendar(
-                                      focusedDay: _focusedDay,
-                                      firstDay: DateTime(2000),
-                                      lastDay: DateTime(2100),
-                                      calendarFormat: _calendarFormat,
-                                      headerVisible: false,
-                                      selectedDayPredicate: (day) =>
-                                          isSameDay(_selectedDay, day),
-                                      onDaySelected: (selectedDay, focusedDay) {
-                                        setState(() {
-                                          _selectedDay = selectedDay;
-                                          _focusedDay = focusedDay;
-                                        });
-                                      },
-                                      eventLoader: (day) => [],
-                                      calendarBuilders: CalendarBuilders(
-                                        defaultBuilder:
-                                            (context, day, focusedDay) {
-                                          bool isOverdueDay = overdueDays
-                                              .any((d) => isSameDay(d, day));
-                                          bool isUpcomingDay = upcomingDays
-                                              .any((d) => isSameDay(d, day));
-
-                                          if (isOverdueDay) {
-                                            return Container(
-                                              margin: const EdgeInsets.all(6.0),
-                                              decoration: BoxDecoration(
-                                                color:
-                                                    Colors.red.withOpacity(0.5),
-                                                shape: BoxShape.circle,
-                                              ),
-                                              alignment: Alignment.center,
-                                              child: Text(
-                                                '${day.day}',
-                                                style: TextStyle(
-                                                    color: Colors.white),
-                                              ),
-                                            );
-                                          } else if (isUpcomingDay) {
-                                            return Container(
-                                              margin: const EdgeInsets.all(6.0),
-                                              decoration: BoxDecoration(
-                                                color: Colors.green
-                                                    .withOpacity(0.5),
-                                                shape: BoxShape.circle,
-                                              ),
-                                              alignment: Alignment.center,
-                                              child: Text(
-                                                '${day.day}',
-                                                style: TextStyle(
-                                                    color: Colors.white),
-                                              ),
-                                            );
-                                          }
-                                          return null;
+                                    child: Flexible(
+                                      child: TableCalendar(
+                                        focusedDay: _focusedDay,
+                                        firstDay: DateTime(2000),
+                                        lastDay: DateTime(2100),
+                                        calendarFormat: _calendarFormat,
+                                        headerVisible: false,
+                                        selectedDayPredicate: (day) =>
+                                            isSameDay(_selectedDay, day),
+                                        onDaySelected:
+                                            (selectedDay, focusedDay) {
+                                          setState(() {
+                                            _selectedDay = selectedDay;
+                                            _focusedDay = focusedDay;
+                                          });
                                         },
+                                        eventLoader: (day) => [],
+                                        calendarBuilders: CalendarBuilders(
+                                          defaultBuilder:
+                                              (context, day, focusedDay) {
+                                            bool isOverdueDay = overdueDays
+                                                .any((d) => isSameDay(d, day));
+                                            bool isUpcomingDay = upcomingDays
+                                                .any((d) => isSameDay(d, day));
+                                            bool isLastBagChangedDay =
+                                                _lastBagChangeDate != null &&
+                                                    isSameDay(
+                                                        _lastBagChangeDate,
+                                                        day);
+
+                                            if (isLastBagChangedDay) {
+                                              return Container(
+                                                margin:
+                                                    const EdgeInsets.all(6.0),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.pink
+                                                      .withOpacity(0.5),
+                                                  shape: BoxShape.circle,
+                                                ),
+                                                alignment: Alignment.center,
+                                                child: Text(
+                                                  '${day.day}',
+                                                  style: const TextStyle(
+                                                      color: Colors.white),
+                                                ),
+                                              );
+                                            } else if (isOverdueDay) {
+                                              return Container(
+                                                margin:
+                                                    const EdgeInsets.all(6.0),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.red
+                                                      .withOpacity(0.5),
+                                                  shape: BoxShape.circle,
+                                                ),
+                                                alignment: Alignment.center,
+                                                child: Text(
+                                                  '${day.day}',
+                                                  style: const TextStyle(
+                                                      color: Colors.white),
+                                                ),
+                                              );
+                                            } else if (isUpcomingDay) {
+                                              return Container(
+                                                margin:
+                                                    const EdgeInsets.all(6.0),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.green
+                                                      .withOpacity(0.5),
+                                                  shape: BoxShape.circle,
+                                                ),
+                                                alignment: Alignment.center,
+                                                child: Text(
+                                                  '${day.day}',
+                                                  style: const TextStyle(
+                                                      color: Colors.white),
+                                                ),
+                                              );
+                                            }
+
+                                            return null;
+                                          },
+                                        ),
                                       ),
                                     ),
-                                  ),
+                                  )
                                 ],
                               ),
                             ),
@@ -795,16 +815,13 @@ class _HomePageState extends State<HomePage> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            // Large Image
                             Image.asset(
                               'assets/Logoostocare.png',
-                              width: 200, // Adjust image size as needed
+                              width: 200,
                               height: 200,
                               fit: BoxFit.contain,
                             ),
                             SizedBox(height: 20),
-
-                            // About Us Text
                             Text(
                               "About Us",
                               style: TextStyle(
