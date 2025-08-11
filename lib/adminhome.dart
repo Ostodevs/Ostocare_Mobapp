@@ -48,21 +48,21 @@ class _AdminHomePageState extends State<AdminHomePage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(left: 11),
+                  padding: const EdgeInsets.only(left: 15),
                   child: Image.asset(
                     'assets/Logoostocare.png',
                     height: 85,
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: 17),
                 Expanded(
                   child: Container(
                     alignment: Alignment.topRight,
                     margin: EdgeInsets.zero,
-                    padding: const EdgeInsets.all(15),
+                    padding: const EdgeInsets.all(30),
                     decoration: const BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [Color(0xFFD5C7FF), Color(0xFFC8B5FF)],
+                        colors: [Color(0xFF91E3F5), Color(0xFF0CADD2)],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
@@ -85,7 +85,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
                         Text(
                           'Hello ${widget.userName.split(' ').first}!',
                           style: const TextStyle(
-                            fontSize: 22,
+                            fontSize: 25,
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
                           ),
@@ -105,27 +105,12 @@ class _AdminHomePageState extends State<AdminHomePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(height: sectionSpacing),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(18),
-                      ),
-                      child: const TextField(
-                        decoration: InputDecoration(
-                          hintText: 'Search',
-                          prefixIcon: Icon(Icons.search, size: 28),
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.symmetric(vertical: 14),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: sectionSpacing),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(
-                          width: 160,
-                          height: 160,
+                          width: 200,
+                          height: 200,
                           child: _buildGradientCard(
                             "MON\n1",
                             "Ostomy Meeting",
