@@ -121,20 +121,42 @@ class _AdminHomePageState extends State<AdminHomePage> {
                         Expanded(
                           child: Column(
                             children: [
+                              // Top row: Patients watched + Worked hours (same size)
+                              // Top row: Patients watched + Worked hours (same height & width)
+                              IntrinsicHeight(
+                                child: Row(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: [
+                                    Expanded(
+                                      child: _buildSmallCard(
+                                        title: "Patients watched for Today",
+                                        number: "5",
+                                        hasIcons: false,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      child: _buildSmallCard(
+                                        title: "Worked Hours",
+                                        number: "7h",
+                                        hasIcons: false,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                              SizedBox(height: sectionSpacing),
+                              // Bottom: Senior Admin Meeting
                               _buildSmallCard(
                                 title: "Senior Admin Meeting",
                                 time: "12:00 PM - 01:00 PM",
                                 hasIcons: true,
                               ),
-                              SizedBox(height: sectionSpacing),
-                              _buildSmallCard(
-                                title: "Patients watched for Today",
-                                number: "5",
-                                hasIcons: false,
-                              ),
                             ],
                           ),
-                        ),
+                        )
                       ],
                     ),
                     SizedBox(height: sectionSpacing),
