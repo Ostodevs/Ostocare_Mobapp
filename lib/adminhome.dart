@@ -118,11 +118,11 @@ class _AdminHomePageState extends State<AdminHomePage> {
                           ),
                         ),
                         const SizedBox(width: 12),
+                        // --- Right column changes ---
                         Expanded(
                           child: Column(
                             children: [
-                              // Top row: Patients watched + Worked hours (same size)
-                              // Top row: Patients watched + Worked hours (same height & width)
+                              // Top row: equal height cards
                               IntrinsicHeight(
                                 child: Row(
                                   crossAxisAlignment:
@@ -146,17 +146,83 @@ class _AdminHomePageState extends State<AdminHomePage> {
                                   ],
                                 ),
                               ),
-
                               SizedBox(height: sectionSpacing),
-                              // Bottom: Senior Admin Meeting
-                              _buildSmallCard(
-                                title: "Senior Admin Meeting",
-                                time: "12:00 PM - 01:00 PM",
-                                hasIcons: true,
+
+                              // Purple gradient card (no Expanded here)
+                              Container(
+                                height: 100, // set your preferred height
+                                decoration: BoxDecoration(
+                                  gradient: const LinearGradient(
+                                    colors: [
+                                      Color(0xFFD8B4FE),
+                                      Color(0xFF9333EA)
+                                    ],
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                  ),
+                                  borderRadius: BorderRadius.circular(20),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: const Color(0xFF9333EA)
+                                          .withOpacity(0.3),
+                                      blurRadius: 8,
+                                      offset: const Offset(0, 4),
+                                    ),
+                                  ],
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Text(
+                                        'Senior Admin Meeting',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Row(
+                                        children: [
+                                          Container(
+                                            width: 10,
+                                            height: 10,
+                                            decoration: const BoxDecoration(
+                                              color: Color(0xFF10B981),
+                                              shape: BoxShape.circle,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 6),
+                                          Container(
+                                            width: 10,
+                                            height: 10,
+                                            decoration: const BoxDecoration(
+                                              color: Color(0xFFF59E0B),
+                                              shape: BoxShape.circle,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 10),
+                                          const Text(
+                                            '12:00 PM - 01:00 PM',
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
                             ],
                           ),
-                        )
+                        ),
                       ],
                     ),
                     SizedBox(height: sectionSpacing),
