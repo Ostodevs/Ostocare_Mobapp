@@ -1,7 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class TaskPage extends StatelessWidget {
+class TaskPage extends StatefulWidget {
+  final String? taskName; // Task selected from AdminHomePage
+
+  TaskPage({super.key, this.taskName});
+
+  @override
+  State<TaskPage> createState() => _TaskPageState();
+}
+
+class _TaskPageState extends State<TaskPage> {
+  final ScrollController _scrollController = ScrollController();
+
   final List<Map<String, dynamic>> tasks = [
     {
       'title': 'Ostomy Meeting',
@@ -37,14 +48,31 @@ class TaskPage extends StatelessWidget {
   final List<String> weekdays = ['MON', 'TUE', 'WED', 'THU', 'FRI'];
   final int selectedDayIndex = 0; // Always Monday for now
 
-  TaskPage({super.key});
+  @override
+  void initState() {
+    super.initState();
+
+    // Scroll to the selected task if provided
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.taskName != null) {
+        final index = tasks.indexWhere((t) => t['title'] == widget.taskName);
+        if (index != -1) {
+          _scrollController.animateTo(
+            index * 140.0, // approximate height of each task item
+            duration: const Duration(milliseconds: 400),
+            curve: Curves.easeInOut,
+          );
+        }
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final timeNow = DateFormat('hh:mm a').format(DateTime.now());
 
     return Scaffold(
-      backgroundColor: Color(0xFFF0F0F0),
+      backgroundColor: const Color(0xFFF0F0F0),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -55,10 +83,14 @@ class TaskPage extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Icon(Icons.arrow_back),
+                  IconButton(
+                    icon: const Icon(Icons.arrow_back),
+                    onPressed: () => Navigator.pop(context),
+                  ),
                   Text(
                     timeNow,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                 ],
               ),
@@ -67,14 +99,14 @@ class TaskPage extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Text(
                 '1 January 2025',
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w500,
                   fontFamily: 'Georgia',
                 ),
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Container(
               height: 60,
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -85,64 +117,60 @@ class TaskPage extends StatelessWidget {
                   bool selected = index == selectedDayIndex;
                   return Padding(
                     padding: const EdgeInsets.only(right: 12.0),
-                    child: Column(
-                      children: [
-                        Container(
-                          width: 50,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            color: selected ? Colors.purple : Colors.grey[300],
-                          ),
-                          child: Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  weekdays[index],
-                                  style: TextStyle(
-                                    color:
-                                        selected ? Colors.white : Colors.black,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 12,
-                                  ),
-                                ),
-                                Text(
-                                  "${index + 1}",
-                                  style: TextStyle(
-                                    color:
-                                        selected ? Colors.white : Colors.black,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ],
+                    child: Container(
+                      width: 50,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        color: selected ? Colors.purple : Colors.grey[300],
+                      ),
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              weekdays[index],
+                              style: TextStyle(
+                                color: selected ? Colors.white : Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12,
+                              ),
                             ),
-                          ),
+                            Text(
+                              "${index + 1}",
+                              style: TextStyle(
+                                color: selected ? Colors.white : Colors.black,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                   );
                 },
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Expanded(
               child: ListView.builder(
+                controller: _scrollController,
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 itemCount: tasks.length,
                 itemBuilder: (context, index) {
                   final task = tasks[index];
+                  bool isSelected = widget.taskName == task['title'];
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         _getStartTimeText(task['start']),
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 18,
                         ),
                       ),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       Container(
                         margin: const EdgeInsets.only(bottom: 16),
                         decoration: BoxDecoration(
@@ -156,9 +184,15 @@ class TaskPage extends StatelessWidget {
                             BoxShadow(
                               color: Colors.black12,
                               blurRadius: 6,
-                              offset: Offset(2, 2),
+                              offset: const Offset(2, 2),
                             ),
                           ],
+                          border: isSelected
+                              ? Border.all(
+                                  color: Colors.deepPurple,
+                                  width: 3,
+                                )
+                              : null,
                         ),
                         padding: const EdgeInsets.all(20),
                         child: Column(
@@ -166,7 +200,7 @@ class TaskPage extends StatelessWidget {
                           children: [
                             Text(
                               task['title'],
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
@@ -177,12 +211,12 @@ class TaskPage extends StatelessWidget {
                                 padding: const EdgeInsets.only(top: 6.0),
                                 child: Text(
                                   task['subtitle'],
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     color: Colors.white70,
                                   ),
                                 ),
                               ),
-                            SizedBox(height: 10),
+                            const SizedBox(height: 10),
                             if (task['colors'].isNotEmpty)
                               Row(
                                 children: task['colors']
@@ -196,14 +230,14 @@ class TaskPage extends StatelessWidget {
                                         ))
                                     .toList(),
                               ),
-                            SizedBox(height: 6),
+                            const SizedBox(height: 6),
                             Text(
                               '${task['start']} - ${task['end']}',
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 13,
                               ),
-                            )
+                            ),
                           ],
                         ),
                       ),
@@ -215,13 +249,11 @@ class TaskPage extends StatelessWidget {
           ],
         ),
       ),
-
-      // Bottom Nav Bar
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: 2, // Task page active
         selectedItemColor: Colors.purple,
         unselectedItemColor: Colors.grey,
-        items: [
+        items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
           BottomNavigationBarItem(icon: Icon(Icons.search), label: ''),
           BottomNavigationBarItem(icon: Icon(Icons.article), label: ''),

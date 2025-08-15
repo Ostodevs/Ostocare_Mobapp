@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'taskpage.dart'; // Import the task page
 
 class AdminHomePage extends StatefulWidget {
   final String userName;
@@ -13,7 +14,6 @@ class AdminHomePage extends StatefulWidget {
 class _AdminHomePageState extends State<AdminHomePage> {
   int _selectedIndex = 0;
 
-  // Example patient messages (replace with real data later)
   final List<Map<String, String>> patientMessages = [
     {"name": "Mr. Thenura", "message": "Stoma supplier query"},
     {"name": "Mr. Mangala", "message": "Consultation delay notice"},
@@ -34,6 +34,15 @@ class _AdminHomePageState extends State<AdminHomePage> {
 
   void _onItemTapped(int index) {
     setState(() => _selectedIndex = index);
+  }
+
+  void _goToTaskPage([String? taskName]) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TaskPage(taskName: taskName),
+      ),
+    );
   }
 
   @override
@@ -58,7 +67,6 @@ class _AdminHomePageState extends State<AdminHomePage> {
                 Expanded(
                   child: Container(
                     alignment: Alignment.topRight,
-                    margin: EdgeInsets.zero,
                     padding: const EdgeInsets.all(30),
                     decoration: const BoxDecoration(
                       gradient: LinearGradient(
@@ -111,112 +119,150 @@ class _AdminHomePageState extends State<AdminHomePage> {
                         SizedBox(
                           width: 200,
                           height: 200,
-                          child: _buildGradientCard(
-                            "MON\n1",
-                            "Ostomy Meeting",
-                            "View Tasks",
+                          child: GestureDetector(
+                            onTap: () => _goToTaskPage("Ostomy Meeting"),
+                            child: _buildGradientCard(
+                              "MON\n1",
+                              "Ostomy Meeting",
+                              "View Tasks",
+                            ),
                           ),
                         ),
-                        const SizedBox(width: 12),
-                        // --- Right column changes ---
+                        const SizedBox(width: 9),
                         Expanded(
                           child: Column(
                             children: [
-                              // Top row: equal height cards
-                              IntrinsicHeight(
-                                child: Row(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.stretch,
-                                  children: [
-                                    Expanded(
-                                      child: _buildSmallCard(
-                                        title: "Patients watched for Today",
-                                        number: "5",
-                                        hasIcons: false,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Expanded(
-                                      child: _buildSmallCard(
-                                        title: "Worked Hours",
-                                        number: "7h",
-                                        hasIcons: false,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(height: sectionSpacing),
-
-                              // Purple gradient card (no Expanded here)
-                              Container(
-                                height: 100, // set your preferred height
-                                decoration: BoxDecoration(
-                                  gradient: const LinearGradient(
-                                    colors: [
-                                      Color(0xFFD8B4FE),
-                                      Color(0xFF9333EA)
-                                    ],
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                  ),
-                                  borderRadius: BorderRadius.circular(20),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: const Color(0xFF9333EA)
-                                          .withOpacity(0.3),
-                                      blurRadius: 8,
-                                      offset: const Offset(0, 4),
-                                    ),
-                                  ],
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(16),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      const Text(
-                                        'Senior Admin Meeting',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white,
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: SizedBox(
+                                      height: 80,
+                                      child: Material(
+                                        color: Colors.transparent,
+                                        child: InkWell(
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                          onTap: () {
+                                            debugPrint(
+                                                "Patients watched tapped");
+                                          },
+                                          child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                            child: _buildSmallCard(
+                                              title:
+                                                  "Patients watched for Today",
+                                              number: "5",
+                                              hasIcons: false,
+                                            ),
+                                          ),
                                         ),
                                       ),
-                                      const SizedBox(height: 8),
-                                      Row(
+                                    ),
+                                  ),
+                                  const SizedBox(width: 9),
+                                  Expanded(
+                                    child: SizedBox(
+                                      height: 80,
+                                      child: Material(
+                                        color: Colors.transparent,
+                                        child: InkWell(
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                          onTap: () {
+                                            debugPrint("Worked hours tapped");
+                                          },
+                                          child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                            child: _buildSmallCard(
+                                              title: "Worked Hours",
+                                              number: "7h",
+                                              hasIcons: false,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 9),
+                              SizedBox(
+                                height: 111,
+                                child: GestureDetector(
+                                  onTap: () =>
+                                      _goToTaskPage("Senior Admin Meeting"),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      gradient: const LinearGradient(
+                                        colors: [
+                                          Color(0xFFD8B4FE),
+                                          Color(0xFF9333EA)
+                                        ],
+                                        begin: Alignment.topCenter,
+                                        end: Alignment.bottomCenter,
+                                      ),
+                                      borderRadius: BorderRadius.circular(20),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Color(0xFF9333EA)
+                                              .withOpacity(0.3),
+                                          blurRadius: 8,
+                                          offset: const Offset(0, 4),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(20),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
-                                          Container(
-                                            width: 10,
-                                            height: 10,
-                                            decoration: const BoxDecoration(
-                                              color: Color(0xFF10B981),
-                                              shape: BoxShape.circle,
-                                            ),
-                                          ),
-                                          const SizedBox(width: 6),
-                                          Container(
-                                            width: 10,
-                                            height: 10,
-                                            decoration: const BoxDecoration(
-                                              color: Color(0xFFF59E0B),
-                                              shape: BoxShape.circle,
-                                            ),
-                                          ),
-                                          const SizedBox(width: 10),
                                           const Text(
-                                            '12:00 PM - 01:00 PM',
+                                            'Senior Admin Meeting',
                                             style: TextStyle(
-                                              fontSize: 12,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
                                               color: Colors.white,
-                                              fontWeight: FontWeight.w500,
                                             ),
+                                          ),
+                                          const SizedBox(height: 8),
+                                          Row(
+                                            children: [
+                                              Container(
+                                                width: 10,
+                                                height: 10,
+                                                decoration: const BoxDecoration(
+                                                  color: Color(0xFF10B981),
+                                                  shape: BoxShape.circle,
+                                                ),
+                                              ),
+                                              const SizedBox(width: 6),
+                                              Container(
+                                                width: 10,
+                                                height: 10,
+                                                decoration: const BoxDecoration(
+                                                  color: Color(0xFFF59E0B),
+                                                  shape: BoxShape.circle,
+                                                ),
+                                              ),
+                                              const SizedBox(width: 10),
+                                              const Text(
+                                                '12:00 PM - 01:00 PM',
+                                                style: TextStyle(
+                                                  fontSize: 12,
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),
-                                    ],
+                                    ),
                                   ),
                                 ),
                               ),
@@ -226,8 +272,6 @@ class _AdminHomePageState extends State<AdminHomePage> {
                       ],
                     ),
                     SizedBox(height: sectionSpacing),
-
-                    // Patients Corner
                     _buildSection(
                       "Patients Corner",
                       patientMessages.length,
@@ -246,7 +290,6 @@ class _AdminHomePageState extends State<AdminHomePage> {
                           )
                           .toList(),
                     ),
-
                     SizedBox(height: sectionSpacing),
                     _buildSection("Nurses Corner", 1, [
                       _buildMessageTile("Mr. Thenura", "Stoma supplier query"),
@@ -278,38 +321,37 @@ class _AdminHomePageState extends State<AdminHomePage> {
   }
 
   static Widget _buildGradientCard(String day, String title, String action) {
-    return GestureDetector(
-      onTap: () {},
-      child: Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.purple.shade300, Colors.purple.shade600],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          borderRadius: BorderRadius.circular(24),
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Colors.purple.shade300, Colors.purple.shade600],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(day,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16)),
-              const SizedBox(height: 8),
-              Text(title,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.white, fontSize: 14)),
-              const SizedBox(height: 8),
-              Text(action,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.white70, fontSize: 13)),
-            ],
-          ),
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(day,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16)),
+            const SizedBox(height: 8),
+            Text(title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: Colors.white, fontSize: 14)),
+            const SizedBox(height: 8),
+            Text(action,
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: Colors.white70, fontSize: 13)),
+          ],
         ),
       ),
     );
@@ -335,11 +377,13 @@ class _AdminHomePageState extends State<AdminHomePage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title,
-              style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white)),
+          Text(
+            title,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+                fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
+          ),
           const SizedBox(height: 6),
           if (hasIcons)
             Row(
