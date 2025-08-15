@@ -49,7 +49,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
   Widget build(BuildContext context) {
     const double sectionSpacing = 16;
     return Scaffold(
-      backgroundColor: const Color(0xFFEAF6FB),
+      backgroundColor: const Color(0xFFC2B6EE),
       body: SafeArea(
         child: Column(
           children: [
@@ -150,8 +150,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
                                             borderRadius:
                                                 BorderRadius.circular(20),
                                             child: _buildSmallCard(
-                                              title:
-                                                  "Patients watched for Today",
+                                              title: "Patients watched",
                                               number: "5",
                                               hasIcons: false,
                                             ),
@@ -197,8 +196,8 @@ class _AdminHomePageState extends State<AdminHomePage> {
                                     decoration: BoxDecoration(
                                       gradient: const LinearGradient(
                                         colors: [
-                                          Color(0xFFD8B4FE),
-                                          Color(0xFF9333EA)
+                                          Color(0xFFA564A8),
+                                          Color(0xFFF980FF)
                                         ],
                                         begin: Alignment.topCenter,
                                         end: Alignment.bottomCenter,
@@ -324,11 +323,18 @@ class _AdminHomePageState extends State<AdminHomePage> {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.purple.shade300, Colors.purple.shade600],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+        gradient: const LinearGradient(
+          colors: [Color(0xFFA564A8), Color(0xFFF980FF)],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: Color(0xFF9333EA).withOpacity(0.3),
+            blurRadius: 8,
+            offset: Offset(0, 4),
+          ),
+        ],
         borderRadius: BorderRadius.circular(24),
       ),
       child: Center(
@@ -365,43 +371,60 @@ class _AdminHomePageState extends State<AdminHomePage> {
   }) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(10), // reduced padding for more space
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.purple.shade300, Colors.purple.shade600],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+        gradient: const LinearGradient(
+          colors: [Color(0xFFA564A8), Color(0xFFF980FF)],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: Color(0xFF9333EA).withOpacity(0.3),
+            blurRadius: 8,
+            offset: Offset(0, 4),
+          ),
+        ],
         borderRadius: BorderRadius.circular(20),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
             title,
-            maxLines: 1,
+            maxLines: 2, // allow wrapping
             overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.start,
             style: const TextStyle(
-                fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
+              fontSize: 12, // slightly smaller to prevent overflow
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: 4),
           if (hasIcons)
             Row(
               children: [
-                const Icon(Icons.circle, size: 12, color: Colors.green),
+                const Icon(Icons.circle, size: 10, color: Colors.green),
                 const SizedBox(width: 4),
-                const Icon(Icons.circle, size: 12, color: Colors.amber),
-                const SizedBox(width: 8),
-                Text(time!,
-                    style: const TextStyle(fontSize: 12, color: Colors.white)),
+                const Icon(Icons.circle, size: 10, color: Colors.amber),
+                const SizedBox(width: 6),
+                Text(
+                  time ?? "",
+                  style: const TextStyle(fontSize: 10, color: Colors.white),
+                ),
               ],
             )
           else
-            Text(number!,
-                style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white)),
+            Text(
+              number ?? "",
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
         ],
       ),
     );
