@@ -51,25 +51,32 @@ class _ProfileUpdatePageState extends State<ProfileUpdatePage> {
   }
 
   Future<void> _saveProfileData() async {
-    String? imageUrl = _imageUrl;
+    try {
+      String? imageUrl = _imageUrl;
 
-    if (_profileImage != null) {
-      imageUrl = await _uploadImageToFirebase(_profileImage!);
+      if (_profileImage != null) {
+        imageUrl = await _uploadImageToFirebase(_profileImage!);
+      }
+
+      await widget.userRef.set({
+        'dob': _dobController.text,
+        'age': _ageController.text,
+        'gender': _genderController.text,
+        'diagnosis': _diagnosisController.text,
+        'stomaType': _stomaTypeController.text,
+        'surgeryDate': _surgeryDateController.text,
+        'duration': _durationController.text,
+        'chemoHistory': _chemoHistoryController.text,
+        'profileImage': imageUrl,
+      }, SetOptions(merge: true));
+
+      Navigator.pop(context);
+    } catch (e) {
+      print("Error saving profile: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Failed to save profile. Please try again.")),
+      );
     }
-
-    await widget.userRef.update({
-      'dob': _dobController.text,
-      'age': _ageController.text,
-      'gender': _genderController.text,
-      'diagnosis': _diagnosisController.text,
-      'stomaType': _stomaTypeController.text,
-      'surgeryDate': _surgeryDateController.text,
-      'duration': _durationController.text,
-      'chemoHistory': _chemoHistoryController.text,
-      'profileImage': imageUrl,
-    });
-
-    Navigator.pop(context);
   }
 
   Future<String> _uploadImageToFirebase(XFile image) async {
@@ -91,11 +98,13 @@ class _ProfileUpdatePageState extends State<ProfileUpdatePage> {
       setState(() {
         _profileImage = pickedFile;
       });
-    } else if (photoStatus.isPermanentlyDenied || cameraStatus.isPermanentlyDenied) {
+    } else if (photoStatus.isPermanentlyDenied ||
+        cameraStatus.isPermanentlyDenied) {
       // If the user permanently denied permissions, guide them to app settings
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Permissions are permanently denied. Please enable them in App Settings.'),
+          content: Text(
+              'Permissions are permanently denied. Please enable them in App Settings.'),
           action: SnackBarAction(
             label: 'Open Settings',
             onPressed: () {
@@ -160,14 +169,17 @@ class _ProfileUpdatePageState extends State<ProfileUpdatePage> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 boxShadow: [
-                  BoxShadow(color: Colors.black26, blurRadius: 0, offset: Offset(0, 3)),
+                  BoxShadow(
+                      color: Colors.black26,
+                      blurRadius: 0,
+                      offset: Offset(0, 3)),
                 ],
               ),
               child: ClipOval(
                 child: _profileImage == null
                     ? (_imageUrl != null && _imageUrl!.isNotEmpty
-                    ? Image.network(_imageUrl!, fit: BoxFit.cover)
-                    : Icon(Icons.person, size: 60, color: Colors.grey))
+                        ? Image.network(_imageUrl!, fit: BoxFit.cover)
+                        : Icon(Icons.person, size: 60, color: Colors.grey))
                     : Image.file(File(_profileImage!.path), fit: BoxFit.cover),
               ),
             ),
@@ -193,7 +205,6 @@ class _ProfileUpdatePageState extends State<ProfileUpdatePage> {
       ),
     );
   }
-
 
   Widget _buildFormSection() {
     return Container(
@@ -221,6 +232,7 @@ class _ProfileUpdatePageState extends State<ProfileUpdatePage> {
       ),
     );
   }
+
   Widget _buildTextField(String label, TextEditingController controller) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2.0),
@@ -242,7 +254,8 @@ class _ProfileUpdatePageState extends State<ProfileUpdatePage> {
               filled: true,
               fillColor: Colors.white,
               hintText: 'Enter $label',
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
             ),
           ),
         ],

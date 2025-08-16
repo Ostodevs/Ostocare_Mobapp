@@ -118,33 +118,51 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _fetchLastBagChangeDate() async {
-    String userId = FirebaseAuth.instance.currentUser?.uid ?? "";
-    DocumentSnapshot userDoc =
-        await FirebaseFirestore.instance.collection('users').doc(userId).get();
-
-    if (userDoc.exists && userDoc.data() != null) {
-      Timestamp? lastChangeTimestamp = userDoc.get('lastBagChangeDate');
-      if (lastChangeTimestamp != null) {
-        DateTime lastChangeDate = lastChangeTimestamp.toDate();
-        int difference = DateTime.now().difference(lastChangeDate).inDays;
-
-        setState(() {
-          daysLeft = 7 - difference;
-          isOverdue = daysLeft < 0;
-          _lastBagChangeDate = lastChangeDate;
-
-          if (isOverdue) {
-            overdueDays = List.generate(
-                difference, (i) => lastChangeDate.add(Duration(days: i + 1)));
-          } else {
-            upcomingDays = List.generate(
-                7, (i) => lastChangeDate.add(Duration(days: i + 1)));
-          }
-
-          _highlightedDays = [...upcomingDays, ...overdueDays];
-        });
-      }
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      print("No user logged in");
+      return;
     }
+
+    DocumentSnapshot userDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .get();
+
+    if (!userDoc.exists) {
+      print("User doc not found");
+      return;
+    }
+
+    Map<String, dynamic>? data = userDoc.data() as Map<String, dynamic>?;
+    if (data == null || !data.containsKey('lastBagChangeDate')) {
+      print("No lastBagChangeDate field found");
+      return;
+    }
+
+    Timestamp lastChangeTimestamp = data['lastBagChangeDate'];
+    DateTime lastChangeDate = lastChangeTimestamp.toDate();
+    int difference = DateTime.now().difference(lastChangeDate).inDays;
+
+    setState(() {
+      daysLeft = 7 - difference;
+      isOverdue = daysLeft < 0;
+      _lastBagChangeDate = lastChangeDate;
+
+      if (isOverdue) {
+        overdueDays = List.generate(
+          difference,
+          (i) => lastChangeDate.add(Duration(days: i + 1)),
+        );
+      } else {
+        upcomingDays = List.generate(
+          7,
+          (i) => lastChangeDate.add(Duration(days: i + 1)),
+        );
+      }
+
+      _highlightedDays = [...upcomingDays, ...overdueDays];
+    });
   }
 
   Future<void> _saveLastBagChangeDate(DateTime date) async {
